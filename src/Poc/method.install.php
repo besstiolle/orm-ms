@@ -3,7 +3,7 @@
 if (!function_exists("cmsms")) exit;
 
 //Create all the tables
-$entities = MyAutoload::getAllInstances($this->GetName(), $this->getName());
+$entities = MyAutoload::getAllInstances($this->GetName());
 foreach($entities as $anEntity)
 {
 	Core::createTable($this,$anEntity);
