@@ -131,9 +131,7 @@ class Core
     */
   public static final function createTable(Orm &$module, Entity &$entityParam)
   {
-    $gCms = cmsms();
-    
-    $db = $gCms->GetDb();
+    $db = cmsms()->GetDb();
     $taboptarray = array( 'mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
     $dict = NewDataDictionary( $db );
 
@@ -172,8 +170,8 @@ class Core
     */
   public static final function dropTable(Orm &$module, Entity &$entityParam)
   {
-    $gCms = cmsms();
-    $db = $gCms->GetDb();
+    
+    $db = cmsms()->GetDb();
     
     $dict = NewDataDictionary( $db );
     
@@ -208,8 +206,8 @@ class Core
     */
   public static final function alterTable(Entity &$entityParam, $sql)
   {
-    $gCms = cmsms();
-    $db = $gCms->GetDb();
+    
+    $db = cmsms()->GetDb();
         
     $queryAlter = "ALTER TABLE ".$entityParam->getDbname()." ".$sql;    
     $result = $db->Execute($queryAlter);
@@ -245,8 +243,8 @@ class Core
     */
   public static final function insertEntity(Orm &$module, Entity &$entityParam, $rows)
   {
-    $gCms = cmsms();
-    $db = $gCms->GetDb();
+    
+    $db = cmsms()->GetDb();
     $listeField = $entityParam->getFields();
                 
     $sqlReady = false;
@@ -366,8 +364,8 @@ class Core
     */
   public static final function updateEntity(Orm $module, Entity &$entityParam, array $rows)
   {
-    $gCms = cmsms();
-    $db = $gCms->GetDb();
+    
+    $db = cmsms()->GetDb();
     $listeField = $entityParam->getFields();
    
     
@@ -481,8 +479,8 @@ class Core
     */
   public static final function deleteByIds(Orm $module, Entity &$entityParam, $ids)
   {
-    $gCms = cmsms();
-    $db = $gCms->GetDb();
+    
+    $db = cmsms()->GetDb();
     $listeField = $entityParam->getFields();
     
     foreach($listeField as $field)
@@ -541,8 +539,8 @@ class Core
     */
   public static final function countAll(Entity &$entityParam)
   {
-    $gCms = cmsms();
-    $db = $gCms->GetDb();
+    
+    $db = cmsms()->GetDb();
     
     $querySelect = 'Select count(*) FROM '.$entityParam->getDbname();
     
@@ -562,8 +560,8 @@ class Core
     */
   public static final function selectAll(Entity &$entityParam)
   {
-    $gCms = cmsms();
-    $db = $gCms->GetDb();
+    
+    $db = cmsms()->GetDb();
     
     $querySelect = 'Select * FROM '.$entityParam->getDbname();
     
@@ -618,8 +616,8 @@ class Core
     if(count($ids) == 0)
       return array();
         
-    $gCms = cmsms();
-    $db = $gCms->GetDb();
+    
+    $db = cmsms()->GetDb();
     $listeField = $entityParam->getFields();
     
     $where = "";
@@ -708,8 +706,8 @@ class Core
     */
   public static final function selectByExemple(Entity &$entityParam, Exemple $exemple)
   {
-    $gCms = cmsms();
-    $db = $gCms->GetDb();
+    
+    $db = cmsms()->GetDb();
     $listeField = $entityParam->getFields();
     
     $criteres = $exemple->getCriteres();
@@ -862,8 +860,8 @@ class Core
     */
   public static final function deleteByExemple(Entity &$entityParam, Exemple $Exemple)
   {
-    $gCms = cmsms();
-    $db = $gCms->GetDb();
+    
+    $db = cmsms()->GetDb();
     $listeField = $entityParam->getFields();
     
     $criteres = $Exemple->getCriteres();
