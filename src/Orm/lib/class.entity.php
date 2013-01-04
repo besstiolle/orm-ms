@@ -82,7 +82,7 @@ abstract class Entity
 	*	initialiser les tables durant l'installation du module
     * 
     */
-	public function initTable(){};
+	public function initTable(){}
     	
     /**
     * Ajoute un nouveau champs Field à la liste déjà présente dans l'Entité

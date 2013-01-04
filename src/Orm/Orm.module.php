@@ -8,7 +8,7 @@
 	**/
 
 	//Unique import, utilisé pour gérer les traces en sortie
-	//include_once(cms_join_path(dirname(__FILE__),"class","class.trace.php"));
+	include_once(cms_join_path(dirname(__FILE__),"lib","class.trace.php"));
 
 	#Décommenter pour obtenir le mode debug complet. Autres valeurs possibles : $DEBUG|$INFO|$WARN|$ERROR
 	#Trace::$level = Trace::$DEBUG;
@@ -154,11 +154,11 @@ class Orm extends CMSModule {
 			return cms_join_path($config['root_path'], 'modules', $this->getName());
 	}
 
-	protected function autoload()
-	{
-	//	spl_autoload_register(array($this, 'autoload_classes'));
-	//	spl_autoload_register(array($this, 'autoload_classes_addon'));
-		return;
+	protected function __autoload()
+	{	
+		spl_autoload_register(array($this, 'autoload_classes'));
+		//spl_autoload_register(array($this, 'autoload_classes_addon'));
+		
 		//On liste les classes déclarées dans le répertoire du module enfant
 		$repertoire = cms_join_path($this->GetMyModulePath(),'lib');
 		$dir = opendir($repertoire); 
@@ -176,38 +176,23 @@ class Orm extends CMSModule {
 			} 
 		}
 	}
-	/*
+	
 	public function autoload_classes($classname){
 	   Trace::debug("&nbsp;&nbsp;&nbsp; Need $classname<br/>");
-	   $mmmfs = new Mmmfs();
-	   $path = $mmmfs->GetMyModulePath();
-	   
-	   if(stripos($classname, "HTML_FIELD") !== FALSE)
-	   {
-			$fn = cms_join_path($path,"class","class.fieldhtml.php");
-	   } else if(stripos($classname, "SEARCH_FIELD") !== FALSE)
-	   {
-			$fn = cms_join_path($path,"class","class.searchfield.php");
-	   } else if(stripos($classname, "FIELD_") !== FALSE)
-	   {
-			$fn = cms_join_path($path,"class","class.fieldsystem.php");
-	   } else if(stripos($classname, "FILTRE_") !== FALSE)
-	   {
-			$fn = cms_join_path($path,"class","class.filtre.php");
-	   } else if(stripos($classname, "VALIDATOR_") !== FALSE)
-	   {
-			$fn = cms_join_path($path,"class","class.validator.php");
-	   } else
-	   {
-			$fn = cms_join_path($path,"class","class.".strtolower($classname).".php");
-	   }
+	   $Orm = new Orm();
+	   $path = $Orm->GetMyModulePath();
+	$fn = cms_join_path($path,"lib","class.".strtolower($classname).".php");
+
 	   
 	  Trace::debug("import class du framework via ".$this->getName().": $fn<br/>");
 	   
 	   if(file_exists($fn)){
 		  require_once($fn);
+		  Trace::debug("import $fn ok<br/>");
+	   } else {
+		  Trace::debug("fichier $fn introuvable, on passe<br/>");
 	   }
-	}*/
+	}
 	/*
 	public function autoload_classes_addon($classname){
 		Trace::debug("&nbsp;&nbsp;&nbsp;$classname<br/>");

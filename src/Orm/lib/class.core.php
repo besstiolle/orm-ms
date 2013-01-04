@@ -2,7 +2,7 @@
 /**
  * Noyau du framework
  * 
- * @package mmmfs
+ * @package Orm
  **/
  
  
@@ -12,7 +12,7 @@
 * Core est la classe qui fait l'interface entre les méthodes natives de CmsMadeSimple et les besoins communs
 *  dans les modules utilisant le framework. 
 * 
-* @package mmmfs
+* @package Orm
 */
 class Core 
 {  
@@ -129,7 +129,7 @@ class Core
     * 
     * @param Entity l'entité servant de modèle.
     */
-  public static final function createTable(Mmmfs &$module, Entity &$entityParam)
+  public static final function createTable(Orm &$module, Entity &$entityParam)
   {
     $gCms = cmsms();
     
@@ -170,7 +170,7 @@ class Core
     * 
     * @param Entity l'entité servant de modèle
     */
-  public static final function dropTable(Mmmfs &$module, Entity &$entityParam)
+  public static final function dropTable(Orm &$module, Entity &$entityParam)
   {
     $gCms = cmsms();
     $db = $gCms->GetDb();
@@ -243,7 +243,7 @@ class Core
     * @param array le tableau contenant les données à insérer.
     * @return array la liste des Id créées.
     */
-  public static final function insertEntity(Mmmfs &$module, Entity &$entityParam, $rows)
+  public static final function insertEntity(Orm &$module, Entity &$entityParam, $rows)
   {
     $gCms = cmsms();
     $db = $gCms->GetDb();
@@ -364,7 +364,7 @@ class Core
     * @param Entity l'entité servant de modèle
     * @param array le tableau contenant les données à mettre à jour.
     */
-  public static final function updateEntity(Mmmfs $module, Entity &$entityParam, array $rows)
+  public static final function updateEntity(Orm $module, Entity &$entityParam, array $rows)
   {
     $gCms = cmsms();
     $db = $gCms->GetDb();
@@ -479,7 +479,7 @@ class Core
     * @param Entity l'entité servant de modèle     
     * @param array un tableau contenant les ids à supprimer
     */
-  public static final function deleteByIds(Mmmfs $module, Entity &$entityParam, $ids)
+  public static final function deleteByIds(Orm $module, Entity &$entityParam, $ids)
   {
     $gCms = cmsms();
     $db = $gCms->GetDb();
@@ -1049,7 +1049,7 @@ class Core
     * 
     * La fonction va parcourir L'entité Article , prendre le champs passé en AssociateKey et aller faire une requête de selection sur l'entité Tag
     * 
-    * pour rappel une clé associée est configurée ainsi dans Mmmfs :
+    * pour rappel une clé associée est configurée ainsi dans Orm :
     * 
        * <code>
     *    class Article extends mEntity
@@ -1181,7 +1181,7 @@ class Core
     * La fonction va parcourir L'entité Article , prendre le champs passé en AssociateKey et aller faire une requête de selection sur l'entité Tag
     *     en prenant en compte l'identifiant de l'article en cours
     * 
-    * pour rappel une clé associée est configurée ainsi dans Mmmfs :
+    * pour rappel une clé associée est configurée ainsi dans Orm :
     * 
     * <code>
     *    class Article extends mEntity
@@ -1326,11 +1326,11 @@ class Core
     *  Cette fonction est utilisée avant une suppression où l'on souhaites s'assurer qu'aucune 
     *     autre entité n'est encore liée'
     * 
-    * @param Mmmfs le module en cours
+    * @param Orm le module en cours
     * @param Entity l'entité servant de modèle
     * @param mixed l'identifiant de la ligne à vérifier.
     */
-  public static final function verifIntegrity(Mmmfs $module, Entity &$entity, $sid)
+  public static final function verifIntegrity(Orm $module, Entity &$entity, $sid)
   {
     $listeEntitys = MyAutoload::getAllInstances($module->getName());
   

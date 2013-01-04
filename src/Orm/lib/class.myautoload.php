@@ -34,7 +34,6 @@ final class MyAutoload
 	public final static function addInstance($namespace, $newinstance)
 	{	
 		$namespace = strtolower($namespace);
-		
 		$name = $newinstance->getName();
 		$name = strtolower($name);
 				
@@ -43,7 +42,7 @@ final class MyAutoload
 			Trace::debug("Instance ".$name." deja presente.");
 			return;
 		}
-		Trace::debug("Ajout de l'instance ".$name);
+		Trace::debug("Ajout de l'instance ".$name." dans le namespace ".$namespace);
 		self::$instances[$namespace][$name] = $newinstance;
 	}
 	

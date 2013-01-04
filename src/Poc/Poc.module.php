@@ -1,27 +1,10 @@
 <?php
-/*
-define('Poc_memory', number_format(memory_get_usage(), 0, '.', ',') . " octets<br/>");
-
-//Inclusion par la force du module Mmmfs pour etre certain d'avoir acces aux fonctionnalites du framework
-if(!class_exists("Mmmfs")){
-	$mmmfs = cms_join_path(cmsms()->config['root_path'],'modules','Mmmfs','Mmmfs.module.php');
-	if( !is_readable( $mmmfs ) )
-		{echo '<h1><font color="red">ERROR: The Mmmfs module could not be found.</font></h1>';return;}
-	require_once($mmmfs);
-}
-//Inclusion par la force du module FeuUtil pour etre certain d'avoir acces aux fonctionnalites du framework
-if(!class_exists("FeuUtil")){
-  $FeuUtil = cms_join_path(cmsms()->config['root_path'],'modules','Poc','lib','feuUtil.php');
-  if( !is_readable( $FeuUtil ) )
-    {echo '<h1><font color="red">ERROR: The FeuUtil tools could not be found.</font></h1>';return;}
-  require_once($FeuUtil);
-}*/
 
 class Poc extends Orm
 {   
 	function __construct()
 	{
-		$this->autoload();
+		parent::__autoload();
 		parent::__construct();
 	}
 

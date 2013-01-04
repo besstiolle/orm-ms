@@ -24,7 +24,6 @@ class Country extends Entity
 		
 	}	
 }
-
 //Init the entity
 new Country();
 ?>
