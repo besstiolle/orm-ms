@@ -1,11 +1,11 @@
 <?php
 /**
- * Contient les classe mères de toutes les entités et entités associatives
+ * Contient les classe mï¿½res de toutes les entitï¿½s et entitï¿½s associatives
  * @package mmmfs
  **/
  
 /**
- * Class abstract décrivant le comportement et les propriétés d'une Entité
+ * Class abstract dï¿½crivant le comportement et les propriï¿½tï¿½s d'une Entitï¿½
  *	
  *
  * @since 1.0
@@ -33,7 +33,7 @@ abstract class Entity
 	public static $_CONST_MOD = 'module';
 	
 	
-	//Contient le nom du Field servant de clé
+	//Contient le nom du Field servant de clï¿½
 	private $pk;
 	
 	//Contient le nom du module en cours d'appel
@@ -41,15 +41,15 @@ abstract class Entity
 	
 	
     /**
-    * Constructeur semi-privé pour éviter d'instancer cette classe depuis le code par erreur
+    * Constructeur semi-privï¿½ pour ï¿½viter d'instancer cette classe depuis le code par erreur
     * 
-    *   A chaque construction, l'entité est placée dans l'Autoloader
+    *   A chaque construction, l'entitï¿½ est placï¿½e dans l'Autoloader
     * 
     * @param string le nom d'un module de type Mmmfs
-    * @param string le nom de l'entité
-    * @param string [facultatif] Le préfixe à utiliser en base de donnée pour les tables. En général le nom de votre module
-    * @param string [facultatif] Le nom de la table liée à cette entité. Si non renseignée on prendra le nom de l'entité
-    * @return Entity l'entit servant de modèle
+    * @param string le nom de l'entitï¿½
+    * @param string [facultatif] Le prï¿½fixe ï¿½ utiliser en base de donnï¿½e pour les tables. En gï¿½nï¿½ral le nom de votre module
+    * @param string [facultatif] Le nom de la table liï¿½e ï¿½ cette entitï¿½. Si non renseignï¿½e on prendra le nom de l'entitï¿½
+    * @return Entity l'entit servant de modï¿½le
     * 
     * @see MyAutoload
     */
@@ -78,16 +78,16 @@ abstract class Entity
 	}
 	
     /**
-    *  doit être surchargée dans les classes héritant de Entity qui souhaitent
+    *  doit ï¿½tre surchargï¿½e dans les classes hï¿½ritant de Entity qui souhaitent
 	*	initialiser les tables durant l'installation du module
     * 
     */
 	public function initTable(){}
     	
     /**
-    * Ajoute un nouveau champs Field à la liste déjà présente dans l'Entité
+    * Ajoute un nouveau champs Field ï¿½ la liste dï¿½jï¿½ prï¿½sente dans l'Entitï¿½
     * 
-    * @param Field le champs à ajouter.
+    * @param Field le champs ï¿½ ajouter.
     */
 	protected function add(Field $newField)
 	{
@@ -97,7 +97,7 @@ abstract class Entity
 		if($newField->isPrimaryKEY())
 		{
 			if($this->pk != null)
-				throw new Exception("Le programme ne gere pas les entites à multiples cles primaires (PK)");
+				throw new Exception("Le programme ne gere pas les entites ï¿½ multiples cles primaires (PK)");
 				
 			$this->pk = $newField->getName();
 			$this->seqname = $this->dbname.Entity::$_CONST_SEQ;
@@ -105,7 +105,7 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne le champs servant de Primary Key de l'entité
+    * Retourne le champs servant de Primary Key de l'entitï¿½
     * 
     * @return Field le champs PK si existant 
     * @exception si aucun champs PK n'existe
@@ -119,7 +119,7 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne la liste des Fields de l'entité'
+    * Retourne la liste des Fields de l'entitï¿½'
     * 
     * @return array<Field> un tableau contenant tous les Fields 
     * 
@@ -130,11 +130,11 @@ abstract class Entity
 	}
 	
     /**
-    * retourne un Field à partir du nom passé en paramètre
+    * retourne un Field ï¿½ partir du nom passï¿½ en paramï¿½tre
     * 
     * @param string $name
     * @return Field le Field correspondant
-    * @exception si aucun Field ne correspond au paramètre passé
+    * @exception si aucun Field ne correspond au paramï¿½tre passï¿½
     */
 	public function getFieldByName($name)
 	{
@@ -145,7 +145,7 @@ abstract class Entity
 	}
 	
 	/**
-    * retourne vrai si un Field à partir du nom passé en paramètre existe
+    * retourne vrai si un Field ï¿½ partir du nom passï¿½ en paramï¿½tre existe
     * 
     * @param string $name
     * @return Boolean si existant
@@ -156,7 +156,7 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne le nom de la table en base de l'Entité
+    * Retourne le nom de la table en base de l'Entitï¿½
     * 
     * @return string le nom de la table
     * 
@@ -167,9 +167,9 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne le nom de l'entité
+    * Retourne le nom de l'entitï¿½
     * 
-    * @return string le nom de l'entité
+    * @return string le nom de l'entitï¿½
     * 
     */
 	public function getName()
@@ -177,10 +177,20 @@ abstract class Entity
 		return $this->name;
 	}
 	
+	/**
+	 *  Return the name of the current module
+	 *  
+	 *  @Return string the name of the current module.
+	 **/
+	public function getModuleName()
+	{
+		return $this->moduleName;
+	}
+	
     /**
-    * Retourne le nom de la séquence si elle existe
+    * Retourne le nom de la sï¿½quence si elle existe
     * 
-    * @return string le nom de la séquence ou NULL si inexistante
+    * @return string le nom de la sï¿½quence ou NULL si inexistante
     * 
     */
 	public function getSeqname()
@@ -192,7 +202,7 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne la valeur d'un Field de l'entité
+    * Retourne la valeur d'un Field de l'entitï¿½
     * 	
     * @param string le nom du champs
     * @return mixed la valeur contenu dans ce champs
@@ -212,7 +222,7 @@ abstract class Entity
 	}
 	
    /**
-    * Affecte une valeur à un Field de l'entité
+    * Affecte une valeur ï¿½ un Field de l'entitï¿½
     *     
     * @param string le nom du champs
     * @param mixed la valeur 
@@ -229,9 +239,9 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne l'ensemble des valeurs définie pour l'entité
+    * Retourne l'ensemble des valeurs dï¿½finie pour l'entitï¿½
     * 
-    * le tableau est un tableau associatif définit comme tel :
+    * le tableau est un tableau associatif dï¿½finit comme tel :
     * 
     * <code>
     *  array(
@@ -275,12 +285,12 @@ abstract class Entity
 	}
 	
     /**
-    * Permet en surchargeant cette méthode depuis la classe héritant de Entity de faire 
-    *   du pre-traitement des données avant sauvegarde en base.
+    * Permet en surchargeant cette mï¿½thode depuis la classe hï¿½ritant de Entity de faire 
+    *   du pre-traitement des donnï¿½es avant sauvegarde en base.
     * 
-    * @param array tableau contenant les valeurs à traiter
-    * @param array éventuels paramètres supplémentaires déstiné à la fonction
-    * @return mixed à définir selon le traitement 
+    * @param array tableau contenant les valeurs ï¿½ traiter
+    * @param array ï¿½ventuels paramï¿½tres supplï¿½mentaires dï¿½stinï¿½ ï¿½ la fonction
+    * @return mixed ï¿½ dï¿½finir selon le traitement 
     */
 	public function processValueForSave($rows, $args = null){
 	
@@ -289,11 +299,11 @@ abstract class Entity
 	
   	
 	/**
-	 * Fonction utilitaire permettant de passer une chaine du type "blabla %nom% blabla %prenom% blabla" et de récupérer en sortie les correspondances avec les valeurs de l'entité courante
-	 * exemple : "blabla Dupont blabla Jean blabla". Il faut évidement que les informations contenues entre %% soient le nom d'un FIELD de l'entité valide.
+	 * Fonction utilitaire permettant de passer une chaine du type "blabla %nom% blabla %prenom% blabla" et de rï¿½cupï¿½rer en sortie les correspondances avec les valeurs de l'entitï¿½ courante
+	 * exemple : "blabla Dupont blabla Jean blabla". Il faut ï¿½videment que les informations contenues entre %% soient le nom d'un FIELD de l'entitï¿½ valide.
 	 *
-	 * @param string la chaine de caractères à traiter
-	 * @param string le pattern de recherche. Par défaut traitera ce qui se trouve entre deux symboles pourcentage : %
+	 * @param string la chaine de caractï¿½res ï¿½ traiter
+	 * @param string le pattern de recherche. Par dï¿½faut traitera ce qui se trouve entre deux symboles pourcentage : %
 	 */ 
 	/*function processStringWithValues($string, $pattern = '/%(\w+)%/i')
 	{
@@ -307,11 +317,11 @@ abstract class Entity
 	}*/
 	
 	/**
-	 * Fonction utilitaire permettant de nettoyer la chaine de caractère en vue d'utilisation dans une url
+	 * Fonction utilitaire permettant de nettoyer la chaine de caractï¿½re en vue d'utilisation dans une url
 	 *
-	 * @param string la chaine à traiter
+	 * @param string la chaine a traiter
 	 *
-	 * @return string la chaine nettoyée
+	 * @return string la chaine nettoyee
 	 **/
 	/*protected function processStringForUrl($texte)
 	{	
@@ -320,24 +330,24 @@ abstract class Entity
 		
 		$texte = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $texte);
 		$texte = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $texte); // pour les ligatures e.g. '&oelig;'
-		$texte = preg_replace('#&[^;]+;#', '', $texte); // supprime les autres caractères spéciaux
+		$texte = preg_replace('#&[^;]+;#', '', $texte); // supprime les autres caractï¿½res spï¿½ciaux
 		$texte = preg_replace('# #', '-', $texte); // espace ->  tiret 6
-		$texte = preg_replace('#[^a-zA-Z0-9_\-,]#', '', $texte); // supprime les caractères qui ne suiveraient pas la règle de reroute   
+		$texte = preg_replace('#[^a-zA-Z0-9_\-,]#', '', $texte); // supprime les caractï¿½res qui ne suiveraient pas la rï¿½gle de reroute   
 		return $texte;
 	}*/
 	
 	/**
-	 * Fait un appel à compareTo de l'entité pour trier le tableau. 
-	 * Pour en bénéficier, l'entité doit implémenter l'interface ISortable
+	 * Fait un appel ï¿½ compareTo de l'entitï¿½ pour trier le tableau. 
+	 * Pour en bï¿½nï¿½ficier, l'entitï¿½ doit implï¿½menter l'interface ISortable
 	 *
-	 * Exemple de méthode compareTo() à coder dans votre entité de type client : 
+	 * Exemple de mï¿½thode compareTo() ï¿½ coder dans votre entitï¿½ de type client : 
 	 *  <code>
-	 *   * Effectue une comparaison sommaire (égalité absolue) entre deux entités. 
-	 *	 * doit être redéfinie dans chaque entité avec laquelle nous souhaitons un vrai comparatif
-	 *	 * par habitude : renvoi 1 si la première entité est supérieure, -1 si inférieure, 0 si égalité.
+	 *   * Effectue une comparaison sommaire (ï¿½galitï¿½ absolue) entre deux entitï¿½s. 
+	 *	 * doit ï¿½tre redï¿½finie dans chaque entitï¿½ avec laquelle nous souhaitons un vrai comparatif
+	 *	 * par habitude : renvoi 1 si la premiï¿½re entitï¿½ est supï¿½rieure, -1 si infï¿½rieure, 0 si ï¿½galitï¿½.
 	 *	 *
-	 *	 * @param Entity la première entité à comparer.
-	 *	 * @param Entity la seconde entité à comparer.
+	 *	 * @param Entity la premiï¿½re entitï¿½ ï¿½ comparer.
+	 *	 * @param Entity la seconde entitï¿½ ï¿½ comparer.
 	 *	 *
 	 *	public static function compareTo(Entity $entity1, Entity $entity2)
 	 *	{
@@ -347,9 +357,9 @@ abstract class Entity
 	 * 
 	 *  </code>
 	 *
-	 * @param array<Entity> le tableau d'Entité
+	 * @param array<Entity> le tableau d'Entitï¿½
 	 *
-	 * @return array<Entity> le tableau d'Entité trié selon la méthode compareTo défini dans l'entité.
+	 * @return array<Entity> le tableau d'Entitï¿½ triï¿½ selon la mï¿½thode compareTo dï¿½fini dans l'entitï¿½.
 	 */
 	public static function sort(Entity $entity, array $array)
 	{
