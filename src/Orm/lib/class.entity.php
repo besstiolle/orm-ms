@@ -1,55 +1,75 @@
 <?php
 /**
- * Contient les classe m�res de toutes les entit�s et entit�s associatives
- * @package mmmfs
+ * contain the class Entity
+ * @package Orm
  **/
  
 /**
- * Class abstract d�crivant le comportement et les propri�t�s d'une Entit�
+ * Abstract Classes describing the frame of an Entity into Orm
  *	
  *
- * @since 1.0
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package orm
  **/
 abstract class Entity 
 {
-	//nom de l'entite
+	/**
+	 * String : Name of the module that currently use this entity
+	 * */
+	private $moduleName;
+	
+	/**
+	 * String : the official name of the entity
+	 * */
 	protected $name;
 
-	//nom de la table
+	/**
+	 * String : the name of the table in database
+	 * */
 	private $dbname;
 	
-	//nom de la sequence ou null si pas de sequence
+	/**
+	 * String : name of the sequence linked to the table in the database. May be Null
+	 * */
 	private $seqname;
 	
-	//Liste des champs de l'entite
+	/**
+	 * list : fields making up the entity
+	 * */
 	private $fields = array();
 	
-	//Liste des valeurs correspondantes
+	/**
+	 * list : values of each fields
+	 * */
 	private $values = array();
 	
+	/**
+	 * String : Name of the field wich will be used as a primaryKey
+	 * */
+	private $pk;
+	
+	/**
+	 * String : constant, suffix for the sequence name into the database
+	 * */
 	public static $_CONST_SEQ = '_seq';
+	/**
+	 * String : constant, suffix used to nammed the table into database for a module
+	 * */
 	public static $_CONST_MOD = 'module';
 	
 	
-	//Contient le nom du Field servant de cl�
-	private $pk;
-	
-	//Contient le nom du module en cours d'appel
-	private $moduleName;
-	
 	
     /**
-    * Constructeur semi-priv� pour �viter d'instancer cette classe depuis le code par erreur
+    * constructor protected to avoid a direct instanciation like "new Entity()"
+    * Each time a entity is constructed, we place a copy into the autoloader.
     * 
-    *   A chaque construction, l'entit� est plac�e dans l'Autoloader
-    * 
-    * @param string le nom d'un module de type Mmmfs
-    * @param string le nom de l'entit�
-    * @param string [facultatif] Le pr�fixe � utiliser en base de donn�e pour les tables. En g�n�ral le nom de votre module
-    * @param string [facultatif] Le nom de la table li�e � cette entit�. Si non renseign�e on prendra le nom de l'entit�
-    * @return Entity l'entit servant de mod�le
+    * @param string The name of the module who calling this method (so not "Orm")
+    * @param string The name of the entity
+    * @param string [optional] Prefix to use into database for table. If not setted, it will use the name of your module
+    * @param string [optional] The name of table for this entity. If not setted, it will use the name of your entity
+    *
+    * @return Entity the entity like a new instance
     * 
     * @see MyAutoload
     */
@@ -78,16 +98,15 @@ abstract class Entity
 	}
 	
     /**
-    *  doit �tre surcharg�e dans les classes h�ritant de Entity qui souhaitent
-	*	initialiser les tables durant l'installation du module
-    * 
+    *  Can be override. Let you specify how your table must be populated 
+    * after you asked to create the table of your Entity
     */
 	public function initTable(){}
     	
     /**
-    * Ajoute un nouveau champs Field � la liste d�j� pr�sente dans l'Entit�
+    * Add a new Field into the list of Fields
     * 
-    * @param Field le champs � ajouter.
+    * @param Field the object Field to add
     */
 	protected function add(Field $newField)
 	{
@@ -97,7 +116,7 @@ abstract class Entity
 		if($newField->isPrimaryKEY())
 		{
 			if($this->pk != null)
-				throw new Exception("Le programme ne gere pas les entites � multiples cles primaires (PK)");
+				throw new Exception("Orm doesn't support multi-Primary-Key into the Entity ".$this->name);
 				
 			$this->pk = $newField->getName();
 			$this->seqname = $this->dbname.Entity::$_CONST_SEQ;
@@ -105,23 +124,23 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne le champs servant de Primary Key de l'entit�
+    * Return the PrimaryKey Field
     * 
-    * @return Field le champs PK si existant 
-    * @exception si aucun champs PK n'existe
+    * @return Field the PrimaryKey Field
+    * @exception if there is no PrimaryKey Field
     */
 	public function getPk()
 	{
 		if($this->pk == null)
-			throw new Exception("la class ".$this->getName()." ne possede pas de cle primaire");
+			throw new Exception("the entity ".$this->getName()." doesn't have any Primary-Key");
 		
 		return $this->fields[$this->pk];
 	}
 	
     /**
-    * Retourne la liste des Fields de l'entit�'
+    * Return the list of Fields
     * 
-    * @return array<Field> un tableau contenant tous les Fields 
+    * @return array<Field> an array with all the Fields
     * 
     */
 	public function getFields()
@@ -130,25 +149,26 @@ abstract class Entity
 	}
 	
     /**
-    * retourne un Field � partir du nom pass� en param�tre
+    * retourn a Field by name
     * 
-    * @param string $name
-    * @return Field le Field correspondant
-    * @exception si aucun Field ne correspond au param�tre pass�
+    * @param string the name
+    * @return Field the Field
+    * 
+    * @exception if no Field exist for the name
     */
 	public function getFieldByName($name)
 	{
 		if(isset($this->fields[$name]))
 			return $this->fields[$name];
 		
-		throw new Exception("le champs $name n'existe pas dans l'entit&eacute; ".$this->getName());
+		throw new Exception("The field $name doesn't exist into the entity ".$this->getName());
 	}
 	
-	/**
-    * retourne vrai si un Field � partir du nom pass� en param�tre existe
+    /**
+    * Return true if a Field exists for the name
     * 
-    * @param string $name
-    * @return Boolean si existant
+    * @param string the name
+    * @return Boolean if exists
     */
 	public function isFieldByNameExists($name)
 	{
@@ -156,9 +176,9 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne le nom de la table en base de l'Entit�
+    * Return the name of the table into the database
     * 
-    * @return string le nom de la table
+    * @return string the name of the table into the database
     * 
     */
 	public function getDbname()
@@ -167,9 +187,9 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne le nom de l'entit�
+    * Return the name of the entity
     * 
-    * @return string le nom de l'entit�
+    * @return string the name of the entity
     * 
     */
 	public function getName()
@@ -188,9 +208,9 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne le nom de la s�quence si elle existe
+    * Return the name of the sequence (if exists)
     * 
-    * @return string le nom de la s�quence ou NULL si inexistante
+    * @return string the name of the sequence or NULL
     * 
     */
 	public function getSeqname()
@@ -202,31 +222,37 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne la valeur d'un Field de l'entit�
+    * Return the value for a Field by the name 
     * 	
-    * @param string le nom du champs
-    * @return mixed la valeur contenu dans ce champs
-    * @exception si aucun champs n'existe avec ce nom
+    * @param string the name of the Field
+    * @return mixed the value for the field
+    * 
+    * @exception if no Field exists for the name
     */
 	public function get($fieldName)
 	{
 		$fieldnameSid = explode("_sid", $fieldName);
 		$fieldnameSid = $fieldnameSid[0];
 		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldnameSid,$this->fields))
-		{throw new Exception('fonction Get : cle '.$fieldName.' non trouvee dans l\'entite '.$this->getName());}
+		{
+			throw new Exception("fonction Get : Field $fieldName not found for entity ".$this->getName());
+		}
 		
 		if(!isset($this->values[$fieldName]))
+		{
 			return null;
+		}
 		
 		return $this->values[$fieldName];
 	}
 	
    /**
-    * Affecte une valeur � un Field de l'entit�
+    * Set a value to a Field
     *     
-    * @param string le nom du champs
-    * @param mixed la valeur 
-    * @exception si aucun champs n'existe avec ce nom
+    * @param string The name of the Field
+    * @param mixed the new value of the Field
+    * 
+    * @exception if no Field exists for the name
     */
 	public function set($fieldName,$value)
 	{
@@ -239,20 +265,11 @@ abstract class Entity
 	}
 	
     /**
-    * Retourne l'ensemble des valeurs d�finie pour l'entit�
+    * Return the values for all the Fields into an associative array with 
+    *  * key = name of the Field, and 
+    *  * value = its value
     * 
-    * le tableau est un tableau associatif d�finit comme tel :
-    * 
-    * <code>
-    *  array(
-    *        'nom_du_field' => valeur,
-    *        'nom_du_field' => valeur,
-    *        'nom_du_field' => valeur,
-    *        'nom_du_field' => valeur
-    *     )
-    *  </code>
-    * 
-    * @return array un tableau associatif
+    * @return array an associative array
     * 
     */
 	public function getValues()
@@ -285,90 +302,43 @@ abstract class Entity
 	}
 	
     /**
-    * Permet en surchargeant cette m�thode depuis la classe h�ritant de Entity de faire 
-    *   du pre-traitement des donn�es avant sauvegarde en base.
+    * Can be overriden Let you modify some data just before saving the data into the datatable.
     * 
-    * @param array tableau contenant les valeurs � traiter
-    * @param array �ventuels param�tres suppl�mentaires d�stin� � la fonction
-    * @return mixed � d�finir selon le traitement 
+    * @param array all the values to procee
+    * @param array more parameters if you need, if you want
+    * 
+    * @return mixed to define
     */
 	public function processValueForSave($rows, $args = null){
 	
 		return $rows;
 	}
 	
-  	
 	/**
-	 * Fonction utilitaire permettant de passer une chaine du type "blabla %nom% blabla %prenom% blabla" et de r�cup�rer en sortie les correspondances avec les valeurs de l'entit� courante
-	 * exemple : "blabla Dupont blabla Jean blabla". Il faut �videment que les informations contenues entre %% soient le nom d'un FIELD de l'entit� valide.
+	 * Call the compareTo function into your Entity to sort the Entities.
+	 * To activate this fonctionnality, The Entity must implement ISortable Interface.
 	 *
-	 * @param string la chaine de caract�res � traiter
-	 * @param string le pattern de recherche. Par d�faut traitera ce qui se trouve entre deux symboles pourcentage : %
-	 */ 
-	/*function processStringWithValues($string, $pattern = '/%(\w+)%/i')
-	{
-		$occu = preg_match_all($pattern, $string, $resultat);
-		for($i = 0; $i < $occu; $i++)
-		{
-			$resultat[1][$i] = $this->get($resultat[1][$i]);
-		}
-		$string = str_replace($resultat[0], $resultat[1], $string, $occu);
-		return $string;
-	}*/
-	
-	/**
-	 * Fonction utilitaire permettant de nettoyer la chaine de caract�re en vue d'utilisation dans une url
-	 *
-	 * @param string la chaine a traiter
-	 *
-	 * @return string la chaine nettoyee
-	 **/
-	/*protected function processStringForUrl($texte)
-	{	
-		//Suppression des accents et autres conneries
-		$texte = htmlentities($texte, ENT_QUOTES, 'UTF-8');
-		
-		$texte = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $texte);
-		$texte = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $texte); // pour les ligatures e.g. '&oelig;'
-		$texte = preg_replace('#&[^;]+;#', '', $texte); // supprime les autres caract�res sp�ciaux
-		$texte = preg_replace('# #', '-', $texte); // espace ->  tiret 6
-		$texte = preg_replace('#[^a-zA-Z0-9_\-,]#', '', $texte); // supprime les caract�res qui ne suiveraient pas la r�gle de reroute   
-		return $texte;
-	}*/
-	
-	/**
-	 * Fait un appel � compareTo de l'entit� pour trier le tableau. 
-	 * Pour en b�n�ficier, l'entit� doit impl�menter l'interface ISortable
-	 *
-	 * Exemple de m�thode compareTo() � coder dans votre entit� de type client : 
+	 * Example of function compareTo() in a Customer Entity
 	 *  <code>
-	 *   * Effectue une comparaison sommaire (�galit� absolue) entre deux entit�s. 
-	 *	 * doit �tre red�finie dans chaque entit� avec laquelle nous souhaitons un vrai comparatif
-	 *	 * par habitude : renvoi 1 si la premi�re entit� est sup�rieure, -1 si inf�rieure, 0 si �galit�.
-	 *	 *
-	 *	 * @param Entity la premi�re entit� � comparer.
-	 *	 * @param Entity la seconde entit� � comparer.
-	 *	 *
+	 *       
 	 *	public static function compareTo(Entity $entity1, Entity $entity2)
 	 *	{
-	 *		$compare = strcmp($entity1->get('nom'), $entity2->get('nom'));
-	 *      return $compare;
+	 *		$compare = strcmp($entity1->get('name'), $entity2->get('name'));
+	 *      	return $compare;
 	 *	}
 	 * 
 	 *  </code>
 	 *
-	 * @param array<Entity> le tableau d'Entit�
+	 * @param array<Entity> the list of Entity to sort
 	 *
-	 * @return array<Entity> le tableau d'Entit� tri� selon la m�thode compareTo d�fini dans l'entit�.
+	 * @return array<Entity> the list of entity gracefully sorted
 	 */
-	public static function sort(Entity $entity, array $array)
+	public static function sort(array $array)
 	{
-		
 		//http://php.net/manual/fr/function.get-called-class.php
-		//PHP 5.3.0 seulement
+		//PHP 5.3.0 only
 		usort($array, array(get_called_class(), "compareTo"));
-		//usort($array, array(get_class($entity), "compareTo"));
-		
+	
 		return $array;
 	}
 	
