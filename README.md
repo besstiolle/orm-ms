@@ -84,4 +84,6 @@ $myArray[] = array('css_name'=>'Module: Quotes Made Simple'
           );
 Core::insertEntity($this, $css, $myArray);
 ```
-Questions ?
+Questions ? :]
+
+Less code (-75%) equals less bug and obviously is a easier way to manage your code.
