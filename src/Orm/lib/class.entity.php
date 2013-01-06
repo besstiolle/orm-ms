@@ -110,7 +110,7 @@ abstract class Entity
     * 
     * @param Field the object Field to add
 	* 
-	* @throw IllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
+	* @exception IllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
     */
 	protected function add(Field $newField)
 	{
@@ -131,7 +131,7 @@ abstract class Entity
     * Return the PrimaryKey Field
     * 
     * @return Field the PrimaryKey Field
-    * @IllegalArgumentException if there is no PrimaryKey Field
+    * @exception IllegalArgumentException if there is no PrimaryKey Field
     */
 	public function getPk()
 	{
@@ -158,7 +158,7 @@ abstract class Entity
     * @param string the name
     * @return Field the Field
     * 
-    * @IllegalArgumentException if no Field exist for the name
+    * @exception IllegalArgumentException if no Field exist for the name
     */
 	public function getFieldByName($name)
 	{
@@ -204,7 +204,7 @@ abstract class Entity
 	/**
 	 *  Return the name of the current module
 	 *  
-	 *  @Return string the name of the current module.
+	 *  @return string the name of the current module.
 	 **/
 	public function getModuleName()
 	{
@@ -231,7 +231,7 @@ abstract class Entity
     * @param string the name of the Field
     * @return mixed the value for the field
     * 
-    * @IllegalArgumentException if no Field exists for the name
+    * @exception IllegalArgumentException if no Field exists for the name
     */
 	public function get($fieldName)
 	{
@@ -256,7 +256,7 @@ abstract class Entity
     * @param string The name of the Field
     * @param mixed the new value of the Field
     * 
-    * @IllegalArgumentException if no Field exists for the name
+    * @exception IllegalArgumentException if no Field exists for the name
     */
 	public function set($fieldName,$value)
 	{

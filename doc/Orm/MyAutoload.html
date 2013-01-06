@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class MyAutoload</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class MyAutoload</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Static Class managing entities used in the application 	The main use is to not redeclarate X instances of same classes if it's not necessary.</p>
+<p class="description"><p>All modules have their own namespace to avoid sharing entities between two modules</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Bess</li>
+				<li><span class="field">since:</span> 0.0.1</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_class.myautoload.php.html">/class.myautoload.php</a> (line <span class="field">19</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#addInstance" title="details" class="method-name">addInstance</a>
+											(<span class="var-type">namespace</span>&nbsp;<span class="var-name">$namespace</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">$instance</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array<Entity></span>
+										<a href="#getAllInstances" title="details" class="method-name">getAllInstances</a>
+											(<span class="var-type">namespace</span>&nbsp;<span class="var-name">$namespace</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">1</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result"><a href="../Orm/Entity.html">Entity</a></span>
+										<a href="#getInstance" title="details" class="method-name">getInstance</a>
+											(<span class="var-type">namespace</span>&nbsp;<span class="var-name">$namespace</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$instanceName</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">Boolean</span>
+										<a href="#hasInstance" title="details" class="method-name">hasInstance</a>
+											(<span class="var-type">namespace</span>&nbsp;<span class="var-name">$namespace</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$instanceName</span>)
+									</div>
+								
+												<div class="method-definition">
+											<span class="method-result">MyAutoload</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+										()
+									</div>
+																																								</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodaddInstance" id="addInstance"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method addInstance</span> (line <span class="line-number">35</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Function called by the entities themself during their _construct() function  it will stock an instance of the entity (if not already existing) in his memory</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addInstance
+		</span>
+					(<span class="var-type">namespace</span>&nbsp;<span class="var-name">$namespace</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">$instance</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">namespace</span>
+				<span class="var-name">$namespace</span><span class="var-description">: namespace of the entity's module</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$instance</span><span class="var-description">: an instance of the entity</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetAllInstances" id="getAllInstances"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method getAllInstances</span> (line <span class="line-number">101</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return all the instances of all the entities from a single namespace</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> an array of all the entities</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array<Entity></span>
+		<span class="method-name">
+			getAllInstances
+		</span>
+					(<span class="var-type">namespace</span>&nbsp;<span class="var-name">$namespace</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">1</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">1</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">namespace</span>
+				<span class="var-name">$namespace</span><span class="var-description">: namespace of the entity's module</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetInstance" id="getInstance"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method getInstance</span> (line <span class="line-number">59</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return an instance of entity from the memory. Each instance is a clone to avoid using  the same object</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> an instance of entity</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result"><a href="../Orm/Entity.html">Entity</a></span>
+		<span class="method-name">
+			getInstance
+		</span>
+					(<span class="var-type">namespace</span>&nbsp;<span class="var-name">$namespace</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$instanceName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">namespace</span>
+				<span class="var-name">$namespace</span><span class="var-description">: namespace of the entity's module</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$instanceName</span><span class="var-description">: an instance of the entity</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodhasInstance" id="hasInstance"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method hasInstance</span> (line <span class="line-number">84</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return true if the instance exists in the memory for the same namespace</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> if the instance exists</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">Boolean</span>
+		<span class="method-name">
+			hasInstance
+		</span>
+					(<span class="var-type">namespace</span>&nbsp;<span class="var-name">$namespace</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$instanceName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">namespace</span>
+				<span class="var-name">$namespace</span><span class="var-description">: namespace of the entity's module</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$instanceName</span><span class="var-description">: an instance of the entity</span>			</li>
+				</ul>
+		
+			
+	</div>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">26</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Private constructor</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">MyAutoload</span>
+		<span class="method-name">
+			__construct
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sun, 06 Jan 2013 17:07:34 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

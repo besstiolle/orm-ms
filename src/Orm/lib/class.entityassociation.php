@@ -44,8 +44,8 @@ abstract class EntityAssociation extends Entity
     * 
     * @param Field the Field to add.
 	*
-	* @throw IllegalConfigurationException if we try to use more than two Field in the entity
-	* @throw IllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
+	* @exception IllegalConfigurationException if we try to use more than two Field in the entity
+	* @exception IllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
     */
 	protected function add(Field $newField)
 	{

@@ -1105,10 +1105,10 @@ class Core
 	 *
 	 * And now the code to find the potentials Tag for my Blog : 
 	 *
-	 * </code>
+	 * <code>
 	 *   $blog = MyAutoload.getInstance($this->GetName(), 'blog');
 	 *   $tags = Core::getEntitysAssociable($blog,'tags');
-	 * <code>
+	 * </code>
      * 
      * @param Entity an instance of the entity 
      * @param string the field's name of the Entity which will be used to start the research
@@ -1231,10 +1231,10 @@ class Core
 	 *
 	 * And now the code to find the Tag already linked with my Blog #45: 
 	 *
-	 * </code>
+	 * <code>
 	 *   $blog = MyAutoload.getInstance($this->GetName(), 'blog');
 	 *   $tags = Core::getEntitysAssocieesLiees($blog,'tags', 45);
-	 * <code>
+	 * </code>
      * 
      * @param Entity an instance of the entity 
      * @param string the field's name of the Entity which will be used to start the research

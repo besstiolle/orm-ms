@@ -48,7 +48,7 @@ final class Critere
     *
 	* @return Critere a Criteria
 	*
-	* @See TypeCritere
+	* @see TypeCritere
     */
 	public function __construct($fieldname, $typeCritere, $paramsCritere, $ignoreCase = false)
 	{

@@ -1,0 +1,1149 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Core</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Core</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Main part of the interface between Cmsmadesimple natives function and the necessity for the Orm functions</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Bess</li>
+				<li><span class="field">since:</span> 0.0.1</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_class.core.php.html">/class.core.php</a> (line <span class="field">18</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#alterTable" title="details" class="method-name">alterTable</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$sql</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">int</span>
+										<a href="#countAll" title="details" class="method-name">countAll</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#createTable" title="details" class="method-name">createTable</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">1</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#dbValueToField" title="details" class="method-name">dbValueToField</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$type</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#deleteByExemple" title="details" class="method-name">deleteByExemple</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>&nbsp;<span class="var-name">$Exemple</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#deleteByIds" title="details" class="method-name">deleteByIds</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$ids</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#dropTable" title="details" class="method-name">dropTable</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#FieldToDBValue" title="details" class="method-name">FieldToDBValue</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>, <span class="var-type"><a href="../Orm/CAST.html">CAST</a></span>&nbsp;<span class="var-name">$type</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array<Entity></span>
+										<a href="#getEntitysAssociable" title="details" class="method-name">getEntitysAssociable</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$fieldname</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array<Entity></span>
+										<a href="#getEntitysAssocieesLiees" title="details" class="method-name">getEntitysAssocieesLiees</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$fieldname</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$entityId</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">the</span>
+										<a href="#getFieldsToHql" title="details" class="method-name">getFieldsToHql</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entity</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array</span>
+										<a href="#insertEntity" title="details" class="method-name">insertEntity</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">&$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$rows</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#makeDeepSearch" title="details" class="method-name">makeDeepSearch</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">$previousEntity</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cle</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$values</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#rowToEntity" title="details" class="method-name">rowToEntity</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$row</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array<Entity></span>
+										<a href="#selectAll" title="details" class="method-name">selectAll</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#selectByExemple" title="details" class="method-name">selectByExemple</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>&nbsp;<span class="var-name">$exemple</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result"><a href="../Orm/Entity.html">Entity</a></span>
+										<a href="#selectById" title="details" class="method-name">selectById</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$id</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array<Entity></span>
+										<a href="#selectByIds" title="details" class="method-name">selectByIds</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$ids</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#updateEntity" title="details" class="method-name">updateEntity</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$rows</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">a</span>
+										<a href="#verifIntegrity" title="details" class="method-name">verifIntegrity</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entity</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$sid</span>)
+									</div>
+								
+												<div class="method-definition">
+											<span class="method-result">Core</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+										()
+									</div>
+																																																																																																																																																																								</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodalterTable" id="alterTable"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method alterTable</span> (line <span class="line-number">205</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Will modifie the table of the Entity in parameters with the SQL query in parameters</p>
+<p class="description"><p>example : if you need to do</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-id">ALTER&nbsp;TABLE&nbsp;</span>`&nbsp;table&nbsp;of&nbsp;the&nbsp;Customer&nbsp;entity&nbsp;`&nbsp;<span class="src-id">ADD&nbsp;</span>`newColumn`&nbsp;<span class="src-id">INT&nbsp;NOT&nbsp;NULL</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-id">ALTER&nbsp;TABLE&nbsp;</span>`&nbsp;table&nbsp;of&nbsp;the&nbsp;Customer&nbsp;entity&nbsp;`&nbsp;<span class="src-id">DROP&nbsp;</span>`oldColumn`</div></li>
+</ol></div></p><p>the code must be :</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodalterTable">alterTable</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-str">&quot;ADD&nbsp;`newColumn`&nbsp;INT&nbsp;NOT&nbsp;NULL&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodalterTable">alterTable</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-str">&quot;DROP&nbsp;`oldColumn`&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			alterTable
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$sql</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$sql</span><span class="var-description">: the SQL query</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcountAll" id="countAll"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method countAll</span> (line <span class="line-number">529</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the number of occurrences from the table of the entity in Parameters</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the number of occurrences from the table</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">int</span>
+		<span class="method-name">
+			countAll
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcreateTable" id="createTable"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method createTable</span> (line <span class="line-number">133</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create a table into Database from the structure of an Entity   Will also create the sequence if it's needed</p>
+<p class="description"><p>example with a Customer entity :  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">Customer&nbsp;</span><span class="src-key">extends&nbsp;</span><a href="../Orm/Entity.html">Entity</a></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">parent</span><span class="src-sym">::</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Field.html">Field</a></span><span class="src-sym">(</span><span class="src-str">'customer_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$PK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id">Field</span><span class="src-sym">(</span><span class="src-str">'name'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$STRING</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-num">32</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id">Field</span><span class="src-sym">(</span><span class="src-str">'lastname'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$STRING</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-num">32</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">true&nbsp;&nbsp;</span><span class="src-comm">//&nbsp;Is&nbsp;nullable</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p><p>The best way to create its table into the database :</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodcreateTable">createTable</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>The function will also try to populate the table with a call to the function initTable() if it's define into the entity class.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			createTable
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">1</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">1</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">Orm</span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: the module which extends the Orm module</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddbValueToField" id="dbValueToField"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method dbValueToField</span> (line <span class="line-number">1003</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Transform a SQL value into a PHP value</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> <a href="../Orm/CAST.html">CAST</a></li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			dbValueToField
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$type</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: the SQL value</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$type</span><span class="var-description">: the CAST value</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddeleteByExemple" id="deleteByExemple"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method deleteByExemple</span> (line <span class="line-number">847</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Allow delete a list of Entity from a list of Criteria</p>
+<p class="description"><p>Example : delete the customers with lastName 'Roger' (no casse sensitive)</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Exemple.html">Exemple</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple</span><span class="src-sym">-&gt;</span><span class="src-id">addCritere</span><span class="src-sym">(</span><span class="src-str">'lastName'</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/TypeCritere.html">TypeCritere</a></span><span class="src-sym">::</span><span class="src-var">$EQ</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'roger'</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-id">true</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methoddeleteByExemple">deleteByExemple</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$exemple</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>Example : delete the customers with Id &gt;= 90</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Exemple.html">Exemple</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple</span><span class="src-sym">-&gt;</span><span class="src-id">addCritere</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/TypeCritere.html">TypeCritere</a></span><span class="src-sym">::</span><span class="src-var">$GTE</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">90</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">Core</span><span class="src-sym">::</span><span class="src-id">deleteByExemple</span><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$exemple</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>NOTE : EQ =&gt; <strong>EQ</strong>uals, GTE =&gt; <strong>G</strong>reater <strong>T</strong>han or <strong>E</strong>quals</p><p>NOTE 2 : you can add as many Criterias as you want in an Example Object</p></p>
+	<ul class="tags">
+				<li><span class="field">see:</span> <a href="../Orm/Exemple.html">Exemple</a></li>
+				<li><span class="field">see:</span> <a href="../Orm/TypeCritere.html">TypeCritere</a></li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			deleteByExemple
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>&nbsp;<span class="var-name">$Exemple</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>
+				<span class="var-name">$Exemple</span><span class="var-description">: the Object Exemple with some Criterias inside</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddeleteByIds" id="deleteByIds"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method deleteByIds</span> (line <span class="line-number">469</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Delete information into database</p>
+<p class="description"><p>Example for a single deletion :</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methoddeleteByIds">deleteByIds</a><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">,&nbsp;</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">1</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>Example for multiple deletion :</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-num">1</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-num">2</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-num">3</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methoddeleteByIds">deleteByIds</a><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">,</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			deleteByIds
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$ids</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">Orm</span>
+				<span class="var-name">$module</span><span class="var-description">: the module which extends the Orm module</span>			</li>
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$ids</span><span class="var-description">: all the ids to delete ($customer_id in my example)</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddropTable" id="dropTable"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method dropTable</span> (line <span class="line-number">169</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Drop the table for the Entity in parameters   Will also drop the sequence if it's needed</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			dropTable
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodFieldToDBValue" id="FieldToDBValue"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method FieldToDBValue</span> (line <span class="line-number">975</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Transform a PHP value into a SQL value</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> <a href="../Orm/CAST.html">CAST</a></li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			FieldToDBValue
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>, <span class="var-type"><a href="../Orm/CAST.html">CAST</a></span>&nbsp;<span class="var-name">$type</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: the PHP value</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$type</span><span class="var-description">: the CAST value</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetEntitysAssociable" id="getEntitysAssociable"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method getEntitysAssociable</span> (line <span class="line-number">1118</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return the entities 'B' which could be associate to an Entity 'A' (but currently are not associate)</p>
+<p class="description"><p>Example : Which Tag can i associate to my Blog that are not already linked ?</p><p>For memory, an correct AssociateKey system in Orm is 3 Entities like that : <ol><li>blog can be linked to 0/n Tag</li></ol><ol><li>tag can ben linked to 0/n Blog</li></ol>  So we've got : Blog (Entity) &lt;-&gt; Blog2Tag (EntityAssociation) &lt;-&gt; Tag (Entity)</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">Blog&nbsp;</span><span class="src-key">extends&nbsp;</span><a href="../Orm/Entity.html">Entity</a></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">parent</span><span class="src-sym">::</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-str">'myModule'</span><span class="src-sym">,</span><span class="src-str">'blog'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Field.html">Field</a></span><span class="src-sym">(</span><span class="src-str">'blog_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$PK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id">Field</span><span class="src-sym">(</span><span class="src-str">'tags'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$AK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-str">'Blog2Tag.tag_id'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;--&nbsp;<span class="src-id">link&nbsp;to&nbsp;the&nbsp;associate&nbsp;<a href="../Orm/Entity.html">Entity</a>&nbsp;</span>:&nbsp;<span class="src-str">'Blog2Tag'&nbsp;&nbsp;</span><span class="src-id">with&nbsp;its&nbsp;property&nbsp;</span><span class="src-str">'tag_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">Tag&nbsp;</span><span class="src-key">extends&nbsp;</span><a href="../Orm/Entity.html">Entity</a></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">parent</span><span class="src-sym">::</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-str">'myModule'</span><span class="src-sym">,</span><span class="src-str">'tag'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Field.html">Field</a></span><span class="src-sym">(</span><span class="src-str">'tag_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$PK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id">Field</span><span class="src-sym">(</span><span class="src-str">'blogs'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$AK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-str">'Blog2Tag.blog_id'&nbsp;</span>&lt;--&nbsp;<span class="src-id">link&nbsp;to&nbsp;the&nbsp;associate&nbsp;<a href="../Orm/Entity.html">Entity</a>&nbsp;</span>:&nbsp;<span class="src-str">'Blog2Tag'&nbsp;&nbsp;</span><span class="src-id">with&nbsp;its&nbsp;property&nbsp;</span><span class="src-str">'blog_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">Blog2Tag&nbsp;</span><span class="src-key">extends&nbsp;</span><a href="../Orm/EntityAssociation.html">EntityAssociation</a></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">parent</span><span class="src-sym">::</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-str">'myModule'</span><span class="src-sym">,</span><span class="src-str">'blog2tag'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Field.html">Field</a></span><span class="src-sym">(</span><span class="src-str">'blog_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$FK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-str">'Blog.tags'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id">Field</span><span class="src-sym">(</span><span class="src-str">'tag_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$FK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-str">'Tag.articles'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p><p>And now the code to find the potentials Tag for my Blog :</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$blog&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'blog'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$tags&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodgetEntitysAssociable">getEntitysAssociable</a><span class="src-sym">(</span><span class="src-var">$blog</span><span class="src-sym">,</span><span class="src-str">'tags'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> a list of the Entities linked to the entity in the parameters by the fieldName in the Parameters</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array<Entity></span>
+		<span class="method-name">
+			getEntitysAssociable
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$fieldname</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$fieldname</span><span class="var-description">: the field's name of the Entity which will be used to start the research</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetEntitysAssocieesLiees" id="getEntitysAssocieesLiees"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method getEntitysAssocieesLiees</span> (line <span class="line-number">1245</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return the entities 'B' which are already associate to an Entity 'A'</p>
+<p class="description"><p>Example : Which Tag are already associate to my Blog ?</p><p>For memory, an correct AssociateKey system in Orm is 3 Entities like that : <ol><li>blog can be linked to 0/n Tag</li></ol><ol><li>tag can ben linked to 0/n Blog</li></ol>  So we've got : Blog (Entity) &lt;-&gt; Blog2Tag (EntityAssociation) &lt;-&gt; Tag (Entity)</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">Blog&nbsp;</span><span class="src-key">extends&nbsp;</span><a href="../Orm/Entity.html">Entity</a></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">parent</span><span class="src-sym">::</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-str">'myModule'</span><span class="src-sym">,</span><span class="src-str">'blog'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Field.html">Field</a></span><span class="src-sym">(</span><span class="src-str">'blog_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$PK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id">Field</span><span class="src-sym">(</span><span class="src-str">'tags'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$AK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-str">'Blog2Tag.tag_id'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;--&nbsp;<span class="src-id">link&nbsp;to&nbsp;the&nbsp;associate&nbsp;<a href="../Orm/Entity.html">Entity</a>&nbsp;</span>:&nbsp;<span class="src-str">'Blog2Tag'&nbsp;&nbsp;</span><span class="src-id">with&nbsp;its&nbsp;property&nbsp;</span><span class="src-str">'tag_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">Tag&nbsp;</span><span class="src-key">extends&nbsp;</span><a href="../Orm/Entity.html">Entity</a></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">parent</span><span class="src-sym">::</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-str">'myModule'</span><span class="src-sym">,</span><span class="src-str">'tag'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Field.html">Field</a></span><span class="src-sym">(</span><span class="src-str">'tag_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$PK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id">Field</span><span class="src-sym">(</span><span class="src-str">'blogs'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$AK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-str">'Blog2Tag.blog_id'&nbsp;</span>&lt;--&nbsp;<span class="src-id">link&nbsp;to&nbsp;the&nbsp;associate&nbsp;<a href="../Orm/Entity.html">Entity</a>&nbsp;</span>:&nbsp;<span class="src-str">'Blog2Tag'&nbsp;&nbsp;</span><span class="src-id">with&nbsp;its&nbsp;property&nbsp;</span><span class="src-str">'blog_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">Blog2Tag&nbsp;</span><span class="src-key">extends&nbsp;</span><a href="../Orm/EntityAssociation.html">EntityAssociation</a></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">parent</span><span class="src-sym">::</span><span class="src-id">__construct</span><span class="src-sym">(</span><span class="src-str">'myModule'</span><span class="src-sym">,</span><span class="src-str">'blog2tag'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Field.html">Field</a></span><span class="src-sym">(</span><span class="src-str">'blog_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$FK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-str">'Blog.tags'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-key">new&nbsp;</span><span class="src-id">Field</span><span class="src-sym">(</span><span class="src-str">'tag_id'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/CAST.html">CAST</a></span><span class="src-sym">::</span><span class="src-var">$INTEGER</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id">null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/KEY.html">KEY</a></span><span class="src-sym">::</span><span class="src-var">$FK</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">,&nbsp;</span><span class="src-str">'Tag.articles'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p><p>And now the code to find the Tag already linked with my Blog #45:</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$blog&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'blog'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$tags&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodgetEntitysAssocieesLiees">getEntitysAssocieesLiees</a><span class="src-sym">(</span><span class="src-var">$blog</span><span class="src-sym">,</span><span class="src-str">'tags'</span><span class="src-sym">,&nbsp;</span><span class="src-num">45</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> a list of the Entities linked to the entity in the parameters by the fieldName in the Parameters</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array<Entity></span>
+		<span class="method-name">
+			getEntitysAssocieesLiees
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$fieldname</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$entityId</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$fieldname</span><span class="var-description">: the field's name of the Entity which will be used to start the research</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$entityId</span><span class="var-description">: entityId the id of the Blog to start the research</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetFieldsToHql" id="getFieldsToHql"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method getFieldsToHql</span> (line <span class="line-number">32</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">transforms the entity's structure into adodb informations</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> adodb informations</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">the</span>
+		<span class="method-name">
+			getFieldsToHql
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entity</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entity</span><span class="var-description">: the entity</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodinsertEntity" id="insertEntity"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method insertEntity</span> (line <span class="line-number">239</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Insert data into database. The third parameter must follow this scheme</p>
+<p class="description"><p>Example for 3 new Customers : customer_id, name, lastName (optionnal)</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'lastName'</span>=&gt;<span class="src-str">''</span><span class="src-sym">,&nbsp;</span><span class="src-str">'name'</span>=&gt;<span class="src-str">'Smith'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'name'</span>=&gt;<span class="src-str">'Durant'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'lastName'</span>=&gt;<span class="src-str">'John'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'name'</span>=&gt;<span class="src-str">'Doe'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodinsertEntity">insertEntity</a><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">,&nbsp;</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>Important : you must not set the primaryKey value. It will be calculate by the system it-self</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the list of the new Ids (customer_id in my example)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array</span>
+		<span class="method-name">
+			insertEntity
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">&$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$rows</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">Orm</span>
+				<span class="var-name">&$module</span><span class="var-description">: the module which extends the Orm module</span>			</li>
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$rows</span><span class="var-description">: the array with all the values in differents associative array</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodmakeDeepSearch" id="makeDeepSearch"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method makeDeepSearch</span> (line <span class="line-number">1381</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Allow realise deep search on different type of Entity linked together</p>
+<p class="description"><p>Example :    An Order has a link to a Customer (Order.customer_id)    A Customer has a link to an Adress (Customer.adresse_id)    An Adress has a link to a city (Adress.city_id)    A city has a ZipCode (maybe shared by differents cities)</p><p>If i want the Orders for Customers from the city with zipcode equals to &quot;01234&quot; or &quot;4567&quot; I could write some shitty code !</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;<span class="src-var">$cities&nbsp;</span>=&nbsp;<span class="src-comm">//Find&nbsp;my&nbsp;cities&nbsp;with&nbsp;ZipCode&nbsp;&quot;01234&quot;&nbsp;or&nbsp;&quot;4567&quot;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-key">foreach</span><span class="src-sym">(</span><span class="src-var">$cities&nbsp;</span><span class="src-key">as&nbsp;</span><span class="src-var">$city</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$adresses&nbsp;</span>=&nbsp;<span class="src-comm">//Find&nbsp;the&nbsp;adress&nbsp;for&nbsp;the&nbsp;city&nbsp;$city</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">foreach</span><span class="src-sym">(</span><span class="src-var">$adresses&nbsp;</span><span class="src-key">as&nbsp;</span><span class="src-var">$adress</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customers&nbsp;</span>=&nbsp;<span class="src-comm">//Find&nbsp;the&nbsp;Customers&nbsp;for&nbsp;the&nbsp;adress&nbsp;$adress</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">foreach</span><span class="src-sym">(</span><span class="src-var">$customers&nbsp;</span><span class="src-key">as&nbsp;</span><span class="src-var">$customer</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$commandes&nbsp;</span>=&nbsp;&nbsp;<span class="src-comm">//Find&nbsp;Traitement&nbsp;de&nbsp;recherche&nbsp;d'une&nbsp;commande&nbsp;possèdant&nbsp;le&nbsp;numeroclient&nbsp;=&nbsp;$customer-&gt;get('numeroclient')</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p><p>I could also write a better code :</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$order&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'order'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$orders&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodmakeDeepSearch">makeDeepSearch</a><span class="src-sym">(</span><span class="src-id">order</span><span class="src-sym">,&nbsp;</span><span class="src-str">'Order.customer_id.adress_id.city_id.zipcode'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'01234'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'4567'</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			makeDeepSearch
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">$previousEntity</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cle</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$values</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">$previousEntity</span><span class="var-description">: The entity i want to have at the end</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$cle</span><span class="var-description">: the path to fallow. Must be ended with the name of the Field to make the comparaison</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$values</span><span class="var-description">: the array of value to make the comparaison</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodrowToEntity" id="rowToEntity"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method rowToEntity</span> (line <span class="line-number">950</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Transforms an array of value into a entire Entity. The array must fallow this scheme</p>
+<p class="description"><p>Example :</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray1&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span>=&gt;<span class="src-num">1</span><span class="src-sym">,&nbsp;</span><span class="src-str">'name'</span>=&gt;<span class="src-str">'Dupont'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray2&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span>=&gt;<span class="src-num">2</span><span class="src-sym">,&nbsp;</span><span class="src-str">'name'</span>=&gt;<span class="src-str">'Durand'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'lastName'</span>=&gt;<span class="src-str">'Joe'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer1&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodrowToEntity">rowToEntity</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray1</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer2&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodrowToEntity">rowToEntity</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray2</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-var">$customer1</span><span class="src-sym">-&gt;</span><span class="src-id">get</span><span class="src-sym">(</span><span class="src-str">'lastName'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//return&nbsp;null</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-var">$customer2</span><span class="src-sym">-&gt;</span><span class="src-id">get</span><span class="src-sym">(</span><span class="src-str">'lastName'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//return&nbsp;Joe</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			rowToEntity
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$row</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$row</span><span class="var-description">: the list with the data</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodselectAll" id="selectAll"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method selectAll</span> (line <span class="line-number">551</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns all the occurrences from the table of the entity in Parameters</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> list of Entities found</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array<Entity></span>
+		<span class="method-name">
+			selectAll
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodselectByExemple" id="selectByExemple"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method selectByExemple</span> (line <span class="line-number">698</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Allow search a list of Entity from a list of Criteria</p>
+<p class="description"><p>Example : find the customers with lastName 'Roger' (no casse sensitive)</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Exemple.html">Exemple</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple</span><span class="src-sym">-&gt;</span><span class="src-id">addCritere</span><span class="src-sym">(</span><span class="src-str">'lastName'</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/TypeCritere.html">TypeCritere</a></span><span class="src-sym">::</span><span class="src-var">$EQ</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'roger'</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-id">true</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodselectByExemple">selectByExemple</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$exemple</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>Example : find the customers with Id &gt;= 90</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Exemple.html">Exemple</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple</span><span class="src-sym">-&gt;</span><span class="src-id">addCritere</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/TypeCritere.html">TypeCritere</a></span><span class="src-sym">::</span><span class="src-var">$GTE</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">90</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">Core</span><span class="src-sym">::</span><span class="src-id">selectByExemple</span><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$exemple</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p><p>NOTE : EQ =&gt; <strong>EQ</strong>uals, GTE =&gt; <strong>G</strong>reater <strong>T</strong>han or <strong>E</strong>quals</p><p>NOTE 2 : you can add as many Criterias as you want in an Example Object</p></p>
+	<ul class="tags">
+				<li><span class="field">see:</span> <a href="../Orm/Exemple.html">Exemple</a></li>
+				<li><span class="field">see:</span> <a href="../Orm/TypeCritere.html">TypeCritere</a></li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			selectByExemple
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>&nbsp;<span class="var-name">$exemple</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>
+				<span class="var-name">$exemple</span><span class="var-description">: the Object Exemple with some Criterias inside</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodselectById" id="selectById"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method selectById</span> (line <span class="line-number">587</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return a Entity from its Id</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the Entity found or NULL</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result"><a href="../Orm/Entity.html">Entity</a></span>
+		<span class="method-name">
+			selectById
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$id</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$id</span><span class="var-description">: the Id to find</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodselectByIds" id="selectByIds"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method selectByIds</span> (line <span class="line-number">605</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return Entities from their Ids</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> list of Entities found</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array<Entity></span>
+		<span class="method-name">
+			selectByIds
+		</span>
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$ids</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$ids</span><span class="var-description">: list of the Ids to find</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodupdateEntity" id="updateEntity"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method updateEntity</span> (line <span class="line-number">354</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Update data into database. The third parameter must follow this scheme</p>
+<p class="description"><p>Example for 3 new Customers : customer_id, name, lastName (optionnal)</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span>=&gt;<span class="src-num">1</span><span class="src-sym">,&nbsp;</span><span class="src-str">'lastName'</span>=&gt;<span class="src-id">null</span><span class="src-sym">,&nbsp;</span><span class="src-str">'name'</span>=&gt;<span class="src-str">'Dupont'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;--&nbsp;<span class="src-id">update&nbsp;Name&nbsp;value</span><span class="src-sym">,&nbsp;</span><span class="src-id">erase&nbsp;lastName&nbsp;value&nbsp;in&nbsp;database</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span>=&gt;<span class="src-num">2</span><span class="src-sym">,&nbsp;</span><span class="src-str">'name'</span>=&gt;<span class="src-str">'Durant'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;--&nbsp;<span class="src-id">update&nbsp;Name&nbsp;value</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span>=&gt;<span class="src-num">3</span><span class="src-sym">,&nbsp;</span><span class="src-str">'lastName'</span>=&gt;<span class="src-str">'John'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'name'</span>=&gt;<span class="src-str">'Doe'</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;--&nbsp;<span class="src-id">update&nbsp;Name&nbsp;value&nbsp;</span><span class="src-key">and&nbsp;</span><span class="src-id">lastName&nbsp;value</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodupdateEntity">updateEntity</a><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">,&nbsp;</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			updateEntity
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$rows</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">Orm</span>
+				<span class="var-name">$module</span><span class="var-description">: the module which extends the Orm module</span>			</li>
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$rows</span><span class="var-description">: the array with all the values in differents associative array</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodverifIntegrity" id="verifIntegrity"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method verifIntegrity</span> (line <span class="line-number">1303</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Verify in all type of entities if anyone still has a link with the Entity passed in parameters (ForeignKEy and AssociateKey)</p>
+<p class="description"><p>This function is used by the delete* functions to avoid orphelins data in database</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> message if a link is still present. nothing if the integrity is ok</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">a</span>
+		<span class="method-name">
+			verifIntegrity
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entity</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$sid</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">Orm</span>
+				<span class="var-name">$module</span><span class="var-description">: the module which extends the Orm module</span>			</li>
+					<li>
+				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
+				<span class="var-name">&$entity</span><span class="var-description">: an instance of the entity</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$sid</span><span class="var-description">: the id of the Entity to verify</span>			</li>
+				</ul>
+		
+			
+	</div>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">24</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Protected constructor</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Core</span>
+		<span class="method-name">
+			__construct
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sun, 06 Jan 2013 17:07:32 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

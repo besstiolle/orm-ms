@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Exemple</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Exemple</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Represents a group of differents Criteria (Criteres) to process a search &quot;By Example&quot; on a Entity in Database</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Bess</li>
+				<li><span class="field">since:</span> 0.0.1</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_class.exemple.php.html">/class.exemple.php</a> (line <span class="field">18</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																												
+												<div class="method-definition">
+											<span class="method-result">Exemple</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#addCritere" title="details" class="method-name">addCritere</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$fieldname</span>, <span class="var-type"><a href="../Orm/TypeCritere.html">TypeCritere</a></span>&nbsp;<span class="var-name">$typeCritere</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$paramsCritere</span>, [<span class="var-type">boolean</span>&nbsp;<span class="var-name">$ignoreCase</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">array<Critere></span>
+										<a href="#getCriteres" title="details" class="method-name">getCriteres</a>
+										()
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">26</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Public Constructor</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Exemple</span>
+		<span class="method-name">
+			__construct
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodaddCritere" id="addCritere"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">addCritere</span> (line <span class="line-number">41</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Add a new Criteria on the existing list</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> <a href="../Orm/TypeCritere.html">TypeCritere</a></li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addCritere
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$fieldname</span>, <span class="var-type"><a href="../Orm/TypeCritere.html">TypeCritere</a></span>&nbsp;<span class="var-name">$typeCritere</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$paramsCritere</span>, [<span class="var-type">boolean</span>&nbsp;<span class="var-name">$ignoreCase</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$fieldname</span><span class="var-description">: Name of the field</span>			</li>
+					<li>
+				<span class="var-type"><a href="../Orm/TypeCritere.html">TypeCritere</a></span>
+				<span class="var-name">$typeCritere</span><span class="var-description">: Type of Criteria</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$paramsCritere</span><span class="var-description">: all the parameters used for the parameter $typeCritere</span>			</li>
+					<li>
+				<span class="var-type">boolean</span>
+				<span class="var-name">$ignoreCase</span><span class="var-description">: [Optionnal] if we must ignore the case (aze equals AZE) or not. Default value is &quot;false&quot;</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetCriteres" id="getCriteres"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getCriteres</span> (line <span class="line-number">56</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return all the Criterias contained in the current Example Object</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the list of Criterias contained in the current Example Object</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array<Critere></span>
+		<span class="method-name">
+			getCriteres
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sun, 06 Jan 2013 17:07:34 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>
