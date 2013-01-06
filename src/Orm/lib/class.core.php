@@ -1022,484 +1022,466 @@ class Core
 	}
     
     /**
-    * Retourne les entités B pouvant être associé à une Entité A
-    * 
-    * Dans le cas de clé étrangère présente dans une entité, par exemple un article de blog et tous ses tags associés,
-    *    il est intéressant de pouvoir récupérer l'intégralité des tags lié et/ou pouvant être lié à notre article de blog sélectionné
-    * 
-    * La fonction va parcourir L'entité Article , prendre le champs passé en AssociateKey et aller faire une requête de selection sur l'entité Tag
-    * 
-    * pour rappel une clé associée est configurée ainsi dans Orm :
-    * 
-       * <code>
-    *    class Article extends mEntity
-    *    {
-    * *       public function __construct()
-    *        {
-    *            parent::__construct('article','monprojet');
-    *            
-    *             $this->add(new Field('article_id' 
-    *                           , CAST::$INTEGER
-    *                           , null
-    *                           , null 
-    *                           , mKEY::$PK    
-    *                           , null              
-    *                           ,  new mHTML_FIELD_IDENTIFIANT()       
-    *                           , NULLABLE::$FALSE)
-    *             [...]
-    *             $this->add(new Field('tags' 
-    *                           , CAST::$INTEGER
-    *                           , null
-    *                           , null
-    *                           , mKEY::$AK    
-    *                           , 'ArticleBillet.article_id' <-- lien vers l entité Associée ArticleBillet
-    *                           , new mHTML_FIELD_ASSOCIATE()  
-    *             [...]
-    *        }
-    *        
-    *
-    *    }
-    * 
-    *    class Tag extends mEntity
-    *    {
-    *       public function __construct()
-    *        {
-    *            parent::__construct('tag','monprojet');
-    *            
-    *             $this->add(new Field('tag_id' 
-    *                           , CAST::$INTEGER
-    *                           , null
-    *                           , null 
-    *                           , mKEY::$PK    
-    *                           , null              
-    *                           ,  new mHTML_FIELD_IDENTIFIANT()       
-    *                           , NULLABLE::$FALSE)
-    *             [...]
-    *             $this->add(new Field('articles' 
-    *                           , CAST::$INTEGER
-    *                           , null
-    *                           , null
-    *                           , mKEY::$AK    
-    *                           , 'ArticleBillet.billet_id' <-- lien vers l entité Associée ArticleBillet
-    *                           , new mHTML_FIELD_ASSOCIATE()    
-    *             [...]
-    *        }
-    *        
-    *
-    *    }
-    * 
-    *   class ArticleBillet extends mEntityAssociation
-    *   {
-    *        public function __construct()
-    *        {
-    *            parent::__construct('articlebillet','monprojet');
-    *            
-    *            $this->add(new Field('article_id'
-    *                                   , CAST::$INTEGER
-    *                                   ,null
-    *                                   , null
-    *                                   , mKEY::$FK
-    *                                   , 'Article.tags'    
-    *                                   , new mHTML_FIELD_NONE()    
-    *                                   , NULLABLE::$FALSE));
-    *            $this->add(new Field('tag_id'        
-    *                                   , CAST::$INTEGER
-    *                                   , null
-    *                                   , null
-    *                                   , mKEY::$FK
-    *                                   , 'Tag.articles'  
-    *                                   , new mHTML_FIELD_NONE()    
-    *                                   , NULLABLE::$FALSE));
-    *
-    *        }    
-    *    }
-    * </code>
-    * 
-    * @param Entity an instance of the entity 
-    * @param string le nom du champs de l'entité qui servira de point de départ pour la recherche
-    * @return array<Entity> la liste des entités associées et pouvant être associée à ce champs.
-    */
-  public static final function getEntitysAssociable(Entity &$entityParam,$fieldname)
-  {
-    $field = $entityParam->getFieldByName($fieldname);
-    if($field->getKEYName() == '')
-        throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
-        
-    $cle = explode('.',$field->getKEYName(),2);
-    
-    eval('$entity = new '.$cle[0].'();');
-                                       
-    
-    $listField = $entity->getFields();
-    foreach($listField as $field)
-    {
-      if($field->getKEYName() == '')
-        throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
-            
-      $cle = explode('.',$field->getKEYName(),2);
-      
-      if(strtolower($cle[0]) == $entityParam->getName())
-        continue;
-          
-      
-      //Evaluation de la eclass en cours
-      eval('$entity = new '.$cle[0].'();');
-      
-      $liste = Core::selectAll($entity);
-      
-      return $liste;
-    }    
-        
-  }
+     * Return the entities 'B' which could be associate to an Entity 'A' (but currently are not associate)
+     * 
+     * Example : Which Tag can i associate to my Blog that are not already linked ?
+     * 
+     * For memory, an correct AssociateKey system in Orm is 3 Entities like that : 
+ 	 *  1 blog can be linked to 0/n Tag
+ 	 *  1 tag can ben linked to 0/n Blog 
+	 *  So we've got : Blog (Entity) <-> Blog2Tag (EntityAssociation) <-> Tag (Entity) 
+     * 
+     * <code>
+     *    class Blog extends Entity
+     *    {
+     *        public function __construct()
+     *        {
+     *            parent::__construct('myModule','blog');
+     *            
+     *             $this->add(new Field('blog_id' 
+     *                       , CAST::$INTEGER
+     *                       , null
+     *                       , null 
+     * 						, KEY::$PK
+	 *						));
+     *             $this->add(new Field('tags' 
+     *                       , CAST::$INTEGER
+     *                       , null
+     *                       , null
+     *                       , KEY::$AK    
+     *                       , 'Blog2Tag.tag_id' 	<-- link to the associate Entity : 'Blog2Tag'  with its property 'tag_id'
+	 *						));
+     *        }
+     *    }
+     * 
+     *    class Tag extends Entity
+     *    {
+     *       public function __construct()
+     *        {
+     *            parent::__construct('myModule','tag');
+     *            
+     *             $this->add(new Field('tag_id' 
+     *                       , CAST::$INTEGER
+     *                       , null
+     *                       , null 
+     * 						, KEY::$PK
+	 *						));
+     *             $this->add(new Field('blogs' 
+     *                        , CAST::$INTEGER
+     *                        , null
+     *                        , null
+     *                        , KEY::$AK    
+     *                        , 'Blog2Tag.blog_id' <-- link to the associate Entity : 'Blog2Tag'  with its property 'blog_id'
+	 *						));
+     *        }
+     *        
+     *
+     *    }
+     * 
+     *   class Blog2Tag extends EntityAssociation
+     *   {
+     *        public function __construct()
+     *        {
+     *            parent::__construct('myModule','blog2tag');
+     *            
+     *            $this->add(new Field('blog_id'
+     *                       , CAST::$INTEGER
+     *                       , null
+     *                       , null
+     *                       , KEY::$FK
+     *                       , 'Blog.tags'
+	 *						));
+     *            $this->add(new Field('tag_id'        
+     *                        , CAST::$INTEGER
+     *                        , null
+     *                        , null
+     *                        , KEY::$FK
+     *                        , 'Tag.articles' 
+	 *						));
+     *
+     *        }    
+     *    }
+     * </code>
+	 *
+	 * And now the code to find the potentials Tag for my Blog : 
+	 *
+	 * </code>
+	 *   $blog = MyAutoload.getInstance($this->GetName(), 'blog');
+	 *   $tags = Core::getEntitysAssociable($blog,'tags');
+	 * <code>
+     * 
+     * @param Entity an instance of the entity 
+     * @param string the field's name of the Entity which will be used to start the research
+	 *
+     * @return array<Entity> a list of the Entities linked to the entity in the parameters by the fieldName in the Parameters
+     */
+	public static final function getEntitysAssociable(Entity &$entityParam,$fieldname)
+	{
+		$field = $entityParam->getFieldByName($fieldname);
+		if($field->getKEYName() == '')
+			throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
+			
+		$cle = explode('.',$field->getKEYName(),2);
 
-  /**
-    * Retourne les entités B qui sont déjà associés à une Entité A
-    * 
-    * Dans le cas de clé étrangère présente dans une entité, par exemple un article de blog et tous ses tags associés,
-    *    il est intéressant de pouvoir récupérer l'intégralité des tags liés à notre article de blog sélectionné
-    * 
-    * La fonction va parcourir L'entité Article , prendre le champs passé en AssociateKey et aller faire une requête de selection sur l'entité Tag
-    *     en prenant en compte l'identifiant de l'article en cours
-    * 
-    * pour rappel une clé associée est configurée ainsi dans Orm :
-    * 
-    * <code>
-    *    class Article extends mEntity
-    *    {
-    * *       public function __construct()
-    *        {
-    *            parent::__construct('article','monprojet');
-    *            
-    *             $this->add(new Field('article_id' 
-    *                           , CAST::$INTEGER
-    *                           , null
-    *                           , null 
-    *                           , mKEY::$PK    
-    *                           , null              
-    *                           ,  new mHTML_FIELD_IDENTIFIANT()       
-    *                           , NULLABLE::$FALSE)
-    *             [...]
-    *             $this->add(new Field('tags' 
-    *                           , CAST::$INTEGER
-    *                           , null
-    *                           , null
-    *                           , mKEY::$AK    
-    *                           , 'ArticleBillet.article_id' <-- lien vers l entité Associée ArticleBillet
-    *                           , new mHTML_FIELD_ASSOCIATE()  
-    *             [...]
-    *        }
-    *        
-    *
-    *    }
-    * 
-    *    class Tag extends mEntity
-    *    {
-    *       public function __construct()
-    *        {
-    *            parent::__construct('tag','monprojet');
-    *            
-    *             $this->add(new Field('tag_id' 
-    *                           , CAST::$INTEGER
-    *                           , null
-    *                           , null 
-    *                           , mKEY::$PK    
-    *                           , null              
-    *                           ,  new mHTML_FIELD_IDENTIFIANT()       
-    *                           , NULLABLE::$FALSE)
-    *             [...]
-    *             $this->add(new Field('articles' 
-    *                           , CAST::$INTEGER
-    *                           , null
-    *                           , null
-    *                           , mKEY::$AK    
-    *                           , 'ArticleBillet.billet_id' <-- lien vers l entité Associée ArticleBillet
-    *                           , new mHTML_FIELD_ASSOCIATE()    
-    *             [...]
-    *        }
-    *        
-    *
-    *    }
-    * 
-    *   class ArticleBillet extends mEntityAssociation
-    *   {
-    *        public function __construct()
-    *        {
-    *            parent::__construct('articlebillet','monprojet');
-    *            
-    *            $this->add(new Field('article_id'
-    *                                   , CAST::$INTEGER
-    *                                   ,null
-    *                                   , null
-    *                                   , mKEY::$FK
-    *                                   , 'Article.tags'    
-    *                                   , new mHTML_FIELD_NONE()    
-    *                                   , NULLABLE::$FALSE));
-    *            $this->add(new Field('tag_id'        
-    *                                   , CAST::$INTEGER
-    *                                   , null
-    *                                   , null
-    *                                   , mKEY::$FK
-    *                                   , 'Tag.articles'  
-    *                                   , new mHTML_FIELD_NONE()    
-    *                                   , NULLABLE::$FALSE));
-    *
-    *        }    
-    *    }
-    * </code>
-    * 
-    * @param Entity an instance of the entity 
-    * @param string le nom du champs de l'entité qui servira de point de départ pour la recherche
-    * @param mixed l'identifiant de l'entité en cours
-    * @return array<Entity> la liste des entités effectivement associées à ce champs.
-    */
-  public static final function getEntitysAssocieesLiees(Entity &$entityParam, $fieldname, $entityId)
-  {
-    Trace::debug("getEntitysAssocieesLiees : ".$entityParam->getName()." ".$fieldname." ".$entityId);
-    
-    $field = $entityParam->getFieldByName($fieldname);
-    
-    if($field->getKEYName() == '')
-        throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
-      
-    $cle = explode('.',$field->getKEYName(),2);
-    
-    eval('$entity = new '.$cle[0].'();');
-                                                              
-    $exemple = new Exemple();    
-    $exemple->addCritere($cle[1],TypeCritere::$EQ,array($entityId));
-    $assocs = Core::selectByExemple($entity, $exemple);
-    
-    $listField = $entity->getFields();
-    foreach($listField as $field)
-    {
-      if($field->getKEYName() == null || $field->getKEYName() == '')
-        throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
-      
-      $cle = explode('.',$field->getKEYName(),2);
-      
-      if(strtolower($cle[0]) == $entityParam->getName())
-        continue;                              
-                
-      $ids = array();
-      foreach($assocs as $assoc)
-      {
-        $ids[] = $assoc->get($field->getName());
-      }                                                        
-      
-      $cle = explode('.',$field->getKEYName(),2);
-            
-      //Evaluation de la eclass en cours
-      eval('$entity = new '.$cle[0].'();');
-      
-      $liste = Core::selectByIds($entity, $ids);
-      
-      Trace::debug("getEntitysAssocieesLiees : "."resultat : ".count($liste));
-      
-      return $liste;
-    }    
-  }
-  
-    /**
-    * Vérifie dans toutes les entity existantes, qu'aucune ne possède encore une liaison vers 
-    *   l'entité passée en paramètre avec l'Id passé en paramètre
-    * 
-    *  Cette fonction est utilisée avant une suppression où l'on souhaites s'assurer qu'aucune 
-    *     autre entité n'est encore liée'
-    * 
-    * @param Orm le module en cours
-    * @param Entity l'entité servant de modèle
-    * @param mixed l'identifiant de la ligne à vérifier.
-    */
-  public static final function verifIntegrity(Orm $module, Entity &$entity, $sid)
-  {
-    $listeEntitys = MyAutoload::getAllInstances($module->getName());
-  
-    foreach($listeEntitys as $key=>$anEntity)
-    {
-      if($anEntity instanceOf EntityAssociation)
-        continue;
-        
-      foreach($anEntity->getFields() as $field)
-      {
-        if($field->isAssociateKEY())
-        {
-          continue;
-        }
-        
-        if($field->getKEYName() != null)
-        {
-          $vals = explode('.',$field->getKEYName(),2);
-          
-          if(strtolower ($vals[0]) == strtolower ($entity->getName()))
-          {
-            $Exemple = new Exemple();
-            $Exemple->addCritere($field->getName(), TypeCritere::$EQ, array($sid));
-            $entitys = Core::selectByExemple($anEntity, $Exemple);
-            if(count($entitys) > 0)
-            {
-              return "La ligne &agrave; supprimer est encore utilis&eacute;e par &laquo; ".$anEntity->getName()." &raquo;";
-            }
-          }
-        }
-      }
-    }
-    
-    return;
-  
-  }
+		eval('$entity = new '.$cle[0].'();');
+										   
+
+		$listField = $entity->getFields();
+		foreach($listField as $field)
+		{
+		  if($field->getKEYName() == '')
+			throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
+				
+		  $cle = explode('.',$field->getKEYName(),2);
+		  
+		  if(strtolower($cle[0]) == $entityParam->getName())
+			continue;
+			  
+		  
+		  //Evaluation de la eclass en cours
+		  eval('$entity = new '.$cle[0].'();');
+		  
+		  $liste = Core::selectAll($entity);
+		  
+		  return $liste;
+		} 
+	}
 
     /**
-    * Permet de réaliser des recherches en profondeur sur une succession de lien inter-entité. 
-    * 
-    *   Dans le cas ou une entité est linée à une seconde entité, qui a sont tour est liée à une 3eme, 
-    *   il est possible de déterminer un chemin entre elles.
-    * 
-    * Exemple : 
-    *   Une commande possède un lien vers un client via le numero de client
-    *   Un client possède un lien vers une adresse via son id Adresse (ça permet de gérer des adresses multiples)
-    *   Une adresse possède un lien vers une ville via son code postal
-    * 
-    *  Si je souhaites connaitre l'intégralité des commandes passée pour la ville de Lille, je pourrais faire :
-    * 
-    * <code>
-    *  $villes = //Traitement de recherche d'une ville dont le libellé = Lille
-    *  foreach($villes as $ville)
-    *  {
-    *       $adresses = //Traitement de recherche d'une adresse dont le code postal = $ville->get('codepostal')
-    *       foreach($adresses as $adresse)
-    *       {
-    *           $customers = //Traitement de recherche d'un client possèdant l'ID adresse = $adresse->get('adresse_id')
-    *           foreach($customers as $customer)
-    *           {
-    *               $commandes =  //Traitement de recherche d'une commande possèdant le numeroclient = $customer->get('numeroclient')   
-    *           }                   
-    *       }                  
-    *  }
-    * 
-    *  </code>
-    * 
-    *  Cette fonction permet de simplifier énormement la chose puisqu'il suffit de faire : 
-    * 
-    * <code>
-    *  $commandes = Core::makeDeepSearch(new Commande(), 'Commande.numeroclient.adresse_id.codepostal.libelle', array('Lille'));
-    * </code>
-    * 
-    *  
-    * 
-    * @param Entity L'entité servant de point de départ à la recherche
-    * @param string le chemin à parcourir, d'entité en entité séparé par un point.
-    * @param array la liste des valeurs recherchées
-    * 
-    */
-  public static final function makeDeepSearch(Entity $previousEntity, $cle, $values)
-  {    
-    TRACE::info("# : "."Start makeDeepSearch() ".$previousEntity->getName()."->".$cle);
-    
-    if($previousEntity == null)
-    {
-      
-      $newCle = explode('.',$cle,2);
-      $previousEntity = $newCle[0];
-      $cle = $newCle[1];
-      eval('$previousEntity = new '.$previousEntity.'();');
-    }
-    
-    $newCle = explode('.',$cle,2);
-    $fieldname = $newCle[0];
-    
-    //Test de sortie : on a un seul résultat dans $newCle : le champs final
-    if(count($newCle) == 1)
-    {
-      TRACE::info("# : "." count(\$newCle) == 1 , donc sortie ");
-      $Exemple = new Exemple;
-      $Exemple->addCritere($fieldname, TypeCritere::$IN, $values);
-      $entitys = Core::selectByExemple($previousEntity, $Exemple);
-      TRACE::info("# : ".count($entitys)." R&eacute;sultat(s) retourn&eacute;s");
-      return $entitys;
-    } else
-    {
-      TRACE::info("# : "." poursuite ");
-    }
-    
-    //Récupération de la clé distance pour une FK
-    $field = $previousEntity->getFieldByName($fieldname);
-    if($field->isForeignKEY() || $field->isAssociateKey())
-    {
-      $foreignKEY = explode('.',$field->getKEYName(),2);
-      eval('$nextEntity = new '.$foreignKEY[0].'();');
-    } 
+     * Return the entities 'B' which are already associate to an Entity 'A' 
+     * 
+     * Example : Which Tag are already associate to my Blog ?
+     * 
+     * For memory, an correct AssociateKey system in Orm is 3 Entities like that : 
+ 	 *  1 blog can be linked to 0/n Tag
+ 	 *  1 tag can ben linked to 0/n Blog 
+	 *  So we've got : Blog (Entity) <-> Blog2Tag (EntityAssociation) <-> Tag (Entity) 
+     * 
+     * <code>
+     *    class Blog extends Entity
+     *    {
+     *        public function __construct()
+     *        {
+     *            parent::__construct('myModule','blog');
+     *            
+     *             $this->add(new Field('blog_id' 
+     *                       , CAST::$INTEGER
+     *                       , null
+     *                       , null 
+     * 						, KEY::$PK
+	 *						));
+     *             $this->add(new Field('tags' 
+     *                       , CAST::$INTEGER
+     *                       , null
+     *                       , null
+     *                       , KEY::$AK    
+     *                       , 'Blog2Tag.tag_id' 	<-- link to the associate Entity : 'Blog2Tag'  with its property 'tag_id'
+	 *						));
+     *        }
+     *    }
+     * 
+     *    class Tag extends Entity
+     *    {
+     *       public function __construct()
+     *        {
+     *            parent::__construct('myModule','tag');
+     *            
+     *             $this->add(new Field('tag_id' 
+     *                       , CAST::$INTEGER
+     *                       , null
+     *                       , null 
+     * 						, KEY::$PK
+	 *						));
+     *             $this->add(new Field('blogs' 
+     *                        , CAST::$INTEGER
+     *                        , null
+     *                        , null
+     *                        , KEY::$AK    
+     *                        , 'Blog2Tag.blog_id' <-- link to the associate Entity : 'Blog2Tag'  with its property 'blog_id'
+	 *						));
+     *        }
+     *        
+     *
+     *    }
+     * 
+     *   class Blog2Tag extends EntityAssociation
+     *   {
+     *        public function __construct()
+     *        {
+     *            parent::__construct('myModule','blog2tag');
+     *            
+     *            $this->add(new Field('blog_id'
+     *                       , CAST::$INTEGER
+     *                       , null
+     *                       , null
+     *                       , KEY::$FK
+     *                       , 'Blog.tags'
+	 *						));
+     *            $this->add(new Field('tag_id'        
+     *                        , CAST::$INTEGER
+     *                        , null
+     *                        , null
+     *                        , KEY::$FK
+     *                        , 'Tag.articles' 
+	 *						));
+     *
+     *        }    
+     *    }
+     * </code>
+	 *
+	 * And now the code to find the Tag already linked with my Blog #45: 
+	 *
+	 * </code>
+	 *   $blog = MyAutoload.getInstance($this->GetName(), 'blog');
+	 *   $tags = Core::getEntitysAssocieesLiees($blog,'tags', 45);
+	 * <code>
+     * 
+     * @param Entity an instance of the entity 
+     * @param string the field's name of the Entity which will be used to start the research
+	 * @param mixed entityId the id of the Blog to start the research
+	 *
+     * @return array<Entity> a list of the Entities linked to the entity in the parameters by the fieldName in the Parameters
+     */
+	public static final function getEntitysAssocieesLiees(Entity &$entityParam, $fieldname, $entityId)
+	{
+		Trace::debug("getEntitysAssocieesLiees : ".$entityParam->getName()." ".$fieldname." ".$entityId);
 
-    if($field->isAssociateKey())
-    {
-      $cle = explode('.',$newCle[1],2);
-      $cle = $cle[1];
-    } else
-    {
-      $cle = $newCle[1];
-    }
+		$field = $entityParam->getFieldByName($fieldname);
 
-    
-    
+		if($field->getKEYName() == '')
+			throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
+		  
+		$cle = explode('.',$field->getKEYName(),2);
 
-    
-    TRACE::info("# : "." make new recherche : ".$nextEntity->getName() ." , ". $cle);
-    
-    $entitys = Core::makeDeepSearch($nextEntity, $cle, $values);
-    
-    if(count($entitys) == 0)
-    {
-      return array();
-    }
-    
-    if($nextEntity instanceof EntityAssociation)
-    {  
-      $fields = $nextEntity->getFields();
-      $nomFieldSuivit = explode('.',$cle,2);
-      $nomFieldSuivit = $nomFieldSuivit[0];
-      $nomFieldRetour = "N/A";
-      foreach($fields as $afield)
-      {
-        if($afield->getName() == $nomFieldSuivit)
-        {
-          continue;
-        }
-        $nomFieldRetour = $afield;
-      }
-      
-      //die($nomFieldRetour->getName());
-    }
-    
-    $ids = array();
-    foreach($entitys as $anEntity)
-    {
-      TRACE::info("<br/>On a trouv&eacute;  : ".$anEntity->getName()."");
-      if($anEntity instanceof EntityAssociation)
-      {
-        $value = $anEntity->get($nomFieldRetour->getName());
-        $ids[] = $value;
-        TRACE::info(" valeur assoc : ".$value." pour le champs ".$nomFieldRetour->getName());
-      } else
-      {
-        $value = $anEntity->get($nextEntity->getPk()->getName());
-        $ids[] = $value;
-        TRACE::info(" valeur id : ".$value);
-      }
-      
-    }
-    
-    
-    $Exemple = new Exemple;
-    if($nextEntity instanceof EntityAssociation)
-    {
-      $Exemple->addCritere($previousEntity->getPk()->getName(), TypeCritere::$IN, $ids);
-    } else
-    {
-      $Exemple->addCritere($fieldname, TypeCritere::$IN, $ids);
-    }
-    $entitys = Core::selectByExemple($previousEntity, $Exemple);
-    
-    return $entitys;
-  }
+		eval('$entity = new '.$cle[0].'();');
+																  
+		$exemple = new Exemple();    
+		$exemple->addCritere($cle[1],TypeCritere::$EQ,array($entityId));
+		$assocs = Core::selectByExemple($entity, $exemple);
+
+		$listField = $entity->getFields();
+		foreach($listField as $field)
+		{
+		  if($field->getKEYName() == null || $field->getKEYName() == '')
+			throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
+		  
+		  $cle = explode('.',$field->getKEYName(),2);
+		  
+		  if(strtolower($cle[0]) == $entityParam->getName())
+			continue;                              
+					
+		  $ids = array();
+		  foreach($assocs as $assoc)
+		  {
+			$ids[] = $assoc->get($field->getName());
+		  }                                                        
+		  
+		  $cle = explode('.',$field->getKEYName(),2);
+				
+		  //Evaluation de la eclass en cours
+		  eval('$entity = new '.$cle[0].'();');
+		  
+		  $liste = Core::selectByIds($entity, $ids);
+		  
+		  Trace::debug("getEntitysAssocieesLiees : "."resultat : ".count($liste));
+		  
+		  return $liste;
+		}    
+	}
+  
+    /**
+     * Verify in all type of entities if anyone still has a link with the Entity passed in parameters (ForeignKEy and AssociateKey)
+     * 
+     *  This function is used by the delete* functions to avoid orphelins data in database
+     * 
+	 * @param Orm the module which extends the Orm module                                      
+     * @param Entity an instance of the entity
+     * @param mixed the id of the Entity to verify
+	 *
+	 * @return a message if a link is still present. nothing if the integrity is ok
+     */
+	public static final function verifIntegrity(Orm $module, Entity &$entity, $sid)
+	{
+		$listeEntitys = MyAutoload::getAllInstances($module->getName());
+
+		foreach($listeEntitys as $key=>$anEntity)
+		{
+		  if($anEntity instanceOf EntityAssociation)
+			continue;
+			
+		  foreach($anEntity->getFields() as $field)
+		  {
+			if($field->isAssociateKEY())
+			{
+			  continue;
+			}
+			
+			if($field->getKEYName() != null)
+			{
+			  $vals = explode('.',$field->getKEYName(),2);
+			  
+			  if(strtolower ($vals[0]) == strtolower ($entity->getName()))
+			  {
+				$Exemple = new Exemple();
+				$Exemple->addCritere($field->getName(), TypeCritere::$EQ, array($sid));
+				$entitys = Core::selectByExemple($anEntity, $Exemple);
+				if(count($entitys) > 0)
+				{
+				  return "La ligne &agrave; supprimer est encore utilis&eacute;e par &laquo; ".$anEntity->getName()." &raquo;";
+				}
+			  }
+			}
+		  }
+		}
+
+		return;
+
+	}
+
+    /**
+     * Allow realise deep search on different type of Entity linked together
+     * 
+     * Example : 
+     *   An Order has a link to a Customer (Order.customer_id)
+     *   A Customer has a link to an Adress (Customer.adresse_id)
+     *   An Adress has a link to a city (Adress.city_id)
+	 *   A city has a ZipCode (maybe shared by differents cities)
+     * 
+     *  If i want the Orders for Customers from the city with zipcode equals to "01234" or "4567" I could write some shitty code !
+     * 
+     * <code>
+     *  $cities = //Find my cities with ZipCode "01234" or "4567"
+     *  foreach($cities as $city)
+     *  {
+     *       $adresses = //Find the adress for the city $city
+     *       foreach($adresses as $adress)
+     *       {
+     *           $customers = //Find the Customers for the adress $adress
+     *           foreach($customers as $customer)
+     *           {
+     *               $commandes =  //Find Traitement de recherche d'une commande possèdant le numeroclient = $customer->get('numeroclient')   
+     *           }                   
+     *       }                  
+     *  }
+     * 
+     *  </code>
+     * 
+     *  I could also write a better code : 
+     * 
+     * <code>
+	 *   $order = MyAutoload.getInstance($this->GetName(), 'order');
+     *   $orders = Core::makeDeepSearch(order, 'Order.customer_id.adress_id.city_id.zipcode', array('01234', '4567'));
+     * </code>
+     * 
+     * @param Entity The entity i want to have at the end
+     * @param string the path to fallow. Must be ended with the name of the Field to make the comparaison
+     * @param array the array of value to make the comparaison
+     * 
+     */
+	public static final function makeDeepSearch(Entity $previousEntity, $cle, $values)
+	{    
+		TRACE::info("# : "."Start makeDeepSearch() ".$previousEntity->getName()."->".$cle);
+
+		if($previousEntity == null)
+		{
+		  
+		  $newCle = explode('.',$cle,2);
+		  $previousEntity = $newCle[0];
+		  $cle = $newCle[1];
+		  eval('$previousEntity = new '.$previousEntity.'();');
+		}
+
+		$newCle = explode('.',$cle,2);
+		$fieldname = $newCle[0];
+
+		//Test de sortie : on a un seul résultat dans $newCle : le champs final
+		if(count($newCle) == 1)
+		{
+		  TRACE::info("# : "." count(\$newCle) == 1 , donc sortie ");
+		  $Exemple = new Exemple;
+		  $Exemple->addCritere($fieldname, TypeCritere::$IN, $values);
+		  $entitys = Core::selectByExemple($previousEntity, $Exemple);
+		  TRACE::info("# : ".count($entitys)." R&eacute;sultat(s) retourn&eacute;s");
+		  return $entitys;
+		} else
+		{
+		  TRACE::info("# : "." poursuite ");
+		}
+
+		//Récupération de la clé distance pour une FK
+		$field = $previousEntity->getFieldByName($fieldname);
+		if($field->isForeignKEY() || $field->isAssociateKey())
+		{
+		  $foreignKEY = explode('.',$field->getKEYName(),2);
+		  eval('$nextEntity = new '.$foreignKEY[0].'();');
+		} 
+
+		if($field->isAssociateKey())
+		{
+		  $cle = explode('.',$newCle[1],2);
+		  $cle = $cle[1];
+		} else
+		{
+		  $cle = $newCle[1];
+		} 
+		
+		TRACE::info("# : "." make new recherche : ".$nextEntity->getName() ." , ". $cle);
+
+		$entitys = Core::makeDeepSearch($nextEntity, $cle, $values);
+
+		if(count($entitys) == 0)
+		{
+		  return array();
+		}
+
+		if($nextEntity instanceof EntityAssociation)
+		{  
+		  $fields = $nextEntity->getFields();
+		  $nomFieldSuivit = explode('.',$cle,2);
+		  $nomFieldSuivit = $nomFieldSuivit[0];
+		  $nomFieldRetour = "N/A";
+		  foreach($fields as $afield)
+		  {
+			if($afield->getName() == $nomFieldSuivit)
+			{
+			  continue;
+			}
+			$nomFieldRetour = $afield;
+		  }
+		  
+		}
+
+		$ids = array();
+		foreach($entitys as $anEntity)
+		{
+		  TRACE::info("<br/>On a trouv&eacute;  : ".$anEntity->getName()."");
+		  if($anEntity instanceof EntityAssociation)
+		  {
+			$value = $anEntity->get($nomFieldRetour->getName());
+			$ids[] = $value;
+			TRACE::info(" valeur assoc : ".$value." pour le champs ".$nomFieldRetour->getName());
+		  } else
+		  {
+			$value = $anEntity->get($nextEntity->getPk()->getName());
+			$ids[] = $value;
+			TRACE::info(" valeur id : ".$value);
+		  }
+		  
+		}
+
+
+		$Exemple = new Exemple;
+		if($nextEntity instanceof EntityAssociation)
+		{
+		  $Exemple->addCritere($previousEntity->getPk()->getName(), TypeCritere::$IN, $ids);
+		} else
+		{
+		  $Exemple->addCritere($fieldname, TypeCritere::$IN, $ids);
+		}
+		$entitys = Core::selectByExemple($previousEntity, $Exemple);
+
+		return $entitys;
+	}
   
 }
 
