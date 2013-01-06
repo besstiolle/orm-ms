@@ -1,27 +1,26 @@
 <?php
 /**
- * Contient toutes les fonctionnalités relatives aux recherches par Critères
- * 
- * @since 1.0
+ * Contains Exemple Class
+ *
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
  
  
 /**
- * Class représentant le cumul de X Critère en vu de faire une recherche par Exemple
- *    
+ * Represents a group of differents Criteria (Criteres) to process a search "By Example" on a Entity in Database
  *
- * @since 1.0
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
 final class Exemple 
 {
 	private $Criteres = array();
 	
     /**
-    * Constructeur public.
+    * Public Constructor
     * 
     */
 	public function __construct()
@@ -30,12 +29,12 @@ final class Exemple
 	
     
     /**
-    * Ajoute un Critere à la liste existante
+    * Add a new Criteria on the existing list
     * 
-    * @param string le nom du champs Field
-    * @param string une valeur de la class TypeCritere 
-    * @param array un tableau de paramètres utilisés en association avec le paramètre $typeCritere
-    * @param boolean $ignoreCase faux par défaut, spécifie si l'on souhaite utiliser le TypeCritere avec ou sans casse (aze != AZE)
+    * @param string Name of the field 
+    * @param TypeCritere Type of Criteria
+    * @param array all the parameters used for the parameter $typeCritere
+    * @param boolean [Optionnal] if we must ignore the case (aze equals AZE) or not. Default value is "false"
     * 
     * @see TypeCritere
     */
@@ -43,16 +42,16 @@ final class Exemple
 	{
 		if(!is_array($paramsCritere))
 		{
-			throw new Exception("le parametre Critere [".$fieldname."] de l'Exemple doit etre une liste");
+			throw new Exception("the parameter \$paramsCritere for the Criteria of the Field [".$fieldname."] must be an array");
 		}
 		
 		$this->Criteres[] = new Critere($fieldname, $typeCritere, $paramsCritere, $ignoreCase);
 	}
 
     /**
-    * Retourne tous les Critères contenu dans l'objet Exemple.
+    * Return all the Criterias contained in the current Example Object
     * 
-    * @return array<Critere> la liste des objets Critere
+    * @return array<Critere> the list of Criterias contained in the current Example Object
     */
 	public function getCriteres(){
 		return $this->Criteres;

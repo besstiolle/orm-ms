@@ -1,58 +1,60 @@
 <?php
 /**
- * Contient la classe qui gère le chargement automatique des classes en mémoire
- * 
- * @package mmmfs
+ * Contains the autoload system that will memorize all the entities used by all the modules
+ *
+ * @since 0.0.1
+ * @author Bess
+ * @package Orm
  **/
  
  /**
- * Class static gérant les entités utilisées dans l'application
- *	L'intérêt étant de ne pas redéclarer X instances de class identiques inutilement.
+ * Static Class managing entities used in the application
+ *	The main use is to not redeclarate X instances of same classes if it's not necessary.
+ * All modules have their own namespace to avoid sharing entities between two modules
  *
- * @since 1.0
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
 final class MyAutoload
 {
 	private static $instances;
 	
 	/**
-	 * Constructeur privé
+	 * Private constructor
 	 */
-	protected function __construct()
-	{
-	}	
+	protected function __construct(){}	
 	
 	/**
-	 * Fonction appelée par le noyau des entitées et des entitées de recherche, 
-	 * il va instancier l' entité si elle est inexistante et la stocker en mémoire
+	 * Function called by the entities themself during their _construct() function
+	 * it will stock an instance of the entity (if not already existing) in his memory
      * 
-	 * @param namespace le namespace de l'application
-	 * @param string l'instance : "new maClass()". L'instance doit hériter de Entity / EntityAssociation ou SearchCore
+	 * @param namespace namespace of the entity's module
+	 * @param string an instance of the entity
 	 */
-	public final static function addInstance($namespace, $newinstance)
+	public final static function addInstance($namespace, Entity $instance)
 	{	
 		$namespace = strtolower($namespace);
-		$name = $newinstance->getName();
+		$name = $instance->getName();
 		$name = strtolower($name);
 				
 		if(isset(self::$instances[$namespace][$name]))
 		{
-			Trace::debug("Instance ".$name." deja presente.");
+			Trace::debug("Instance ".$name." already in memory.");
 			return;
 		}
-		Trace::debug("Ajout de l'instance ".$name." dans le namespace ".$namespace);
-		self::$instances[$namespace][$name] = $newinstance;
+		Trace::debug("Adding the instance ".$name." into the namespace ".$namespace);
+		self::$instances[$namespace][$name] = $instance;
 	}
 	
 	/**
-	 * Renvoi une instance d'entité précédement instanciée. Chaque instance retournée est un clone ce qui évite d'utiliser 
-	 * le même pointeur mémoire et d'écraser ses propres données
+	 * Return an instance of entity from the memory. Each instance is a clone to avoid using
+	 * the same object 
      * 
-	 * @param namespace le namespace de l'application
-	 * @param string le nom de l'instance à retourner. L'instance doit hériter de Entity / EntityAssociation ou SearchCore
-	 * @return Object instance une instance
+	 * @param namespace namespace of the entity's module
+	 * @param string an instance of the entity
+	 *
+	 * @return Entity an instance of entity
 	 */
 	public final static function getInstance($namespace, $instanceName)
 	{
@@ -60,23 +62,24 @@ final class MyAutoload
 		$instanceName = strtolower($instanceName);
 		myAutoload::isValideNamespace($namespace);
 		
-		Trace::debug("Demande de l'instance ".$instanceName);
+		Trace::debug("Asking an instance of ".$instanceName. " for namespace ".$namespace);
 		if(myAutoload::hasInstance($namespace, $instanceName))
 		{
-			Trace::debug("Instance ".$instanceName." retournee.");
+			Trace::debug("Instance ".$instanceName." returned.");
 			return clone self::$instances[$namespace][$instanceName];
 		}
 		
-		Trace::error("Aucune instance $instanceName n'est stockee dans l'autoload");
-		throw new Exception("Aucune instance $instanceName n'est stockee dans l'autoload");
+		Trace::error("No instance $instanceName found in memory for namespace ".$namespace);
+		throw new Exception("No instance $instanceName found in memory for namespace ".$namespace);
 	}
 	
 	/**
-	 * Retourne vrai si une instance d'entité existe pour le même namespace
+	 * Return true if the instance exists in the memory for the same namespace
      * 
-	 * @param namespace le namespace de l'application
-	 * @param string le nom de l'instance à retourner. L'instance doit hériter de Entity / EntityAssociation ou SearchCore
-	 * @return Boolean si l'instance existe
+	 * @param namespace namespace of the entity's module
+	 * @param string an instance of the entity
+	 *
+	 * @return Boolean if the instance exists
 	 */
 	public final static function hasInstance($namespace, $instanceName){
 		$namespace = strtolower($namespace);
@@ -88,45 +91,34 @@ final class MyAutoload
 	}
 	
 	/**
-	 * Renvoi toutes les instances d'entités précédement instanciées. Par défaut ne renvoi pas les instances d'entités héritants de SearchCore (les moteurs de recherche)
+	 * Return all the instances of all the entities from a single namespace
      * 
-	 * @param namespace le namespace de l'application
-	 * @param boolean si définit à vrai, incluera la liste des d'entités héritants de SearchCore
-	 * @return array une liste d'instances
+	 * @param namespace namespace of the entity's module
+	 * @param string an instance of the entity
+	 *
+	 * @return array<Entity> an array of all the entities
 	 */
-	public final static function getAllInstances($namespace, $include_search = false)
+	public final static function getAllInstances($namespace)
 	{
 		$namespace = strtolower($namespace);
 		myAutoload::isValideNamespace($namespace);
-	
-		if($include_search) {
-			return self::$instances[$namespace];
-		}
 		
-		$listeRetour = array();
-		$insts = self::$instances[$namespace];
-		foreach($insts as $inst)
-		{
-			if($inst instanceof SearchCore)
-				continue;
-			
-			$listeRetour[] = $inst;
-		}
-		return $listeRetour;
+		return self::$instances[$namespace];
 	}
 	
 	/**
-	 * Retourne vrai si le namespace est valide
+	 * Retourne true if the namespace is known in memory
      * 
-	 * @param namespace le namespace de l'application
-	 * @return Boolean si le namespace existe
+	 * @param namespace namespace of the entity's module
+	 *
+	 * @return Boolean if the namespace exists
 	 */
 	private static function isValideNamespace($namespace)
 	{
 		if(!isset(self::$instances[$namespace]))
 		{
-			Trace::error("Le namespace '$namespace' n'existe pas dans le module Mmmfs.");
-			throw new IllegalArgumentException("Le namespace $namespace n'existe pas dans le module Mmmfs.");
+			Trace::error("The namespace '$namespace' doesn't existe into the Orm System");
+			throw new IllegalArgumentException("The namespace '$namespace' doesn't existe into the Orm System");
 		}
 	}
 }

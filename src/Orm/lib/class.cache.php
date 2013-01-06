@@ -1,35 +1,36 @@
 <?php
 /**
- * Contient la classe qui gère le cache de mmmfs
- * 
- * @package mmmfs
+ * Contains the class wich provide a mini caching system of Orm to avoid multiples sql requests
+ *
+ * @since 0.0.1
+ * @author Bess
+ * @package Orm
  **/
 
 
 /**
- * Gestion d'un mini cache interne
  *
- *  Class static gérant toute la partie cache des accès à la base de donnée. 
- *	Utilisée pour éviter de trop nombreux appels en base sur les listing d'entité chargées
- *  Exemple : 
+ *  Static classe used to provide a very simple caching system. You can push the result of a request into it and asking later
+ *	to collect the result.
+ *
+ *  Example : 
  *  <code>
- *  	//Appel à cmsms pour récupérer le connecteur de bdd
- *  	$gCms = cmsms();
- *  	$db = $gCms->GetDb();
+ *  	//Call to cmsms to get the database connector
+ *  	$db = cmsms()->GetDb();
  *  	
- *  	//Définition d'une entité client
- *  	$entity = new Client();
+ *  	//Defines a new Customer entity
+ *  	$entity = MyAutoload.getInstance('myModule', 'customer');
  *  	
- *  	//Selection de tous les clients
+ *  	//Select all Customers
  *  	$querySelect = 'Select * FROM '.$entity->getDbname();
  *  	
- *  	//Si requête précédement executée : on retourne directement du cache le résultat
+ *  	//If the caching system already know the answer : we return the result immediately
  *  	if(Cache::isCache($querySelect))
  *  	{
  *  		return Cache::getCache($querySelect);
  *  	}
  *  	
- *  	//On execute la requête
+ *  	//So we need to execute the query
  *  	$result = $db->Execute($querySelect);
  *  	if ($result === false){die("Database error!");}
  *  	
@@ -39,33 +40,34 @@
  *  		$entitys[] = Core::rowToEntity($entity, $row);
  *  	}
  *  	
- *  	//On repousse dans le cache le résultat pour un prochain passage
+ *  	//Don't forget to push the result into the caching system for the next call
  *  	Cache::setCache($querySelect, null, $entitys);
+ 
  *  	return $entitys;
  *	</code>
  *
- * @since 1.0
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
 final class Cache 
 {	
 	/**
-	 * Variable contenant l'ensemble des résultats des requêtes passées
+	 * Contains all the result for the past requetes
 	 **/
 	private static $cache;
 		
 	/**
-	 * Constructeur privé
+	 * Private constructor
 	 */
 	protected function __construct() {}
 			
 	/**
-	 *	Définit le cache pour une requête donnée, une liste de paramètre et évidement le résultat obtenu
+	 *	Set the cache for a sql request, its parameters and of course the result
      * 
-	 * @param string la requête sql
-	 * @param array la liste des paramètres dans un tableau ou null
-	 * @param object la valeur à mémoriser (array ou string ou integer ou ...)
+	 * @param string the sql query
+	 * @param array the parameters into a array. May be null
+	 * @param object the result
 	 */
 	public static final function setCache($sql, $params = null, $value)
 	{		
@@ -79,11 +81,12 @@ final class Cache
 	}
 	
 	/**
-	 * Demande le cache pour une requete donnée et une liste de paramètre
+	 * Querying the cache for a sql request and its parameters
      * 
-	 * @param string la requête sql
-	 * @param array la liste des paramètres dans un tableau ou null
-	 * @return object la valeur contenu dans le cache (array ou string ou integer ou ...)
+	 * @param string the sql query
+	 * @param array the parameters into a array. May be null
+	 *
+	 * @return object the result
 	 */
 	public static final function getCache($sql, $params = null)
 	{
@@ -96,11 +99,12 @@ final class Cache
 	}
 
 	/**
-	 * Renvoi vrai si un cache existe pour une requête et une liste de paramètre
+	 * Return true if a cache exist for a sql request and its parameters
      * 
-	 * @param string la requête sql
-	 * @param array la liste des paramètres dans un tableau ou null
-	 * @return boolean vrai si un cache existe
+	 * @param string the sql query
+	 * @param array the parameters into a array. May be null
+	 *
+	 * @return boolean true if the cache exists
 	 */	
 	public static final function isCache($sql, $params = null)
 	{
@@ -108,8 +112,8 @@ final class Cache
 	}
 
 	/**
-	 * Vide le cache. Indispensable si entre des lectures de donnée une mise à jour est faite par le traitement.
-	 *  Par sécurité le processus vide intégralement le cache
+	 * Empty the cache. Very important if between 2 quering, the system may insert/delete/update some data in the database
+	 *  In the Orm system, we always drop the cache in the insert/delete/update function.
 	 */	
 	public static final function clearCache()
 	{
@@ -117,12 +121,13 @@ final class Cache
 	}
 
 	/**
-	 * Retourne une signature unique de la combinaison de la requête SQL et de la liste des paramètres.
-	 *  le Hash généré est utilisé dans la class pour récupérer ou pour définir le cache.
+	 * Return a unique hash for a sql request and its parameters
+	 *  this hash is used to Defines a unique entry into the cache
      * 
-	 * @param string la requête sql
-	 * @param array la liste des paramètres dans un tableau ou null
-	 * @return string le hashage
+	 * @param string the sql query
+	 * @param array the parameters into a array. May be null
+	 *
+	 * @return string the hash
 	 */	
 	public static final function hash($sql, $params = null)
 	{

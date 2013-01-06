@@ -1,26 +1,28 @@
 <?php
 /**
- * Contient la classe qui gère les différents type de Typage en base de donée
- * 
- * @package mmmfs
+ * Contains the class with all the different type for the field into database
+ *
+ * @since 0.0.1
+ * @author Bess
+ * @package Orm
  **/
 
 
 /**
- * Classe définissant les typage des champs
+ * Class Defines the type of the field, in entity but also in database
  * 
- *  CAST::$STRING une chaine de caractère 
- *  CAST::$INTEGER un entier
- *  CAST::$DATE une date 
- *  CAST::$TIME une zone time
- *  CAST::$TS un timestamp
- *  CAST::$BUFFER une zone de texte non limité en taille
- *  CAST::$NUMERIC un nombre réél (virgule)
- *  CAST::$NONE ne pas stocker en base (dans le cas d'une clée associative)    
- * 
- * @since 1.0
+ *  CAST::$STRING a simple string
+ *  CAST::$INTEGER an integer
+ *  CAST::$DATE a field date
+ *  CAST::$TIME a field time
+ *  CAST::$TS a field timestamp
+ *  CAST::$BUFFER a field with no limit of size (except the mysql natural limit)
+ *  CAST::$NUMERIC a field for a real number (eg : with coma)
+ *  CAST::$NONE a Transiant field : won't be persist into database
+ *
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
 */
 class CAST
 {

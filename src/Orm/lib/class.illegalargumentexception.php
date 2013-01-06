@@ -1,17 +1,19 @@
 <?php
  /**
- * Contient les différentes classes d'exception
- * @since 1.0
+ * Contains the class IllegalArgumentException
+ *
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
  
 
 /**
-* Classe utilisée dans le cas ou l'argument passé n'est pas celui attendu
- * @since 1.0
+ * Classe extends Exception, used when the parameters is not the one expected
+ *
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
 */
 class IllegalArgumentException extends Exception {
     

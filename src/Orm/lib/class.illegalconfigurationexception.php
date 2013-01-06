@@ -1,16 +1,19 @@
 <?php
  /**
- * Contient les différentes classes d'exception
- * @since 1.0
+ * Contains the class IllegalArgumentException
+ *
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
  
+
 /**
-* Classe utilisée dans le cas ou la configuration des entités &co n'est pas correcte
- * @since 1.0
+ * Classe extends Exception, used when the initial configuration of Entities isn't correct
+ *
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
 */
 class IllegalConfigurationException extends Exception  {
     

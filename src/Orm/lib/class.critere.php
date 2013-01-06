@@ -1,38 +1,54 @@
 <?php
 /**
- * Contient toutes les fonctionnalités relatives aux recherches par Critères
+ * Contains Critere class
  * 
- * @since 1.0
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
  
  
 
 /**
-* Classe structurant un critère 
-* 
-* Contient un nom de champs, un TypeCritere, un tableau de paramètre et un boolean pour la casse
-*
- * @since 1.0
+ * Backbone for Criteria into the Orm system
+ *
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
 final class Critere
 {
+	/**
+	 * Name of the field 
+	 */
 	public $fieldname;
+	
+	/**
+	 * Type of Criteria
+	 */
 	public $typeCritere;
+	
+	/**
+	 * Parameters for the type of Criteria
+	 */
 	public $paramsCritere;
+	
+	/**
+	 * Boolean if we must ignore case
+	 */
 	public $ignoreCase;
 	
     /**
-    * Constructeur public
+    * Public Constructor
     * 
-    * @param string le nom du champs Field
-    * @param TypeCritere une valeur de la class TypeCritere 
-    * @param array un tableau de paramètres utilisés en association avec le paramètre $typeCritere
-    * @param boolean $ignoreCase faux par défaut, spécifie si l'on souhaite utiliser le TypeCritere avec ou sans casse (aze != AZE)
-    * @return Critere
+    * @param string Name of the field 
+    * @param TypeCritere Type of Criteria
+    * @param array all the parameters used for the parameter $typeCritere
+    * @param boolean [Optionnal] if we must ignore the case (aze equals AZE) or not. Default value is "false"
+    *
+	* @return Critere a Criteria
+	*
+	* @See TypeCritere
     */
 	public function __construct($fieldname, $typeCritere, $paramsCritere, $ignoreCase = false)
 	{

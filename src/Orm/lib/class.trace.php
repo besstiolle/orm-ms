@@ -1,29 +1,30 @@
 <?php
 /**
- * Contient toute la gestion des informations de débugage.
+ * Contains all the debug system.
  *
- * @since 1.0
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
 
 /**
- *   Permet d'afficher des traces proprement selon certains niveaux         
+ *  Allow display stacktrace and other informations in a console or on the page
  *                                                                                     
- *  exemple
+ *  example
  *  <code>
- *          Trace::debug('je passe par ici');
- *          Trace::info('traitement terminé');
- *          Trace::warn('trop peu de résultats');
- *          Trace::error('erreur de traitement');
+ *          Trace::debug('i am here !');
+ *          Trace::info('process finished');
+ *          Trace::warn('Be carfull : too much results will be displayed');
+ *          Trace::error('oups houston, we have got a problem... :( ');
  *  </code>
  * 
- * la propriété $level de cette classe définit le niveau d'alert à partir duquel les messages s'afficheront. 
- *  Ainsi un niveau égal à 2 (WARN) n'affichera que les messages de WARNING et de type ERROR
- * 
- * @since 1.0
+ * the property $level of this class defines the level of the messages to displaying
+ *  So a level of "WARN" will only display warning and error messages
+ *  By default the level is setted to WARN
+ *
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/   
  
 final class Trace
@@ -33,53 +34,67 @@ final class Trace
 	public static $WARN = 2;
 	public static $ERROR = 3;
 	
-	//Changer cette valeur de 0 à 3 pour niveler les logs
+	//Change this value from 0 to 3 to change the level of message displayed
 	public static $level = 2;
 	
 	protected function __construct() {
 	}
 
 	/**
-    * Affiche un message destiné au débugage.
+    * Display a message with DEBUG level
     * 
-    * @param string le message
+    * @param string the message to display
     */
 	public static final	function debug($msg)
 	{	
-		if(self::$level > Trace::$DEBUG) {return;}
-		echo "<div class='debug' >$msg</div>";
+		self::innerWriter(Trace::$DEBUG, 'debug', $msg);
 	}
 
     /**
-    * Affiche un message destiné à informer.
+    * Display a message with INFO level
     * 
-    * @param string le message
+    * @param string the message to display
     */
 	public static final	function info($msg)
 	{	
-		if(self::$level > Trace::$INFO) {return;}
-		echo "<div class='info' >$msg</div>";
+		self::innerWriter(Trace::$INFO, 'info', $msg);
 	} 
 
     /**
-    * Affiche un message destiné à attirer l'attention sur un éventuel soucis.
+    * Display a message with WARN level
     * 
-    * @param string le message
+    * @param string the message to display
     */
 	public static final	function warn($msg)
 	{	
-		if(self::$level > Trace::$WARN) {return;}
-		echo "<div class='warn' >$msg</div>";
+		self::innerWriter(Trace::$WARN, 'warn', $msg);
 	} 
 
     /**
-    * Affiche un message destiné à signaler une erreur non gérable par le système
+    * Display a message with ERROR level
     * 
-    * @param string le message
+    * @param string the message to display
     */
 	public static final	function error($msg)
 	{	
-		echo "<div class='error' >$msg</div>";
+		self::innerWriter(Trace::$ERROR, 'error', $msg);
+	}
+	
+	/**
+	 * Do all the suff behind
+	 *
+	 * @param string the level of message.
+	 * @param string the css class to display the "inline" message
+	 * @param string the message to display
+	 */
+	private static final function innerWriter($level, $cssClass, $msg){
+		if(self::$level > $level) {return;}
+		
+		//In windows
+		echo "<div class='$cssClass' >$msg</div>";
+		
+		//In php log
+		error_log($msg);
 	}
 }
 

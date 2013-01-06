@@ -1,150 +1,145 @@
 <?php
 /**
- * Contient toutes les fonctionnalités relatives aux recherches par Critères
+ * Contains the TypeCritere class
  * 
- * @since 1.0
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
  
 
 /**
-* Enum des différents TypeCritere envisageable
-* 
-* utiliser ainsi :
-* 
-* <code>
-* TypeCritere::$EQ
-* </code>
-* 
- * @since 1.0
+ * Enum for the differents types of TypeCriteria
+ * 
+ * 
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
 class TypeCritere
 {
     /**
-    * Est égal à
+    * Is equals to
     * 
     * @var string
     */
 	public static $EQ = ' = ';
     
     /**
-    * Est différent de 
+    * Is différent Of
     * 
     * @var string
     */
 	public static $NEQ = ' != ';
     
     /**
-    * est strictement supérieur à
+    * is strictly gretter than
     * 
     * @var string
     */
 	public static $GT = ' > ';
     
     /**
-    * est superieur ou égal à
+    * is gretter or equals to
     * 
     * @var string
     */
 	public static $GTE = ' >= ';
     
     /**
-    * est strictement inferieur à
+    * is strictly lesser than
     * 
     * @var string
     */
 	public static $LT = ' < ';
     
     /**
-    * est inferieur ou égal à 
+    * is lesser or equals to
     * 
     * @var string
     */
 	public static $LTE = ' <= ';
 	
 	/**
-    * est null ou vide
+    * is NULL or is Empty
     * 
     * @var string
     */
 	public static $EMPTY = 'is empty()';
 	
     /**
-    * est non null et non vide
+    * is Not NULL and is Not Empty
     * 
     * @var string
     */
 	public static $NEMPTY = 'is not empty()';
     
     /**
-    * est null
+    * is NULL
     * 
     * @var string
     */
 	public static $NULL = ' is null ';
     
     /**
-    * n'est pas null
+    * is Not NULL
     * 
     * @var string
     */
 	public static $NNULL = ' is not null';
     
     /**
-    * est avant (Date)
+    * is before (a Date)
     * 
     * @var string
     */
 	public static $BEFORE = ' before ';
     
     /**
-    * est après (Date)
+    * is after (a Date)
     * 
     * @var string
     */
 	public static $AFTER = ' after ';
     
     /**
-    * est entre (Date)
+    * is between (a Date)
     * 
     * @var string
     */
 	public static $BETWEEN = ' after ';
      
     /**
-    * est contenu dans la liste suivante
+    * is contained into the array
     * 
-    * /!\ nécessite au minimum deux valeurs dans le tableau de paramètre
+    * /!\ need at last 2 values in the array
     * 
     * @var string
     */
 	public static $IN = 'in (%a)';
     
     /**
-    * n'est pas contenu dans la liste suivante
+    * is not contained into the array
     *                                                                   
-    * /!\ nécessite au minimum deux valeurs dans le tableau de paramètre
+    * /!\ need at last 2 values in the array
     * 
     * @var string
     */
 	public static $NIN = 'not in (%a)';
     
     /**
-    * contient la chaine suivante
+    * contains the string
     * 
-    * /!\ vous devez ajouter vous même les caractères génériques '%'
+    * /!\ don't forget to add the wildcard '%'
     * 
     * @var string
     */
 	public static $LIKE = ' like ';
     
     /**
-    * contient la chaine suivante
+    * doesn't contain the string
     * 
-    * /!\ vous devez ajouter vous même les caractères génériques '%'
+    * /!\ don't forget to add the wildcard '%'
     * 
     * @var string
     */

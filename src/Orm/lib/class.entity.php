@@ -1,16 +1,18 @@
 <?php
 /**
- * contain the class Entity
+ * Contains the class Entity
+ *
+ * @since 0.0.1
+ * @author Bess
  * @package Orm
  **/
  
 /**
  * Abstract Classes describing the frame of an Entity into Orm
- *	
  *
  * @since 0.0.1
  * @author Bess
- * @package orm
+ * @package Orm
  **/
 abstract class Entity 
 {
@@ -61,18 +63,18 @@ abstract class Entity
 	
 	
     /**
-    * constructor protected to avoid a direct instanciation like "new Entity()"
-    * Each time a entity is constructed, we place a copy into the autoloader.
-    * 
-    * @param string The name of the module who calling this method (so not "Orm")
-    * @param string The name of the entity
-    * @param string [optional] Prefix to use into database for table. If not setted, it will use the name of your module
-    * @param string [optional] The name of table for this entity. If not setted, it will use the name of your entity
-    *
-    * @return Entity the entity like a new instance
-    * 
-    * @see MyAutoload
-    */
+     * constructor protected to avoid a direct instanciation like "new Entity()"
+     * Each time a entity is constructed, we place a copy into the autoloader.
+     * 
+     * @param string The name of the module who calling this method (so not "Orm")
+     * @param string The name of the entity
+     * @param string [optional] Prefix to use into database for table. If not setted, it will use the name of your module
+     * @param string [optional] The name of table for this entity. If not setted, it will use the name of your entity
+     *
+     * @return Entity the entity as a new instance
+     * 
+     * @see MyAutoload
+     */
 	protected function __construct($moduleName, $name, $prefixe = null, $dbName = null)
 	{
 		$this->moduleName = strtolower($moduleName);
@@ -107,6 +109,8 @@ abstract class Entity
     * Add a new Field into the list of Fields
     * 
     * @param Field the object Field to add
+	* 
+	* @throw IllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
     */
 	protected function add(Field $newField)
 	{
@@ -116,7 +120,7 @@ abstract class Entity
 		if($newField->isPrimaryKEY())
 		{
 			if($this->pk != null)
-				throw new Exception("Orm doesn't support multi-Primary-Key into the Entity ".$this->name);
+				throw new IllegalConfigurationException("Orm doesn't support multi-Primary-Key into the Entity ".$this->name);
 				
 			$this->pk = $newField->getName();
 			$this->seqname = $this->dbname.Entity::$_CONST_SEQ;
@@ -127,12 +131,12 @@ abstract class Entity
     * Return the PrimaryKey Field
     * 
     * @return Field the PrimaryKey Field
-    * @exception if there is no PrimaryKey Field
+    * @IllegalArgumentException if there is no PrimaryKey Field
     */
 	public function getPk()
 	{
 		if($this->pk == null)
-			throw new Exception("the entity ".$this->getName()." doesn't have any Primary-Key");
+			throw new IllegalArgumentException("the entity ".$this->getName()." doesn't have any Primary-Key");
 		
 		return $this->fields[$this->pk];
 	}
@@ -154,14 +158,14 @@ abstract class Entity
     * @param string the name
     * @return Field the Field
     * 
-    * @exception if no Field exist for the name
+    * @IllegalArgumentException if no Field exist for the name
     */
 	public function getFieldByName($name)
 	{
 		if(isset($this->fields[$name]))
 			return $this->fields[$name];
 		
-		throw new Exception("The field $name doesn't exist into the entity ".$this->getName());
+		throw new IllegalArgumentException("The field $name doesn't exist into the entity ".$this->getName());
 	}
 	
     /**
@@ -227,7 +231,7 @@ abstract class Entity
     * @param string the name of the Field
     * @return mixed the value for the field
     * 
-    * @exception if no Field exists for the name
+    * @IllegalArgumentException if no Field exists for the name
     */
 	public function get($fieldName)
 	{
@@ -235,7 +239,7 @@ abstract class Entity
 		$fieldnameSid = $fieldnameSid[0];
 		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldnameSid,$this->fields))
 		{
-			throw new Exception("fonction Get : Field $fieldName not found for entity ".$this->getName());
+			throw new IllegalArgumentException("fonction Get : Field $fieldName not found for entity ".$this->getName());
 		}
 		
 		if(!isset($this->values[$fieldName]))
@@ -252,14 +256,14 @@ abstract class Entity
     * @param string The name of the Field
     * @param mixed the new value of the Field
     * 
-    * @exception if no Field exists for the name
+    * @IllegalArgumentException if no Field exists for the name
     */
 	public function set($fieldName,$value)
 	{
 		$fieldnameSid = explode("_sid", $fieldName);
 		$fieldnameSid = $fieldnameSid[0];
 		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldnameSid,$this->fields))
-		{throw new Exception('fonction Set : cle '.$fieldName.' non trouvee dans l\'entite');}
+		{throw new IllegalArgumentException('fonction Set : cle '.$fieldName.' non trouvee dans l\'entite');}
 		
 		$this->values[$fieldName] = $value;
 	}
@@ -283,7 +287,7 @@ abstract class Entity
 		$field = $this->getFieldByName($fieldName);
 		
 		if($field->getKEYName() == '')
-			throw new Exception("Le champs $fieldName ne possede aucune cle etrangere associee");
+			throw new IllegalArgumentException("Le champs $fieldName ne possede aucune cle etrangere associee");
 			
 		$cle = explode('.',$field->getKEYName(),2);
 		//Evaluation de la eclass en cours

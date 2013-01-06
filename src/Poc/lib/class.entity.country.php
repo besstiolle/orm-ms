@@ -21,9 +21,6 @@ class Country extends Entity
 			, CAST::$STRING	
 			, 5	
 		));
-		
 	}	
 }
-//Init the entity
-new Country();
 ?>

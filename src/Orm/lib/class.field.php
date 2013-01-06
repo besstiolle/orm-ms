@@ -1,71 +1,87 @@
 <?php
 /**
- * Contient les principales classes utilisées pour gérer les Fields
+ * Contains the Field Classe
  *
- * @since 1.0
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
  
 /**
- *   Représente un champs d'une entité dans son ensemble, depuis la base de donnée à l'affichage 
- *    en passant par les liaisons inter-entité
- * 
- * @since 1.0
+ *   Represent a Entity's field with all its properties
+ *
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
 class Field 
 {
+	/**
+	 * The (unique) name of the field
+	 */
 	private $name;
+	
+	/**
+	 * The CAST value of the field
+	 */
 	private $type;
+	
+	/**
+	 * The max size of the field. May be null if $type is Date, Time, Buffer, None ...
+	 */
 	private $size;
 	
-	private $KEY;
-	private $KEYName;
-	
-	private $HTML;
+	/**
+	 * Boolean : true if the value may be NULL
+	 */
 	private $nullable;
 	
-	public static $ISNULLABLE = true;
+	/**
+	 * the KEY value of the field. May be null
+	 */
+	private $KEY;
+	
+	/**
+	 * the name of the key. Only used for ForeignKey and AssociateKey
+	 */
+	private $KEYName;
 	
     /**
-    * constrcteur public 
+    * public constructor
     * 	
-    * @param string le nom du champs (doit être unique pour toute l'entité)
-    * @param CAST une propriété de la classe CAST. représente le typage du champs, exemple CAST::$INTEGER
-    * @param int la taille max du champs en base et dans l'application. N'est pas nécessaire si le typage du champs est un CAST::$BUFFER, CAST::NONE, ...
-    * @param nullable définit si le champs est facultatif en base, exemple Field::$ISNULLABLE pour un champs facultatif, laisser à vide pour un champs obligatoire
-    * @param KEY une propriété de la classe KEY ou null, représente les clés primaires, étrangères ou associative, exemple KEY::$PK pour une clé primaire
-    * @param string uniquement utilisable avec KEY::$FK et KEY::$AK. Chaine de liaison de l'éventuelle clé étrangère ou associative. Mettre à null si inutilisé. exemple : "Client.client_id" dans le Field "client" servant de clé étrangère pour l'entité "Commande" 
-   
+    * @param string the (unique) name of the field
+    * @param CAST The CAST value of the field example : CAST::$INTEGER
+    * @param int The max size of the field. May be null if $type is Date, Time, Buffer, None ...
+    * @param true if the value may be NULL. Default value is false
+    * @param KEY the KEY value of the field. May be null example: KEY::$PK for a primary key
+    * @param string the name of the key. Only used for ForeignKey and AssociateKey example : "Customer.customer_id" in the field "customer" of an entity "Order".
     * 
-    * @return Field le champs définit prêt à être stocké dans une entité.
+    * @return Field the Field Object
     * 
     * 
     * @see CAST
     * @see KEY
-    * @see NULLABLE
+	* @see Entity
     * 
     */
-	public function __construct($fieldname, $cast, $size = null, $nullable = null, $KEY = null, $KEYName=null)
+	public function __construct($fieldname, $cast, $size = null, $nullable = false, $KEY = null, $KEYName=null)
 	{
 		if(empty($KEY) && !empty($KEYName))
 		{
-			throw new IllegalConfigurationException('Impossible de specifier le nom d\'une cle etrangere si le type de cle n\'est pas definie a $PK ou a $AK');
+			throw new IllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
 		}
 		if($KEY == KEY::$PK && !empty($KEYName))
 		{
-			throw new IllegalConfigurationException('la cle $PK n\'accepte aucun nom de cle etrangere');
+			throw new IllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
 		}
 		if(($KEY == KEY::$FK || $KEY == KEY::$AK) && empty($KEYName))
 		{
-			throw new IllegalConfigurationException('les cles $FK et $AK imposent un nom de cle etrangere');
+			throw new IllegalConfigurationException('$FK key or $AK key for the field '.$fieldname.' need a keyName');
 		}
 		
 		if(($cast == CAST::$DATE || $cast == CAST::$BUFFER) && !empty($size))
 		{
-			throw new IllegalConfigurationException('Le typage DATE ou BUFFER du champs '.$fieldname.' ne peut posseder une taille');
+			throw new IllegalConfigurationException('The CAST::DATE or the CAST::BUFFER of field '.$fieldname.' musn\'t have size value');
 		}
 		
 
@@ -82,17 +98,17 @@ class Field
 	
 
     /**
-    * function getter
+    * getter for name
     * 
-    * @return string le nom du Field
+    * @return string the (unique) name of Field
     */
 	public function getName()
 	{return $this->name;}
 
     /**
-    * function getter
+    * getter for type
     * 
-    * @return string le cast du Field
+    * @return string the CAST value of Field
     * 
     * @see CAST
     * 
@@ -101,50 +117,50 @@ class Field
 	{return $this->type;}
 	
    /**
-    * function getter
+    * getter for size
     * 
-    * @return int la taille max du champs
+    * @return int the size of Field
     */
 	public function getSize()
 	{return $this->size;}
 
    /**
-    * function getter
+    * return true if Field has a $PK
     * 
-    * @return boolean vrai si le champs est une clé primaire
+    * @return boolean true if Field has a $PK
     */	
 	public function isPrimaryKEY()
 	{return $this->KEY == KEY::$PK;}
 
    /**
-    * function getter
+    * return true if Field has a $FK
     * 
-    * @return boolean vrai si le champs est une clé étrangère
+    * @return boolean true if Field has a $FK
     */    	
 	public function isForeignKEY()
 	{return $this->KEY == KEY::$FK;}
 
    /**
-    * function getter
+    * return true if Field has a $AK
     * 
-    * @return boolean vrai si le champs est une clé d'association
+    * @return boolean true if Field has a $AK
     */    	
 	public function isAssociateKEY()
 	{return $this->KEY == KEY::$AK;}
 	
     /**
-    * function getter  
+    * getter for keyName
     * 
-    * @return string la chaine de liaison de l'éventuelle clé étrangère ou associative
+    * @return string the keyName of Field
     * 
     */
 	public function getKEYName()
 	{return $this->KEYName;}
 	
     /**
-    * function getter  
+    * getter for nullable 
     * 
-    * @return true si le champs Field est facultatif. renvoit faux si champs Field obligatoire
+    * @return true if Field is optional in database
     */
 	public function isNullable()
 	{return $this->nullable;}

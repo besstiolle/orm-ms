@@ -1,27 +1,30 @@
 <?php
 /**
- * Contient l'interface de Tri iSortable qui permet de trier les résultats d'une entité
- * @package mmmfs
+ * Contains the interface ISortable which allow to sort results for an entity
+ *
+ * @since 0.0.1
+ * @author Bess
+ * @package Orm
  **/
  
 /**
- * Interface de tri d'une Entité
- *	
+ * Interface wich allow to sort results for an entity
  *
- * @since 1.0
+ * @since 0.0.1
  * @author Bess
- * @package mmmfs
+ * @package Orm
  **/
 interface ISortable
 {
 	
     /**
-    * Fonction qui compare deux entités passées en paramètre 
+    * Function which compare two entities in parameters
     * 
     * 
-    * @param Entity la première entité avec ses valeurs renseignées
-    * @param Entity la seconde entité avec ses valeurs renseignées
-    * @return entier zéro si égalité, 1 si la première entité est supérieure, -1 si la seconde entité passée en paramètre est supérieure
+    * @param Entity the first entity with all values setted
+    * @param Entity the second entity with all values setted
+	*
+    * @return Integer : 0 if equals, 1 if the first entity is superior, else -1
     * 
     * @see Entity
     */

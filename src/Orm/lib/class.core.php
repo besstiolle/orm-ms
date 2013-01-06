@@ -2,6 +2,8 @@
 /**
  * Noyau du framework
  * 
+ * @since 0.0.1
+ * @author Bess
  * @package Orm
  **/
  
@@ -12,7 +14,9 @@
 * Core est la classe qui fait l'interface entre les méthodes natives de CmsMadeSimple et les besoins communs
 *  dans les modules utilisant le framework. 
 * 
-* @package Orm
+ * @since 0.0.1
+ * @author Bess
+ * @package Orm
 */
 class Core 
 {  
@@ -134,21 +138,23 @@ class Core
     $db = cmsms()->GetDb();
     $taboptarray = array( 'mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
     $dict = NewDataDictionary( $db );
+	$hql = Core::getFieldsToHql($entityParam);
 
-        //Appel aux méthodes de l'API de adodb pour créer effectivement la table.
+    //Appel aux méthodes de l'API de adodb pour créer effectivement la table.
     $sqlarray = $dict->CreateTableSQL($entityParam->getDbname(), 
-                                            Core::getFieldsToHql($entityParam),
+                                            $hql,
                                             $taboptarray);
                                             
     $result = $dict->ExecuteSQLArray($sqlarray);
     
     if ($result === false)
     {
-       echo "Database error durant la creation de la table pour l'entité " . $entityParam->getName() ;
-       exit;
+        Trace::error($hql.'<br/>');
+        Trace::error("Database error durant durant la creation de la table pour l'entité " . $entityParam->getName().$db->ErrorMsg());
+        throw new Exception("Database error durant durant la creation de la table pour l'entité " . $entityParam->getName().$db->ErrorMsg());
     }
        
-    Trace::debug("createTable : ".print_r($sqlarray));
+    Trace::debug("createTable : ".print_r($sqlarray, true).'<br/>');
     
     //Optionnel : créera une séquence associee
     if($entityParam->getSeqname() != null){$db->CreateSequence($entityParam->getSeqname());}
@@ -156,7 +162,6 @@ class Core
     //On initialise la table.
     $entityParam->initTable($module);
   }
-    
     
     /**
     * Supprime une table de la base de donnée
@@ -318,13 +323,10 @@ class Core
       $result = $db->Execute(sprintf($queryInsert, $str1, $str2), $params);
       if ($result === false)
       {
-        echo print_r($params, true);
-        echo "<br/><br/>";
-        echo sprintf($queryInsert, $str1, $str2);
-        echo "<br/><br/>";
-        //TODO : réussir à afficher correctement les traces SQL
-        Trace::error($db->ErrorMsg());
-        die("Database error durant l'insert!".$db->ErrorMsg());
+        Trace::error(print_r($params, true).'<br/>');
+        Trace::error(sprintf($queryInsert, $str1, $str2).'<br/>');
+        Trace::error("Database error durant l'insert!".$db->ErrorMsg());
+        throw new Exception("Database error durant l'insert!".$db->ErrorMsg());
       }
       
       if($entityParam->isIndexable())
@@ -338,8 +340,7 @@ class Core
     return $arrayKEY;
     
   }
-
-    
+   
     /**
     *  Effectue une série d'Update en base
     * 
@@ -449,7 +450,6 @@ class Core
     }
   }
   
-    
     /**
     * Effectue une série de DELETE dans la table de l'entité
     *   
@@ -529,8 +529,7 @@ class Core
       
     }
   }
-  
-    
+   
     /**
     * Retourne le nombre d'occurance dans la table représentant l'entité
     * 
@@ -776,7 +775,6 @@ class Core
             $hql .= ' OR ';
           }
           
-        //  echo "<br/>param : ".$param."* ".$filterType." * ".Core::FieldToDBValue($param, $filterType)."<br/>";
           $params[] = Core::FieldToDBValue($param, $filterType); 
           $hql .= $critere->fieldname.TypeCritere::$EQ.' ? ';
           
@@ -802,8 +800,7 @@ class Core
     }
     $queryExemple = $select.$hql;
     
-    $debug = print_r($params, true);
-    Trace::info("SelectByExemple : ".$queryExemple."   ".$debug);
+    Trace::info("SelectByExemple : ".$queryExemple."   ".print_r($params, true));
     
     $result = $db->Execute($queryExemple, $params);
     
@@ -816,8 +813,6 @@ class Core
     {
       $entitys[] = Core::rowToEntity($entityParam, $row);
     }
-    
-    
     
     return $entitys;
     
@@ -879,8 +874,6 @@ class Core
       {
         $hql .= ' WHERE ';
       }
-
-      echo $critere->fieldname."-";
 
       $filterType = $listeField[$critere->fieldname]->getType();
       
@@ -968,7 +961,7 @@ class Core
   public static final function rowToEntity (Entity &$entityParam, $row)
   {
     
-    Trace::debug("rowToEntity : ".print_r($row,true)."<br/><br/><br/>");
+    Trace::debug("rowToEntity : ".print_r($row,true)."<br/>");
     $listeField = $entityParam->getFields();
     
     $newEntity = clone $entityParam;
