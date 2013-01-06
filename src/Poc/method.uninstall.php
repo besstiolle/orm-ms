@@ -6,7 +6,7 @@ if (!function_exists("cmsms")) exit;
 $entities = MyAutoload::getAllInstances($this->GetName(), $this->getName());
 foreach($entities as $anEntity)
 {
-	Core::dropTable($this,$anEntity);
+	Core::dropTable($anEntity);
 }
 
 // put mention into the admin log
