@@ -1,6 +1,6 @@
 <?php
 /**
- * Noyau du framework
+ * Contains the Core Class
  * 
  * @since 0.0.1
  * @author Bess
@@ -9,11 +9,8 @@
  
  
 /**
-* Librairie de fonction pour le framework
-* 
-* Core est la classe qui fait l'interface entre les méthodes natives de CmsMadeSimple et les besoins communs
-*  dans les modules utilisant le framework. 
-* 
+ * Main part of the interface between Cmsmadesimple natives function and the necessity for the Orm functions
+ *   
  * @since 0.0.1
  * @author Bess
  * @package Orm
@@ -21,16 +18,16 @@
 class Core 
 {  
     /**
-    * Constructeur protected, peut être surchargé par une autre classe.
+    * Protected constructor
     *     
     */
   protected function __construct() {}
       
     /**
-    * Transforme les informations d'une entité en une série de commande utilisable par adodb (le moteur bdd de cmsmadesimple)
+    * transforms the entity's structure into adodb informations 
     *         
-    * @param Entity l'entité 
-    * @return la chaine à destination d'adodb.
+    * @param Entity the entity
+    * @return the adodb informations
     */
   public static final function getFieldsToHql(Entity &$entity)
   {    
@@ -88,949 +85,941 @@ class Core
     return $hql;
   }
     /**
-    * Créé une table en fonction des informations stockée dans une entité. 
-    * 
-    *  Créé également la séquence associée.
+    * Create a table into Database from the structure of an Entity
+    *  Will also create the sequence if it's needed
     *  
-    *   Le besoin classique est la création d'une table de bdd à partir d'une entité
-    *   exemple rapide d'une entité Client : 
+    *   example with a Customer entity : 
     * <code>
     * 
-    * class Client extends Entity
+    * class Customer extends Entity
     * {
     *    public function __construct()
     *    {
-    *        parent::__construct('client', 'monModule');
+    *        parent::__construct($this->GetName(), 'customer');
     *        
-    *        $this->add(new Field('client_id'  , CAST::$INTEGER,null, null, KEY::$PK   , null    
-    *                               , new mHTML_FIELD_IDENTIFIANT() , NULLABLE::$FALSE));
+    *        $this->add(new Field('customer_id'  
+	*			, CAST::$INTEGER
+	*			, null
+	*			, null
+	*			, KEY::$PK 
+	*			));
     * 
-    *        $this->add(new Field('nom'        , CAST::$STRING ,  32, null, null        , null    
-    *                               , new mHTML_FIELD_TEXT()        , NULLABLE::$FALSE));
+    *        $this->add(new Field('name'
+    *        	, CAST::$STRING 
+    *        	, 32
+    *        	));
     * 
-    *        $this->add(new Field('prenom'     , CAST::$STRING ,  32, null, null        , null   
-    *                                , new mHTML_FIELD_TEXT()        , NULLABLE::$FALSE));
+    *        $this->add(new Field('lastname'
+    *        	, CAST::$STRING
+    *        	, 32
+	*			, true  // Is nullable
+    *        	));
     *    }
     * }
     * </code>
     * 
-    *  Le meilleur moyen de générer la table 'client' est de faire appel à la méthode  createTable(). 
-    * 
-    * Exemple
+    *  The best way to create its table into the database : 
     * 
     * <code>
-    *   $client = new Client();
-    *   Core::createTable($client);
+    *   $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+    *   Core::createTable($customer);
     * </code>
     * 
-    *  Ce simple code va automatiquement créer la table selon les paramètres définit dans l'entité Client soit
-    *    3 colonnes dont 1 numérique avec une séquence et deux chaines de caractères
+    *  The function will also try to populate the table with a call to the function initTable() if it's define into the entity class.
     * 
-    * 
-    *  A noter l'appel à la fonction initTable() de l'entité. Si elle est définit 
-    *   dans l'entité passée en paramètre, cela permet à moindre coût d'initaliser la table 
-    *   après création avec un jeu de valeur prédéfinit.
-    * 
-    * @param Entity l'entité servant de modèle.
+	* @param Orm the module which extends the Orm module
+    * @param Entity an instance of the entity
     */
-  public static final function createTable(Orm &$module, Entity &$entityParam)
-  {
-    $db = cmsms()->GetDb();
-    $taboptarray = array( 'mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
-    $dict = NewDataDictionary( $db );
-	$hql = Core::getFieldsToHql($entityParam);
+	public static final function createTable(Entity &$entityParam)
+	{
+		$db = cmsms()->GetDb();
+		$taboptarray = array( 'mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
+		$dict = NewDataDictionary( $db );
+		$hql = Core::getFieldsToHql($entityParam);
 
-    //Appel aux méthodes de l'API de adodb pour créer effectivement la table.
-    $sqlarray = $dict->CreateTableSQL($entityParam->getDbname(), 
-                                            $hql,
-                                            $taboptarray);
-                                            
-    $result = $dict->ExecuteSQLArray($sqlarray);
-    
-    if ($result === false)
-    {
-        Trace::error($hql.'<br/>');
-        Trace::error("Database error durant durant la creation de la table pour l'entité " . $entityParam->getName().$db->ErrorMsg());
-        throw new Exception("Database error durant durant la creation de la table pour l'entité " . $entityParam->getName().$db->ErrorMsg());
-    }
-       
-    Trace::debug("createTable : ".print_r($sqlarray, true).'<br/>');
-    
-    //Optionnel : créera une séquence associee
-    if($entityParam->getSeqname() != null){$db->CreateSequence($entityParam->getSeqname());}
-    
-    //On initialise la table.
-    $entityParam->initTable($module);
-  }
+		//Appel aux méthodes de l'API de adodb pour créer effectivement la table.
+		$sqlarray = $dict->CreateTableSQL($entityParam->getDbname(), 
+												$hql,
+												$taboptarray);
+												
+		$result = $dict->ExecuteSQLArray($sqlarray);
+
+		if ($result === false)
+		{
+			Trace::error($hql.'<br/>');
+			Trace::error("Database error durant durant la creation de la table pour l'entité " . $entityParam->getName().$db->ErrorMsg());
+			throw new Exception("Database error durant durant la creation de la table pour l'entité " . $entityParam->getName().$db->ErrorMsg());
+		}
+		   
+		Trace::debug("createTable : ".print_r($sqlarray, true).'<br/>');
+
+		//Optionnel : créera une séquence associee
+		if($entityParam->getSeqname() != null){$db->CreateSequence($entityParam->getSeqname());}
+
+		//On initialise la table.
+		$entityParam->initTable();
+	}
     
     /**
-    * Supprime une table de la base de donnée
+    * Drop the table for the Entity in parameters
+    *  Will also drop the sequence if it's needed
     * 
-    * La fonction récupère le nom de la table à supprimer depuis le modèle
-    *    de l'entité et effectue un "drop table" sql
-    * 
-    * Supprime la séquence associée si elle existe
-    * 
-    * @param Entity l'entité servant de modèle
+    * @param Entity an instance of the entity
     */
-  public static final function dropTable(Orm &$module, Entity &$entityParam)
-  {
-    
-    $db = cmsms()->GetDb();
-    
-    $dict = NewDataDictionary( $db );
-    
-    $sqlarray = $dict->DropTableSQL($entityParam->getDbname());
-    $dict->ExecuteSQLArray($sqlarray);
-    
-    //Optionnel : supprimera une sequence associee
-    if($entityParam->getSeqname() != null){$db->DropSequence($entityParam->getSeqname());}
-  }  
+	public static final function dropTable(Entity &$entityParam)
+	{
+
+		$db = cmsms()->GetDb();
+
+		$dict = NewDataDictionary( $db );
+
+		$sqlarray = $dict->DropTableSQL($entityParam->getDbname());
+		$dict->ExecuteSQLArray($sqlarray);
+
+		//Optionnel : supprimera une sequence associee
+		if($entityParam->getSeqname() != null){$db->DropSequence($entityParam->getSeqname());}
+	}  
   
     /**
-    * Effectue une modification sur la table de l'entité passée en paramètre
+    * Will modifie the table of the Entity in parameters with the SQL query in parameters
     * 
-    *   exemple : pour deux requêtes sur la table de l'entité Client :
+    *   example : if you need to do 
     * 
     * <code>        
-    *   ALTER TABLE ` table de l'entité Client ` ADD `newColumn` INT NOT NULL 
-    *   ALTER TABLE ` table de l'entité Client ` DROP `oldColumn` 
+    *   ALTER TABLE ` table of the Customer entity ` ADD `newColumn` INT NOT NULL 
+    *   ALTER TABLE ` table of the Customer entity ` DROP `oldColumn` 
     * </code>
     * 
-    *  le code sera celui ci :
+    *  the code must be :
     * 
     * <code>
-    *       $client = new Client();
-    *       Core::alterTable($client, "ADD `newColumn` INT NOT NULL");
-    *       Core::alterTable($client, "DROP `oldColumn`");
+    *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+    *       Core::alterTable($customer, "ADD `newColumn` INT NOT NULL");
+    *       Core::alterTable($customer, "DROP `oldColumn`");
     * </code>
     *   
     * 
-    * @param Entity l'entité servant de modèle
-    * @param string la requête sql à passer. 
+    * @param Entity an instance of the entity
+    * @param string the SQL query
     */
-  public static final function alterTable(Entity &$entityParam, $sql)
-  {
-    
-    $db = cmsms()->GetDb();
-        
-    $queryAlter = "ALTER TABLE ".$entityParam->getDbname()." ".$sql;    
-    $result = $db->Execute($queryAlter);
-    if ($result === false){die("Database error durant l'alter de la table $entityParam->getDbname()!");}
-  }
+	public static final function alterTable(Entity &$entityParam, $sql)
+	{
+		$db = cmsms()->GetDb();
+			
+		$queryAlter = "ALTER TABLE ".$entityParam->getDbname()." ".$sql;    
+		$result = $db->Execute($queryAlter);
+		if ($result === false){die("Database error durant l'alter de la table $entityParam->getDbname()!");}
+	}
     
     /**
-    * Effectue une série d'Insert en base
+    * Insert data into database. The third parameter must follow this scheme
     * 
-    *  Le second paramètre doit respecter ce schéma. 
-    * 
-    * Exemple d'une insertion de 3 lignes pour un client (client_id, nom, prenom) 
-    *   avec prénom facultatif et client_id une clé primaire avec une séquence.
-    * 
-    * <code>
-    *       $tableau = array();
-    *       $tableau[] = array('prenom'=>'', 'nom'=>'Dupont');
-    *       $tableau[] = array('nom'=>'Durant');
-    *       $tableau[] = array('prenom'=>'John', 'nom'=>'Doe');
-    * 
-    *       $client = new Client(); 
-    * 
-    *       Core::insertEntity($client, $tableau);
-    * </code>
-    * 
-    *   Notez que dans l'exemple on ne précise <b>JAMAIS</b> la clé primaire pour une insertion, elle sera 
-    *       determinée par le système lui même. Dans le cas ou vous souhaitez insérer votre propre identifiant, 
-    *       veillez toujours à vérifier que la séquence ne sera pas en décalage !
-    *                                        
-    * @param Entity l'entité servant de modèle
-    * @param array le tableau contenant les données à insérer.
-    * @return array la liste des Id créées.
-    */
-  public static final function insertEntity(Orm &$module, Entity &$entityParam, $rows)
-  {
-    
-    $db = cmsms()->GetDb();
-    $listeField = $entityParam->getFields();
-                
-    $sqlReady = false;
-    
-    //Tableau de retour contiendra les clés crées
-    $arrayKEY = array();
-    
-    $queryInsert = 'INSERT INTO '.$entityParam->getDbname().' (%s) values (%s)';
-    
-    $str1 = "";
-    $str2 = "";
-    foreach($listeField as $field)
-    {
-    
-      if($field->isAssociateKEY())
-        continue;
-    
-      if(!empty($str1))
-      {
-        $str1 .= ',';
-        $str2 .= ',';
-      }
-      $str1 .= ' '.$field->getName().' ';
-      $str2 .= '?';
-    }
-    
-    foreach($rows as $row)
-    {
-      $params = array();
-                   
-      //On verifie que toutes les valeurs necessaires sont transmises
-      foreach($listeField as $field)
-      {
-        if($field->isAssociateKEY())
-          continue;
-        
-        //Champs vide mais pas une cle automatique et ni un champs spécial
-        if(!$field->isPrimaryKEY() 
-          && !$field->isNullable() 
-          && (!isset($row[$field->getName()]) || (empty($row[$field->getName()]) && $row[$field->getName()] !== 0))
-          && !($field instanceof Field_SPE))
-        {
-          throw new Exception('la valeur du champs '.$field->getName().' de la classe '.$entityParam->getName().' est manquante');
-        }
-
-         //On génère une nouvelle cléf pour toutes les clé primaire
-        if($field->isPrimaryKEY() && empty($row[$field->getName()]))
-        {
-          //Nouvelle cle
-          $row[$field->getName()] = $db->GenID($entityParam->getSeqname());
-          $arrayKEY[] = $row[$field->getName()];
-        }
-        
-        $val = null;
-        if(isset($row[$field->getName()]))
-        {
-          $val = $row[$field->getName()];
-        }
-
-        $params[] = Core::FieldToDBValue($val, $field->getType());
-        
-      }
-      
-      $sqlReady = true;
-      
-      //Exécution
-      $db->debug = true;
-      
-        Trace::debug("insertEntity : ".sprintf($queryInsert, $str1, $str2));
-      
-      $result = $db->Execute(sprintf($queryInsert, $str1, $str2), $params);
-      if ($result === false)
-      {
-        Trace::error(print_r($params, true).'<br/>');
-        Trace::error(sprintf($queryInsert, $str1, $str2).'<br/>');
-        Trace::error("Database error durant l'insert!".$db->ErrorMsg());
-        throw new Exception("Database error durant l'insert!".$db->ErrorMsg());
-      }
-      
-      if($entityParam->isIndexable())
-      {  
-        // $modops = cmsms()->GetModuleOperations();
-        // Indexing::setSearch($modops->GetSearchModule());
-        Indexing::AddWords($module->getName(), Core::SelectById($entityParam,$arrayKEY[0]));
-      }
-    }
-    
-    return $arrayKEY;
-    
-  }
-   
-    /**
-    *  Effectue une série d'Update en base
-    * 
-    *  Le second paramètre doit respecter ce schéma. 
-    * 
-    * Exemple d'une mise à jour de 3 lignes pour un client (client_id, nom, prenom) 
-    *   avec prénom facultatif et client_id une clé primaire avec une séquence.
-    * 
-    * <code>
-    *       $tableau = array();
-    *       $tableau[] = array('client_id'=>1, 'prenom'=>null, 'nom'=>'Dupont');    <-- met à null le champs prenom
-    *       $tableau[] = array('client_id'=>2, 'nom'=>'Durant');                    <-- met à jour uniquement le nom
-    *       $tableau[] = array('client_id'=>3, 'prenom'=>'John', 'nom'=>'Doe');     <-- met à jour les deux champs
-    * 
-    *       $client = new Client(); 
-    * 
-    *       Core::updateEntity($client, $tableau);
-    * </code>
-    * 
-    * @param Entity l'entité servant de modèle
-    * @param array le tableau contenant les données à mettre à jour.
-    */
-  public static final function updateEntity(Orm $module, Entity &$entityParam, array $rows)
-  {
-    
-    $db = cmsms()->GetDb();
-    $listeField = $entityParam->getFields();
-   
-    
-    foreach($rows as $row)
-    {
-      $str = "";
-      $where = '';
-      $params = array();
-      
-      //Nettoyage des eventuelles valeurs pourries transmises
-      foreach($row as $KEY=>$value)
-      {
-        if(empty($listeField[$KEY]))
-        {
-          unset($row[$KEY]);
-        }
-      }      
-      
-      $hasKEY = false;
-      //On verifie que toutes les valeurs necessaires sont transmises
-      foreach($listeField as $field)
-      {
-        //Si le champs vide est une cle : erreur
-        if($field->isPrimaryKEY())
-        {
-          if(empty($row[$field->getName()]))
-          {
-            throw new Exception('l\'id n\'est pas fournie : '.$field->getName());
-          } 
-          
-          $where = ' WHERE '.$field->getName().' = ?';
-          $hasKEY = true;
-          $KEY = $row[$field->getName()];
-          
-        }
-        
-        //Si n'est pas définit dans les lignes à mettre à jour, on ne met simplement pas à jour
-        if(!isset($row[$field->getName()]))
-        {
-          continue;
-        }
-        
-        if(empty($row[$field->getName()]) && $field->isNullable())
-        {
-                    //Nothing to do
-        }
-        
-        //Champs associatif : on passe
-        if(empty($row[$field->getName()]) && $field->isAssociateKEY())
-        {
-          continue;
-        }
-        
-        if(!empty($str))
-        {
-          $str .= ',';
-        }
-        
-        $str .= ' '.$field->getName().' = ? ';
-        
-        $params[] = Core::FieldToDBValue($row[$field->getName()], $field->getType());
-        
-      }
-      
-      if($hasKEY)
-      {
-        $params[] = $KEY;
-      }
-      
-
-      $queryUpdate = 'UPDATE '.$entityParam->getDbname().' SET '.$str.$where;
-
-      
-      //Excecution
-      $result = $db->Execute($queryUpdate, $params);
-      if ($result === false){die("Database error durant l'update!");}
-      if($entityParam->isIndexable())
-      {  
-        Indexing::UpdateWords($module->getName(), Core::SelectById($entityParam,$KEY));
-      }
-    }
-  }
-  
-    /**
-    * Effectue une série de DELETE dans la table de l'entité
+    * Example for 3 new Customers : customer_id, name, lastName (optionnal) 
     *   
-    * Exemple d'une suppression unique : 
     * 
     * <code>
-    *       $client = new Client(); 
+    *       $myArray = array();
+    *       $myArray[] = array('lastName'=>'', 'name'=>'Smith');
+    *       $myArray[] = array('name'=>'Durant');
+    *       $myArray[] = array('lastName'=>'John', 'name'=>'Doe');
     * 
-    *       Core::deleteByIds($client, array(1);
+    *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+    * 
+    *       Core::insertEntity($this, $customer, $myArray);
     * </code>
     * 
-    *  Exemple d'une suppression multiple : 
-    * 
-    * <code>
-    *       $tableau = array();
-    *       $tableau[] = 1;
-    *       $tableau[] = 2;
-    *       $tableau[] = 3;
-    * 
-    *       $client = new Client(); 
-    * 
-    *       Core::deleteByIds($client, $tableau);
-    * </code>
-    * 
-    * @param Entity l'entité servant de modèle     
-    * @param array un tableau contenant les ids à supprimer
+    *  Important : you must not set the primaryKey value. It will be calculate by the system it-self
+    *  
+	* @param Orm the module which extends the Orm module                                      
+    * @param Entity an instance of the entity
+    * @param array the array with all the values in differents associative array
+	*
+    * @return array the list of the new Ids (customer_id in my example)
     */
-  public static final function deleteByIds(Orm $module, Entity &$entityParam, $ids)
-  {
-    
-    $db = cmsms()->GetDb();
-    $listeField = $entityParam->getFields();
-    
-    foreach($listeField as $field)
-    {
-      if(!$field->isPrimaryKEY())
-      { 
-        continue;
-      }
-      $type = $field->getType();
-      $name = $field->getName();
-    }  
-    
-    $where = '';
-    foreach($ids as $sid)
-    {
-      if(!empty($where))
-      {
-        $where .= ' OR ';
-      }
-      
-      $where .= $name.' = ?';
-      $params[] = Core::FieldToDBValue($sid, $type);  
-    }
-    
-    
-    $queryDelete = 'DELETE FROM '.$entityParam->getDbname().' WHERE '.$where;
-    
-    //Excecution
-    $result = $db->Execute($queryDelete, $params);
-    if ($result === false){die("Database error durant la suppression!");}
-    
-    if($entityParam->isIndexable())
-    {  
-      // $modops = cmsms()->GetModuleOperations();
-      // if(method_exists($modops,"GetSearchModule"))
-      // {
-        // Indexing::setSearch($modops->GetSearchModule());
-      // } else
-      // {
-        // die("ko");
-      // }
-      foreach($ids as $sid)
-      {
-        Indexing::DeleteWords($module->getName(), $entityParam, $sid);
-      }
-      
-    }
-  }
+	public static final function insertEntity(Orm &$module, Entity &$entityParam, $rows)
+	{
+
+		$db = cmsms()->GetDb();
+		$listeField = $entityParam->getFields();
+					
+		$sqlReady = false;
+
+		//Tableau de retour contiendra les clés crées
+		$arrayKEY = array();
+
+		$queryInsert = 'INSERT INTO '.$entityParam->getDbname().' (%s) values (%s)';
+
+		$str1 = "";
+		$str2 = "";
+		foreach($listeField as $field)
+		{
+
+		  if($field->isAssociateKEY())
+			continue;
+
+		  if(!empty($str1))
+		  {
+			$str1 .= ',';
+			$str2 .= ',';
+		  }
+		  $str1 .= ' '.$field->getName().' ';
+		  $str2 .= '?';
+		}
+
+		foreach($rows as $row)
+		{
+		  $params = array();
+					   
+		  //On verifie que toutes les valeurs necessaires sont transmises
+		  foreach($listeField as $field)
+		  {
+			if($field->isAssociateKEY())
+			  continue;
+			
+			//Champs vide mais pas une cle automatique et ni un champs spécial
+			if(!$field->isPrimaryKEY() 
+			  && !$field->isNullable() 
+			  && (!isset($row[$field->getName()]) || (empty($row[$field->getName()]) && $row[$field->getName()] !== 0))
+			  && !($field instanceof Field_SPE))
+			{
+			  throw new Exception('la valeur du champs '.$field->getName().' de la classe '.$entityParam->getName().' est manquante');
+			}
+
+			 //On génère une nouvelle cléf pour toutes les clé primaire
+			if($field->isPrimaryKEY() && empty($row[$field->getName()]))
+			{
+			  //Nouvelle cle
+			  $row[$field->getName()] = $db->GenID($entityParam->getSeqname());
+			  $arrayKEY[] = $row[$field->getName()];
+			}
+			
+			$val = null;
+			if(isset($row[$field->getName()]))
+			{
+			  $val = $row[$field->getName()];
+			}
+
+			$params[] = Core::FieldToDBValue($val, $field->getType());
+			
+		  }
+		  
+		  $sqlReady = true;
+		  
+		  //Exécution
+		  $db->debug = true;
+		  
+			Trace::debug("insertEntity : ".sprintf($queryInsert, $str1, $str2));
+		  
+		  $result = $db->Execute(sprintf($queryInsert, $str1, $str2), $params);
+		  if ($result === false)
+		  {
+			Trace::error(print_r($params, true).'<br/>');
+			Trace::error(sprintf($queryInsert, $str1, $str2).'<br/>');
+			Trace::error("Database error durant l'insert!".$db->ErrorMsg());
+			throw new Exception("Database error durant l'insert!".$db->ErrorMsg());
+		  }
+		  
+		  if($entityParam->isIndexable())
+		  {  
+			// $modops = cmsms()->GetModuleOperations();
+			// Indexing::setSearch($modops->GetSearchModule());
+			Indexing::AddWords($module->getName(), Core::SelectById($entityParam,$arrayKEY[0]));
+		  }
+		}
+
+		return $arrayKEY;
+
+	}
    
     /**
-    * Retourne le nombre d'occurance dans la table représentant l'entité
+    *  Update data into database. The third parameter must follow this scheme
     * 
-    * @param Entity l'entité servant de modèle
-    * @return int le nombre d'occurance présente en table   
-    */
-  public static final function countAll(Entity &$entityParam)
-  {
-    
-    $db = cmsms()->GetDb();
-    
-    $querySelect = 'Select count(*) FROM '.$entityParam->getDbname();
-    
-    Trace::debug("countAll : ".$querySelect);
-      
-    $compteur= $db->getOne($querySelect);
-    if ($compteur === false){die("Database error durant la requete count(*)!");}
-    
-    return $compteur;
-  }
-  
-    /**
-    * Retourne l'intégralité des occurences de la table représentant l'entité
-    * 
-    * @param Entity l'entité servant de modèle
-    * @return array<Entity> la liste des Entités 
-    */
-  public static final function selectAll(Entity &$entityParam)
-  {
-    
-    $db = cmsms()->GetDb();
-    
-    $querySelect = 'Select * FROM '.$entityParam->getDbname();
-    
-        //Si déjà présent en cache, on le retourne 
-    if(Cache::isCache($querySelect))
-    {
-      return Cache::getCache($querySelect);
-    }
-      
-    $result = $db->Execute($querySelect);
-    if ($result === false){die("Database error durant la requete par Ids!");}
-    
-    $entitys = array();
-    while ($row = $result->FetchRow())
-    {
-      $entitys[] = Core::rowToEntity($entityParam, $row);
-    }
-    
-        //On repousse dans le cache le résultat avant de le retourner   
-    Cache::setCache($querySelect, null, $entitys);
-    
-        return $entitys;
-  }
-  
-    
-    /**
-    * Retourne l'entité trouvée en base à partir de son Id
-    * 
-    * @param Entity l'entité servant de modèle  
-    * @param int l'Id recherché
-    * @return Entity l'entité ayant l'Id passé en paramètre ou null
-    */
-  public static final function selectById(Entity &$entityParam,$id)
-  {
-    $liste = Core::selectByIds($entityParam, array($id));
-        
-        if(!isset($liste[0]))
-            return null;
-        
-    return $liste[0];
-  }
-  
-    /**
-    * Retourne la liste des entités trouvées en base à partir de leur Ids
-    * 
-    * @param Entity l'entité servant de modèle  
-    * @param array le tableau contenant les Ids recherchés
-    * @return array<Entity> un tableau contenant toutes les entités trouvées ou vide si aucun résultat
-    */
-  public static final function selectByIds(Entity &$entityParam, $ids)
-  {
-    if(count($ids) == 0)
-      return array();
-        
-    
-    $db = cmsms()->GetDb();
-    $listeField = $entityParam->getFields();
-    
-    $where = "";
-        
-    foreach($listeField as $field)
-    {
-    
-      if(!$field->isPrimaryKEY())
-      { 
-        continue;
-      }
-      
-      foreach($ids as $id)
-      {
-      
-        if(!empty($where))
-        {
-          $where .= ' OR ';
-        }
-              
-        $where .= $field->getName().' = ?';
-        
-        $params[] = Core::FieldToDBValue($id, $field->getType());
-      }
-    }
-    
-    $querySelect = 'Select * FROM '.$entityParam->getDbname().' WHERE '.$where;
-    
-        //Si déjà présent en cache, on le retourne
-    if(Cache::isCache($querySelect,$params))
-    {
-      return Cache::getCache($querySelect,$params);
-    }
-    
-    //Excecution
-    $result = $db->Execute($querySelect, $params);
-    if ($result === false){die("Database error durant la requete par Ids!");}
-    
-    $entitys = array();
-    while ($row = $result->FetchRow())
-    {
-      $entitys[] = Core::rowToEntity($entityParam, $row);
-    }
-        
-        //On repousse dans le cache le résultat avant de le retourner
-    Cache::setCache($querySelect,$params, $entitys);
-        
-    return $entitys;
-    
-  }
-  
-    /**
-    *  Permet de rechercher une liste d'entité à partir d'une série de critère de selection 
-    * 
-    * Exemple : rechercher les clients prénommé 'Roger' (casse insensible)
-    * 
-    *  <code>
-    *       $client = new Client();
-    * 
-    *       $exemple = new Exemple();
-    *       $exemple->addCritere('prenom', TypeCritere::$EQ, array('roger'), true);
-    * 
-    *       Core::selectByExemple($client, $exemple);
-    * </code>
-    * 
-    *  Exemple : rechercher les clients ayant un Ids >= 90 
+    * Example for 3 new Customers : customer_id, name, lastName (optionnal) 
     * 
     * <code>
-    *       $client = new Client();
+    *       $myArray = array();
+    *       $myArray[] = array('customer_id'=>1, 'lastName'=>null, 'name'=>'Dupont');    <-- update Name value, erase lastName value in database
+    *       $myArray[] = array('customer_id'=>2, 'name'=>'Durant');                      <-- update Name value
+    *       $myArray[] = array('customer_id'=>3, 'lastName'=>'John', 'name'=>'Doe');     <-- update Name value and lastName value
     * 
-    *       $exemple = new Exemple();
-    *       $exemple->addCritere('client_id', TypeCritere::$GTE, array(90));
+    *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
     * 
-    *       Core::selectByExemple($client, $exemple);
+    *       Core::updateEntity($this, $customer, $myArray);
     * </code>
     * 
-    * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals (supérieur ou égal é)
-    * 
-  * NOTE 2 : Les critères s'ajoutent sans soucis pour cumuler les conditions de recherche
-    * 
-    * @param Entity l'entité servant de modèle 
-    * @param Exemple l'Objet Exemple préalablement remplis
-    * 
-    * @see Exemple
-    * @see TypeCritere
+	* @param Orm the module which extends the Orm module                                      
+    * @param Entity an instance of the entity
+    * @param array the array with all the values in differents associative array
     */
-  public static final function selectByExemple(Entity &$entityParam, Exemple $exemple)
-  {
-    
-    $db = cmsms()->GetDb();
-    $listeField = $entityParam->getFields();
-    
-    $criteres = $exemple->getCriteres();
-    $select = "select * from ".$entityParam->getDbname();
-    $hql = "";
-    $params = array();
-    //  die("spp,".count($criteres));
-    foreach($criteres as $critere)
-    {
-      if(!empty($hql))
-      {
-        $hql .= ' AND ';
-      }
-      
-      if(empty($hql))
-      {
-        $hql .= ' WHERE ';
-      }
+	public static final function updateEntity(Orm $module, Entity &$entityParam, array $rows)
+	{
 
-      $filterType =  $listeField[$critere->fieldname]->getType();
-      
-            //Critéres avec 1 seul paramètre
-      if($critere->typeCritere == TypeCritere::$EQ || $critere->typeCritere == TypeCritere::$NEQ 
-        || $critere->typeCritere == TypeCritere::$GT || $critere->typeCritere == TypeCritere::$GTE 
-        || $critere->typeCritere == TypeCritere::$LT || $critere->typeCritere == TypeCritere::$LTE 
-        || $critere->typeCritere == TypeCritere::$BEFORE || $critere->typeCritere == TypeCritere::$AFTER
-        || $critere->typeCritere == TypeCritere::$LIKE || $critere->typeCritere == TypeCritere::$NLIKE)
-      {  
-        $val = $critere->paramsCritere[0];
-        
-        if($critere->typeCritere == TypeCritere::$LIKE || $critere->typeCritere == TypeCritere::$NLIKE)
-        {
-          $val.= '%';
-        }
-        
-        $params[] = Core::FieldToDBValue($val, $filterType); 
-        $hql .= $critere->fieldname.$critere->typeCritere.' ? ';
-        continue;
-      }
-      
-            //Sans paramètres
-      if($critere->typeCritere == TypeCritere::$NULL || $critere->typeCritere == TypeCritere::$NNULL)
-      {  
-        $hql .= $critere->fieldname.$critere->typeCritere;
-        continue;
-      }
-      
-            //deux paramètres
-      if($critere->typeCritere == TypeCritere::$BETWEEN)
-      {  
-        $params[] = Core::FieldToDBValue($critere->paramsCritere[0], $filterType); 
-        $params[] = Core::FieldToDBValue($critere->paramsCritere[1], $filterType); 
-        $hql .= $critere->fieldname.$critere->typeCritere.' ? AND ?';
-        continue;
-      }
-      
-            // N paramètres
-      if($critere->typeCritere == TypeCritere::$IN || $critere->typeCritere == TypeCritere::$NIN)
-      {
-        $hql .= ' ( ';
-        $second = false; 
-        foreach($critere->paramsCritere as $param)
-        {
-          if($second)
-          {
-            $hql .= ' OR ';
-          }
-          
-          $params[] = Core::FieldToDBValue($param, $filterType); 
-          $hql .= $critere->fieldname.TypeCritere::$EQ.' ? ';
-          
-          $second = true;
-        }
-        $hql .= ' )';
-        continue;
-      }
-      
-      //Traitement spécifique
-      if($critere->typeCritere == TypeCritere::$EMPTY)
-      {
-        $hql .= ' ( '.$critere->fieldname .' is null || ' . $critere->fieldname . "= '')";
-        continue;
-      }
-      if($critere->typeCritere == TypeCritere::$NEMPTY)
-      {
-        $hql .= ' ( '.$critere->fieldname .' is not null && ' . $critere->fieldname . "!= '')";
-        continue;
-      }
-                     
-      throw new Exception("Le Critere $critere->typeCritere n'est pas encore pris en charge");
-    }
-    $queryExemple = $select.$hql;
-    
-    Trace::info("SelectByExemple : ".$queryExemple."   ".print_r($params, true));
-    
-    $result = $db->Execute($queryExemple, $params);
-    
-    if ($result === false){die($db->ErrorMsg().Trace::error("Database error durant la requete par Exemple!"));}
-    
-    Trace::info("SelectByExemple : ".$result->RecordCount()." resultat(s)");
-    
-    $entitys = array();
-    while ($row = $result->FetchRow())
-    {
-      $entitys[] = Core::rowToEntity($entityParam, $row);
-    }
-    
-    return $entitys;
-    
-  }
-  
-   /**
-    *  Permet de rechercher une liste d'entité à partir d'une série de critère de selection 
-    *       et de les supprimer de la table
-    * 
-    * Exemple : supprimer les clients prénommé 'Roger' (casse insensible)
-    * 
-    *  <code>
-    *       $client = new Client();
-    * 
-    *       $exemple = new Exemple();
-    *       $exemple->addCritere('prenom', TypeCritere::$EQ, array('roger'), true);
-    * 
-    *       Core::deleteByExemple($client, $exemple);
-    * </code>
-    * 
-    *  Exemple : supprimer les clients ayant un Ids >= 90 
-    * 
-    * <code>
-    *       $client = new Client();
-    * 
-    *       $exemple = new Exemple();
-    *       $exemple->addCritere('client_id', TypeCritere::$GTE, array(90));
-    * 
-    *       Core::deleteByExemple($client, $exemple);
-    * </code>
-    * 
-    * NOTE : EQ => <b>EQ</b>uals, GET => <b>G</b>retter or <b>E</b>quals <b>T</b>han (plus grand ou égal é)
-    * 
-    * 
-    * @param Entity l'entité servant de modèle 
-    * @param Exemple l'Objet Exemple préalablement remplis
-    * 
-    * @see Exemple
-    * @see TypeCritere
-    */
-  public static final function deleteByExemple(Entity &$entityParam, Exemple $Exemple)
-  {
-    
-    $db = cmsms()->GetDb();
-    $listeField = $entityParam->getFields();
-    
-    $criteres = $Exemple->getCriteres();
-    $delete = "delete from ".$entityParam->getDbname();
-    $hql = "";
-    $params = array();
-    foreach($criteres as $critere)
-    {
-      if(!empty($hql))
-      {
-        $hql .= ' AND ';
-      }
-      
-      if(empty($hql))
-      {
-        $hql .= ' WHERE ';
-      }
+		$db = cmsms()->GetDb();
+		$listeField = $entityParam->getFields();
 
-      $filterType = $listeField[$critere->fieldname]->getType();
-      
-            // 1 paramètre  
-      if($critere->typeCritere == TypeCritere::$EQ || $critere->typeCritere == TypeCritere::$NEQ 
-        || $critere->typeCritere == TypeCritere::$GT || $critere->typeCritere == TypeCritere::$GTE 
-        || $critere->typeCritere == TypeCritere::$LT || $critere->typeCritere == TypeCritere::$LTE 
-        || $critere->typeCritere == TypeCritere::$BEFORE || $critere->typeCritere == TypeCritere::$AFTER
-        || $critere->typeCritere == TypeCritere::$LIKE || $critere->typeCritere == TypeCritere::$NLIKE)
-      {  
-        $params[] = Core::FieldToDBValue($critere->paramsCritere[0], $filterType); 
-        $hql .= $critere->fieldname.$critere->typeCritere.' ? ';
-        continue;
-      }
-      
-            // 0 paramètre
-      if($critere->typeCritere == TypeCritere::$NULL || $critere->typeCritere == TypeCritere::$NNULL)
-      {  
-        $hql .= $critere->fieldname.$critere->typeCritere;
-        continue;
-      }
-      
-            // 2 paramètres  
-      if($critere->typeCritere == TypeCritere::$BETWEEN)
-      {  
-        $params[] = Core::FieldToDBValue($critere->paramsCritere[0], $filterType); 
-        $params[] = Core::FieldToDBValue($critere->paramsCritere[1], $filterType); 
-        $hql .= $critere->fieldname.$critere->typeCritere.' ? AND ?';
-        continue;
-      }
-            
-            // N paramètres
-            if($critere->typeCritere == TypeCritere::$IN || $critere->typeCritere == TypeCritere::$NIN)
-            {
-                $hql .= ' ( ';
-                $second = false; 
-                foreach($critere->paramsCritere as $param)
-                {
-                    if($second)
-                    {
-                        $hql .= ' OR ';
-                    }
-                    $params[] = Core::FieldToDBValue($param, $filterType); 
-                    $hql .= $critere->fieldname.TypeCritere::$EQ.' ? ';
-                    
-                    $second = true;
-                }
-                $hql .= ' )';
-                continue;
-            }                        
-      
-      throw new Exception("Le Critere $critere->typeCritere n'est pas encore pris en charge");
-    }
-    $queryExemple = $delete.$hql;
-                                    
-    
-    $result = $db->Execute($queryExemple, $params);
-    if ($result === false){die("Database error durant la requete par Exemple!");}
-  }
-      
+
+		foreach($rows as $row)
+		{
+		  $str = "";
+		  $where = '';
+		  $params = array();
+		  
+		  //Nettoyage des eventuelles valeurs pourries transmises
+		  foreach($row as $KEY=>$value)
+		  {
+			if(empty($listeField[$KEY]))
+			{
+			  unset($row[$KEY]);
+			}
+		  }      
+		  
+		  $hasKEY = false;
+		  //On verifie que toutes les valeurs necessaires sont transmises
+		  foreach($listeField as $field)
+		  {
+			//Si le champs vide est une cle : erreur
+			if($field->isPrimaryKEY())
+			{
+			  if(empty($row[$field->getName()]))
+			  {
+				throw new Exception('l\'id n\'est pas fournie : '.$field->getName());
+			  } 
+			  
+			  $where = ' WHERE '.$field->getName().' = ?';
+			  $hasKEY = true;
+			  $KEY = $row[$field->getName()];
+			  
+			}
+			
+			//Si n'est pas définit dans les lignes à mettre à jour, on ne met simplement pas à jour
+			if(!isset($row[$field->getName()]))
+			{
+			  continue;
+			}
+			
+			if(empty($row[$field->getName()]) && $field->isNullable())
+			{
+						//Nothing to do
+			}
+			
+			//Champs associatif : on passe
+			if(empty($row[$field->getName()]) && $field->isAssociateKEY())
+			{
+			  continue;
+			}
+			
+			if(!empty($str))
+			{
+			  $str .= ',';
+			}
+			
+			$str .= ' '.$field->getName().' = ? ';
+			
+			$params[] = Core::FieldToDBValue($row[$field->getName()], $field->getType());
+			
+		  }
+		  
+		  if($hasKEY)
+		  {
+			$params[] = $KEY;
+		  }
+		  
+
+		  $queryUpdate = 'UPDATE '.$entityParam->getDbname().' SET '.$str.$where;
+
+		  
+		  //Excecution
+		  $result = $db->Execute($queryUpdate, $params);
+		  if ($result === false){die("Database error durant l'update!");}
+		  if($entityParam->isIndexable())
+		  {  
+			Indexing::UpdateWords($module->getName(), Core::SelectById($entityParam,$KEY));
+		  }
+		}
+	}
+  
     /**
-    * transforme un tableau de valeur en une entité compléte
-    * 
-    *   Le tableau doit être sous la forme d'un tableau associatif à une seule dimension
-    * 
-    * Exemple :
-    * 
-    * <code>
-    *       $tableau1 = array('client_id'=>1, 'nom'=>'Dupont');       
-    *       $tableau2 = array('client_id'=>2, 'nom'=>'Durand', 'prenom'=>'Joe');       
+    * Delete information into database
     *   
-    *       $client = new Client();
+    * Example for a single deletion : 
     * 
-    *       $client1 = Core::rowToEntity($client, $tableau1);
-    *       $client2 = Core::rowToEntity($client, $tableau2);
+    * <code>
+    *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
     * 
-    *       echo $client1->get('prenom'); //retournera null
-    *       echo $client2->get('Prenom'); //retournera Joe
-    * 
+    *       Core::deleteByIds($this, $customer, array(1);
     * </code>
-    *         
-    * @param Entity l'entité servant de modèle
-    * @param array le tableau contenant les données
+    * 
+    *  Example for multiple deletion : 
+    * 
+    * <code>
+    *       $myArray = array();
+    *       $myArray[] = 1;
+    *       $myArray[] = 2;
+    *       $myArray[] = 3;
+    * 
+    *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+    * 
+    *       Core::deleteByIds($this,$customer, $myArray);
+    * </code>
+    * 
+	* @param Orm the module which extends the Orm module                                      
+    * @param Entity an instance of the entity    
+    * @param array all the ids to delete ($customer_id in my example)
     */
-  public static final function rowToEntity (Entity &$entityParam, $row)
-  {
-    
-    Trace::debug("rowToEntity : ".print_r($row,true)."<br/>");
-    $listeField = $entityParam->getFields();
-    
-    $newEntity = clone $entityParam;
-    foreach($listeField as $field)
-    {
-      if(!$field->isAssociateKEY())
-      {
-        $newEntity->set($field->getName(),Core::dbValueToField($row[$field->getName()], $field->getType()));
-      } 
-    }
-    return $newEntity;  
-  }
+	public static final function deleteByIds(Orm $module, Entity &$entityParam, $ids)
+	{
+
+		$db = cmsms()->GetDb();
+		$listeField = $entityParam->getFields();
+
+		foreach($listeField as $field)
+		{
+		  if(!$field->isPrimaryKEY())
+		  { 
+			continue;
+		  }
+		  $type = $field->getType();
+		  $name = $field->getName();
+		}  
+
+		$where = '';
+		foreach($ids as $sid)
+		{
+		  if(!empty($where))
+		  {
+			$where .= ' OR ';
+		  }
+		  
+		  $where .= $name.' = ?';
+		  $params[] = Core::FieldToDBValue($sid, $type);  
+		}
+
+
+		$queryDelete = 'DELETE FROM '.$entityParam->getDbname().' WHERE '.$where;
+
+		//Excecution
+		$result = $db->Execute($queryDelete, $params);
+		if ($result === false){die("Database error durant la suppression!");}
+
+		if($entityParam->isIndexable())
+		{  
+		  // $modops = cmsms()->GetModuleOperations();
+		  // if(method_exists($modops,"GetSearchModule"))
+		  // {
+			// Indexing::setSearch($modops->GetSearchModule());
+		  // } else
+		  // {
+			// die("ko");
+		  // }
+		  foreach($ids as $sid)
+		  {
+			Indexing::DeleteWords($module->getName(), $entityParam, $sid);
+		  }
+		  
+		}
+	}
+   
+    /**
+    * Returns the number of occurrences from the table of the entity in Parameters
+    *                                     
+    * @param Entity an instance of the entity    
+	* 
+    * @return int the number of occurrences from the table   
+    */
+	public static final function countAll(Entity &$entityParam)
+	{
+
+		$db = cmsms()->GetDb();
+
+		$querySelect = 'Select count(*) FROM '.$entityParam->getDbname();
+
+		Trace::debug("countAll : ".$querySelect);
+		  
+		$compteur= $db->getOne($querySelect);
+		if ($compteur === false){die("Database error durant la requete count(*)!");}
+
+		return $compteur;
+	}
   
     /**
-    * Transforme une donnée issue de PHP en une donnée pour SQL
+    * Returns all the occurrences from the table of the entity in Parameters
     * 
-    * @param mixed la donnée issue de PHP
-    * @param mixed un champs de la classe static CAST
-    * 
-    * @see CAST
+    * @param Entity an instance of the entity  
+	*
+    * @return array<Entity> list of Entities found
     */
-  public static final function FieldToDBValue($data, $type)
-  {
-    switch($type)
-    {
-      case CAST::$STRING : return $data;
-      
-      case CAST::$INTEGER : return $data;
-      
-      case CAST::$NUMERIC : return $data;
-      
-      case CAST::$BUFFER : return $data;
-      
-      case CAST::$DATE : return cmsms()->GetDb()->DBDate($data);       
-      
-      case CAST::$TIME : return cmsms()->GetDb()->DBDate($data);     
+	public static final function selectAll(Entity &$entityParam)
+	{
 
-      case CAST::$TS : return $data;  
-    }
-  }
+		$db = cmsms()->GetDb();
+
+		$querySelect = 'Select * FROM '.$entityParam->getDbname();
+
+			//Si déjà présent en cache, on le retourne 
+		if(Cache::isCache($querySelect))
+		{
+		  return Cache::getCache($querySelect);
+		}
+		  
+		$result = $db->Execute($querySelect);
+		if ($result === false){die("Database error durant la requete par Ids!");}
+
+		$entitys = array();
+		while ($row = $result->FetchRow())
+		{
+		  $entitys[] = Core::rowToEntity($entityParam, $row);
+		}
+
+			//On repousse dans le cache le résultat avant de le retourner   
+		Cache::setCache($querySelect, null, $entitys);
+
+		return $entitys;
+	}
+  
+    
+    /**
+    * Return a Entity from its Id
+    * 
+    * @param Entity an instance of the entity  
+    * @param int the Id to find
+    * @return Entity the Entity found or NULL
+    */
+	public static final function selectById(Entity &$entityParam,$id)
+	{
+		$liste = Core::selectByIds($entityParam, array($id));
+			
+			if(!isset($liste[0]))
+				return null;
+			
+		return $liste[0];
+	}
   
     /**
-     * Transforme une donnée issue de SQL en une donnée pour PHP
+    * Return Entities from their Ids
     * 
-    * @param mixed la donnée issue de la base de donnée
-    * @param mixed un champs de la classe static CAST
-    * 
-    * @see CAST
+    * @param Entity an instance of the entity  
+    * @param array list of the Ids to find
+	*
+    * @return array<Entity> list of Entities found
     */
-  public static final function dbValueToField($data, $type)
-  {
-    switch($type)
-    {
-      case CAST::$STRING : return $data;
-      
-      case CAST::$INTEGER : return $data;
-      
-      case CAST::$NUMERIC : return $data;
-      
-      case CAST::$BUFFER : return $data;
-      
-      case CAST::$DATE : return cmsms()->GetDb()->UnixTimeStamp($data);
-      
-      case CAST::$TIME : return cmsms()->GetDb()->UnixTimeStamp($data);
+	public static final function selectByIds(Entity &$entityParam, $ids)
+	{
+		if(count($ids) == 0)
+		  return array();
+			
 
-      case CAST::$TS : return $data;
+		$db = cmsms()->GetDb();
+		$listeField = $entityParam->getFields();
 
-    }
-  }
+		$where = "";
+			
+		foreach($listeField as $field)
+		{
+
+		  if(!$field->isPrimaryKEY())
+		  { 
+			continue;
+		  }
+		  
+		  foreach($ids as $id)
+		  {
+		  
+			if(!empty($where))
+			{
+			  $where .= ' OR ';
+			}
+				  
+			$where .= $field->getName().' = ?';
+			
+			$params[] = Core::FieldToDBValue($id, $field->getType());
+		  }
+		}
+
+		$querySelect = 'Select * FROM '.$entityParam->getDbname().' WHERE '.$where;
+
+			//Si déjà présent en cache, on le retourne
+		if(Cache::isCache($querySelect,$params))
+		{
+		  return Cache::getCache($querySelect,$params);
+		}
+
+		//Excecution
+		$result = $db->Execute($querySelect, $params);
+		if ($result === false){die("Database error durant la requete par Ids!");}
+
+		$entitys = array();
+		while ($row = $result->FetchRow())
+		{
+		  $entitys[] = Core::rowToEntity($entityParam, $row);
+		}
+			
+			//On repousse dans le cache le résultat avant de le retourner
+		Cache::setCache($querySelect,$params, $entitys);
+			
+		return $entitys;
+
+	}
+  
+    /**
+     * Allow search a list of Entity from a list of Criteria
+     * 
+     * Example : find the customers with lastName 'Roger' (no casse sensitive)
+     * 
+     *  <code>
+     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+     * 
+     *       $exemple = new Exemple();
+     *       $exemple->addCritere('lastName', TypeCritere::$EQ, array('roger'), true);
+     * 
+     *       Core::selectByExemple($customer, $exemple);
+     * </code>
+     * 
+     *  Example : find the customers with Id >= 90
+     * 
+     * <code>
+     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+     * 
+     *       $exemple = new Exemple();
+     *       $exemple->addCritere('customer_id', TypeCritere::$GTE, array(90));
+     * 
+     *       Core::selectByExemple($customer, $exemple);
+     * </code>
+     * 
+     * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
+     * 
+     * NOTE 2 : you can add as many Criterias as you want in an Example Object
+     * 
+     * @param Entity an instance of the entity
+     * @param Exemple the Object Exemple with some Criterias inside
+     * 
+     * @see Exemple
+     * @see TypeCritere
+     */
+	public static final function selectByExemple(Entity &$entityParam, Exemple $exemple)
+	{
+
+		$db = cmsms()->GetDb();
+		$listeField = $entityParam->getFields();
+
+		$criteres = $exemple->getCriteres();
+		$select = "select * from ".$entityParam->getDbname();
+		$hql = "";
+		$params = array();
+		//  die("spp,".count($criteres));
+		foreach($criteres as $critere)
+		{
+		  if(!empty($hql))
+		  {
+			$hql .= ' AND ';
+		  }
+		  
+		  if(empty($hql))
+		  {
+			$hql .= ' WHERE ';
+		  }
+
+		  $filterType =  $listeField[$critere->fieldname]->getType();
+		  
+				//Critéres avec 1 seul paramètre
+		  if($critere->typeCritere == TypeCritere::$EQ || $critere->typeCritere == TypeCritere::$NEQ 
+			|| $critere->typeCritere == TypeCritere::$GT || $critere->typeCritere == TypeCritere::$GTE 
+			|| $critere->typeCritere == TypeCritere::$LT || $critere->typeCritere == TypeCritere::$LTE 
+			|| $critere->typeCritere == TypeCritere::$BEFORE || $critere->typeCritere == TypeCritere::$AFTER
+			|| $critere->typeCritere == TypeCritere::$LIKE || $critere->typeCritere == TypeCritere::$NLIKE)
+		  {  
+			$val = $critere->paramsCritere[0];
+			
+			if($critere->typeCritere == TypeCritere::$LIKE || $critere->typeCritere == TypeCritere::$NLIKE)
+			{
+			  $val.= '%';
+			}
+			
+			$params[] = Core::FieldToDBValue($val, $filterType); 
+			$hql .= $critere->fieldname.$critere->typeCritere.' ? ';
+			continue;
+		  }
+		  
+				//Sans paramètres
+		  if($critere->typeCritere == TypeCritere::$NULL || $critere->typeCritere == TypeCritere::$NNULL)
+		  {  
+			$hql .= $critere->fieldname.$critere->typeCritere;
+			continue;
+		  }
+		  
+				//deux paramètres
+		  if($critere->typeCritere == TypeCritere::$BETWEEN)
+		  {  
+			$params[] = Core::FieldToDBValue($critere->paramsCritere[0], $filterType); 
+			$params[] = Core::FieldToDBValue($critere->paramsCritere[1], $filterType); 
+			$hql .= $critere->fieldname.$critere->typeCritere.' ? AND ?';
+			continue;
+		  }
+		  
+				// N paramètres
+		  if($critere->typeCritere == TypeCritere::$IN || $critere->typeCritere == TypeCritere::$NIN)
+		  {
+			$hql .= ' ( ';
+			$second = false; 
+			foreach($critere->paramsCritere as $param)
+			{
+			  if($second)
+			  {
+				$hql .= ' OR ';
+			  }
+			  
+			  $params[] = Core::FieldToDBValue($param, $filterType); 
+			  $hql .= $critere->fieldname.TypeCritere::$EQ.' ? ';
+			  
+			  $second = true;
+			}
+			$hql .= ' )';
+			continue;
+		  }
+		  
+		  //Traitement spécifique
+		  if($critere->typeCritere == TypeCritere::$EMPTY)
+		  {
+			$hql .= ' ( '.$critere->fieldname .' is null || ' . $critere->fieldname . "= '')";
+			continue;
+		  }
+		  if($critere->typeCritere == TypeCritere::$NEMPTY)
+		  {
+			$hql .= ' ( '.$critere->fieldname .' is not null && ' . $critere->fieldname . "!= '')";
+			continue;
+		  }
+						 
+		  throw new Exception("Le Critere $critere->typeCritere n'est pas encore pris en charge");
+		}
+		$queryExemple = $select.$hql;
+
+		Trace::info("SelectByExemple : ".$queryExemple."   ".print_r($params, true));
+
+		$result = $db->Execute($queryExemple, $params);
+
+		if ($result === false){die($db->ErrorMsg().Trace::error("Database error durant la requete par Exemple!"));}
+
+		Trace::info("SelectByExemple : ".$result->RecordCount()." resultat(s)");
+
+		$entitys = array();
+		while ($row = $result->FetchRow())
+		{
+		  $entitys[] = Core::rowToEntity($entityParam, $row);
+		}
+
+		return $entitys;
+
+	}
+    /**
+     * Allow delete a list of Entity from a list of Criteria
+     * 
+     * Example : delete the customers with lastName 'Roger' (no casse sensitive)
+     * 
+     *  <code>
+     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+     * 
+     *       $exemple = new Exemple();
+     *       $exemple->addCritere('lastName', TypeCritere::$EQ, array('roger'), true);
+     * 
+     *       Core::deleteByExemple($customer, $exemple);
+     * </code>
+     * 
+     *  Example : delete the customers with Id >= 90
+     * 
+     * <code>
+     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+     * 
+     *       $exemple = new Exemple();
+     *       $exemple->addCritere('customer_id', TypeCritere::$GTE, array(90));
+     * 
+     *       Core::deleteByExemple($customer, $exemple);
+     * </code>
+     * 
+     * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
+     * 
+     * NOTE 2 : you can add as many Criterias as you want in an Example Object
+     * 
+     * @param Entity an instance of the entity
+     * @param Exemple the Object Exemple with some Criterias inside
+     * 
+     * @see Exemple
+     * @see TypeCritere
+     */
+	public static final function deleteByExemple(Entity &$entityParam, Exemple $Exemple)
+	{
+
+		$db = cmsms()->GetDb();
+		$listeField = $entityParam->getFields();
+
+		$criteres = $Exemple->getCriteres();
+		$delete = "delete from ".$entityParam->getDbname();
+		$hql = "";
+		$params = array();
+		foreach($criteres as $critere)
+		{
+		  if(!empty($hql))
+		  {
+			$hql .= ' AND ';
+		  }
+		  
+		  if(empty($hql))
+		  {
+			$hql .= ' WHERE ';
+		  }
+
+		  $filterType = $listeField[$critere->fieldname]->getType();
+		  
+				// 1 paramètre  
+		  if($critere->typeCritere == TypeCritere::$EQ || $critere->typeCritere == TypeCritere::$NEQ 
+			|| $critere->typeCritere == TypeCritere::$GT || $critere->typeCritere == TypeCritere::$GTE 
+			|| $critere->typeCritere == TypeCritere::$LT || $critere->typeCritere == TypeCritere::$LTE 
+			|| $critere->typeCritere == TypeCritere::$BEFORE || $critere->typeCritere == TypeCritere::$AFTER
+			|| $critere->typeCritere == TypeCritere::$LIKE || $critere->typeCritere == TypeCritere::$NLIKE)
+		  {  
+			$params[] = Core::FieldToDBValue($critere->paramsCritere[0], $filterType); 
+			$hql .= $critere->fieldname.$critere->typeCritere.' ? ';
+			continue;
+		  }
+		  
+				// 0 paramètre
+		  if($critere->typeCritere == TypeCritere::$NULL || $critere->typeCritere == TypeCritere::$NNULL)
+		  {  
+			$hql .= $critere->fieldname.$critere->typeCritere;
+			continue;
+		  }
+		  
+				// 2 paramètres  
+		  if($critere->typeCritere == TypeCritere::$BETWEEN)
+		  {  
+			$params[] = Core::FieldToDBValue($critere->paramsCritere[0], $filterType); 
+			$params[] = Core::FieldToDBValue($critere->paramsCritere[1], $filterType); 
+			$hql .= $critere->fieldname.$critere->typeCritere.' ? AND ?';
+			continue;
+		  }
+				
+				// N paramètres
+				if($critere->typeCritere == TypeCritere::$IN || $critere->typeCritere == TypeCritere::$NIN)
+				{
+					$hql .= ' ( ';
+					$second = false; 
+					foreach($critere->paramsCritere as $param)
+					{
+						if($second)
+						{
+							$hql .= ' OR ';
+						}
+						$params[] = Core::FieldToDBValue($param, $filterType); 
+						$hql .= $critere->fieldname.TypeCritere::$EQ.' ? ';
+						
+						$second = true;
+					}
+					$hql .= ' )';
+					continue;
+				}                        
+		  
+		  throw new Exception("Le Critere $critere->typeCritere n'est pas encore pris en charge");
+		}
+		$queryExemple = $delete.$hql;
+										
+
+		$result = $db->Execute($queryExemple, $params);
+		if ($result === false){die("Database error durant la requete par Exemple!");}
+	}
+      
+    /**
+     * Transforms an array of value into a entire Entity. The array must fallow this scheme
+     * 
+     * Example :
+     * 
+     * <code>
+     *       $myArray1 = array('customer_id'=>1, 'name'=>'Dupont');       
+     *       $myArray2 = array('customer_id'=>2, 'name'=>'Durand', 'lastName'=>'Joe');       
+     *   
+     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+     * 
+     *       $customer1 = Core::rowToEntity($customer, $myArray1);
+     *       $customer2 = Core::rowToEntity($customer, $myArray2);
+     * 
+     *       echo $customer1->get('lastName'); //return null
+     *       echo $customer2->get('lastName'); //return Joe
+     * 
+     * </code>
+     *         
+     * @param Entity an instance of the entity
+     * @param array the list with the data
+    */
+	public static final function rowToEntity (Entity &$entityParam, $row)
+	{
+
+		Trace::debug("rowToEntity : ".print_r($row,true)."<br/>");
+		$listeField = $entityParam->getFields();
+
+		$newEntity = clone $entityParam;
+		foreach($listeField as $field)
+		{
+		  if(!$field->isAssociateKEY())
+		  {
+			$newEntity->set($field->getName(),Core::dbValueToField($row[$field->getName()], $field->getType()));
+		  } 
+		}
+		return $newEntity;  
+	}
+  
+    /**
+     * Transform a PHP value into a SQL value
+     * 
+     * @param mixed the PHP value
+     * @param mixed the CAST value
+     * 
+     * @see CAST
+     */
+	public static final function FieldToDBValue($data, CAST $type)
+	{
+		switch($type)
+		{
+		  case CAST::$STRING : return $data;
+		  
+		  case CAST::$INTEGER : return $data;
+		  
+		  case CAST::$NUMERIC : return $data;
+		  
+		  case CAST::$BUFFER : return $data;
+		  
+		  case CAST::$DATE : return cmsms()->GetDb()->DBDate($data);       
+		  
+		  case CAST::$TIME : return cmsms()->GetDb()->DBDate($data);     
+
+		  case CAST::$TS : return $data;  
+		}
+	}
+  
+    /**
+     * Transform a SQL value into a PHP value
+     * 
+     * @param mixed the SQL value 
+     * @param mixed the CAST value
+     * 
+     * @see CAST
+     */
+	public static final function dbValueToField($data, $type)
+	{
+		switch($type)
+		{
+		  case CAST::$STRING : return $data;
+		  
+		  case CAST::$INTEGER : return $data;
+		  
+		  case CAST::$NUMERIC : return $data;
+		  
+		  case CAST::$BUFFER : return $data;
+		  
+		  case CAST::$DATE : return cmsms()->GetDb()->UnixTimeStamp($data);
+		  
+		  case CAST::$TIME : return cmsms()->GetDb()->UnixTimeStamp($data);
+
+		  case CAST::$TS : return $data;
+
+		}
+	}
     
     /**
     * Retourne les entités B pouvant être associé à une Entité A
@@ -1126,7 +1115,7 @@ class Core
     *    }
     * </code>
     * 
-    * @param Entity l'entité servant de modèle  
+    * @param Entity an instance of the entity 
     * @param string le nom du champs de l'entité qui servira de point de départ pour la recherche
     * @return array<Entity> la liste des entités associées et pouvant être associée à ce champs.
     */
@@ -1258,7 +1247,7 @@ class Core
     *    }
     * </code>
     * 
-    * @param Entity l'entité servant de modèle  
+    * @param Entity an instance of the entity 
     * @param string le nom du champs de l'entité qui servira de point de départ pour la recherche
     * @param mixed l'identifiant de l'entité en cours
     * @return array<Entity> la liste des entités effectivement associées à ce champs.
@@ -1379,10 +1368,10 @@ class Core
     *       $adresses = //Traitement de recherche d'une adresse dont le code postal = $ville->get('codepostal')
     *       foreach($adresses as $adresse)
     *       {
-    *           $clients = //Traitement de recherche d'un client possèdant l'ID adresse = $adresse->get('adresse_id')
-    *           foreach($clients as $client)
+    *           $customers = //Traitement de recherche d'un client possèdant l'ID adresse = $adresse->get('adresse_id')
+    *           foreach($customers as $customer)
     *           {
-    *               $commandes =  //Traitement de recherche d'une commande possèdant le numeroclient = $client->get('numeroclient')   
+    *               $commandes =  //Traitement de recherche d'une commande possèdant le numeroclient = $customer->get('numeroclient')   
     *           }                   
     *       }                  
     *  }
