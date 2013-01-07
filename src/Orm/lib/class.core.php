@@ -225,18 +225,17 @@ class Core
     * 
     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
     * 
-    *       Core::insertEntity($this, $customer, $myArray);
+    *       Core::insertEntity($customer, $myArray);
     * </code>
     * 
     *  Important : you must not set the primaryKey value. It will be calculate by the system it-self
-    *  
-	* @param Orm the module which extends the Orm module                                      
+    *                                      
     * @param Entity an instance of the entity
     * @param array the array with all the values in differents associative array
 	*
     * @return array the list of the new Ids (customer_id in my example)
     */
-	public static final function insertEntity(Orm &$module, Entity &$entityParam, $rows)
+	public static final function insertEntity(Entity &$entityParam, $rows)
 	{
 
 		$db = cmsms()->GetDb();
@@ -323,7 +322,7 @@ class Core
 		  {  
 			// $modops = cmsms()->GetModuleOperations();
 			// Indexing::setSearch($modops->GetSearchModule());
-			Indexing::AddWords($module->getName(), Core::SelectById($entityParam,$arrayKEY[0]));
+			Indexing::AddWords($entityParam->getModuleName(), Core::SelectById($entityParam,$arrayKEY[0]));
 		  }
 		}
 
@@ -344,14 +343,13 @@ class Core
     * 
     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
     * 
-    *       Core::updateEntity($this, $customer, $myArray);
+    *       Core::updateEntity($customer, $myArray);
     * </code>
-    * 
-	* @param Orm the module which extends the Orm module                                      
+	*
     * @param Entity an instance of the entity
     * @param array the array with all the values in differents associative array
     */
-	public static final function updateEntity(Orm $module, Entity &$entityParam, array $rows)
+	public static final function updateEntity(Entity &$entityParam, array $rows)
 	{
 
 		$db = cmsms()->GetDb();
@@ -433,7 +431,7 @@ class Core
 		  if ($result === false){die("Database error durant l'update!");}
 		  if($entityParam->isIndexable())
 		  {  
-			Indexing::UpdateWords($module->getName(), Core::SelectById($entityParam,$KEY));
+			Indexing::UpdateWords($entityParam->getModuleName(), Core::SelectById($entityParam,$KEY));
 		  }
 		}
 	}
@@ -446,7 +444,7 @@ class Core
     * <code>
     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
     * 
-    *       Core::deleteByIds($this, $customer, array(1);
+    *       Core::deleteByIds($customer, array(1);
     * </code>
     * 
     *  Example for multiple deletion : 
@@ -459,14 +457,13 @@ class Core
     * 
     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
     * 
-    *       Core::deleteByIds($this,$customer, $myArray);
+    *       Core::deleteByIds($customer, $myArray);
     * </code>
-    * 
-	* @param Orm the module which extends the Orm module                                      
+    *                                    
     * @param Entity an instance of the entity    
     * @param array all the ids to delete ($customer_id in my example)
     */
-	public static final function deleteByIds(Orm $module, Entity &$entityParam, $ids)
+	public static final function deleteByIds(Entity &$entityParam, $ids)
 	{
 
 		$db = cmsms()->GetDb();
@@ -513,7 +510,7 @@ class Core
 		  // }
 		  foreach($ids as $sid)
 		  {
-			Indexing::DeleteWords($module->getName(), $entityParam, $sid);
+			Indexing::DeleteWords($entityParam->getModuleName(), $entityParam, $sid);
 		  }
 		  
 		}
@@ -668,10 +665,10 @@ class Core
      *  <code>
      *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
      * 
-     *       $exemple = new Exemple();
-     *       $exemple->addCritere('lastName', TypeCritere::$EQ, array('roger'), true);
+     *       $example = new Example();
+     *       $example->addCriteria('lastName', TypeCriteria::$EQ, array('roger'), true);
      * 
-     *       Core::selectByExemple($customer, $exemple);
+     *       Core::selectByExample($customer, $example);
      * </code>
      * 
      *  Example : find the customers with Id >= 90
@@ -679,10 +676,10 @@ class Core
      * <code>
      *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
      * 
-     *       $exemple = new Exemple();
-     *       $exemple->addCritere('customer_id', TypeCritere::$GTE, array(90));
+     *       $example = new Example();
+     *       $example->addCriteria('customer_id', TypeCriteria::$GTE, array(90));
      * 
-     *       Core::selectByExemple($customer, $exemple);
+     *       Core::selectByExample($customer, $example);
      * </code>
      * 
      * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
@@ -690,23 +687,23 @@ class Core
      * NOTE 2 : you can add as many Criterias as you want in an Example Object
      * 
      * @param Entity an instance of the entity
-     * @param Exemple the Object Exemple with some Criterias inside
+     * @param Example the Object Example with some Criterias inside
      * 
-     * @see Exemple
-     * @see TypeCritere
+     * @see Example
+     * @see TypeCriteria
      */
-	public static final function selectByExemple(Entity &$entityParam, Exemple $exemple)
+	public static final function selectByExample(Entity &$entityParam, Example $example)
 	{
 
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
 
-		$criteres = $exemple->getCriteres();
+		$criterias = $example->getCriterias();
 		$select = "select * from ".$entityParam->getDbname();
 		$hql = "";
 		$params = array();
-		//  die("spp,".count($criteres));
-		foreach($criteres as $critere)
+		//  die("spp,".count($criterias));
+		foreach($criterias as $criteria)
 		{
 		  if(!empty($hql))
 		  {
@@ -718,49 +715,49 @@ class Core
 			$hql .= ' WHERE ';
 		  }
 
-		  $filterType =  $listeField[$critere->fieldname]->getType();
+		  $filterType =  $listeField[$criteria->fieldname]->getType();
 		  
 				//Critéres avec 1 seul paramètre
-		  if($critere->typeCritere == TypeCritere::$EQ || $critere->typeCritere == TypeCritere::$NEQ 
-			|| $critere->typeCritere == TypeCritere::$GT || $critere->typeCritere == TypeCritere::$GTE 
-			|| $critere->typeCritere == TypeCritere::$LT || $critere->typeCritere == TypeCritere::$LTE 
-			|| $critere->typeCritere == TypeCritere::$BEFORE || $critere->typeCritere == TypeCritere::$AFTER
-			|| $critere->typeCritere == TypeCritere::$LIKE || $critere->typeCritere == TypeCritere::$NLIKE)
+		  if($criteria->typeCriteria == TypeCriteria::$EQ || $criteria->typeCriteria == TypeCriteria::$NEQ 
+			|| $criteria->typeCriteria == TypeCriteria::$GT || $criteria->typeCriteria == TypeCriteria::$GTE 
+			|| $criteria->typeCriteria == TypeCriteria::$LT || $criteria->typeCriteria == TypeCriteria::$LTE 
+			|| $criteria->typeCriteria == TypeCriteria::$BEFORE || $criteria->typeCriteria == TypeCriteria::$AFTER
+			|| $criteria->typeCriteria == TypeCriteria::$LIKE || $criteria->typeCriteria == TypeCriteria::$NLIKE)
 		  {  
-			$val = $critere->paramsCritere[0];
+			$val = $criteria->paramsCriteria[0];
 			
-			if($critere->typeCritere == TypeCritere::$LIKE || $critere->typeCritere == TypeCritere::$NLIKE)
+			if($criteria->typeCriteria == TypeCriteria::$LIKE || $criteria->typeCriteria == TypeCriteria::$NLIKE)
 			{
 			  $val.= '%';
 			}
 			
 			$params[] = Core::FieldToDBValue($val, $filterType); 
-			$hql .= $critere->fieldname.$critere->typeCritere.' ? ';
+			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? ';
 			continue;
 		  }
 		  
 				//Sans paramètres
-		  if($critere->typeCritere == TypeCritere::$NULL || $critere->typeCritere == TypeCritere::$NNULL)
+		  if($criteria->typeCriteria == TypeCriteria::$NULL || $criteria->typeCriteria == TypeCriteria::$NNULL)
 		  {  
-			$hql .= $critere->fieldname.$critere->typeCritere;
+			$hql .= $criteria->fieldname.$criteria->typeCriteria;
 			continue;
 		  }
 		  
 				//deux paramètres
-		  if($critere->typeCritere == TypeCritere::$BETWEEN)
+		  if($criteria->typeCriteria == TypeCriteria::$BETWEEN)
 		  {  
-			$params[] = Core::FieldToDBValue($critere->paramsCritere[0], $filterType); 
-			$params[] = Core::FieldToDBValue($critere->paramsCritere[1], $filterType); 
-			$hql .= $critere->fieldname.$critere->typeCritere.' ? AND ?';
+			$params[] = Core::FieldToDBValue($criteria->paramsCriteria[0], $filterType); 
+			$params[] = Core::FieldToDBValue($criteria->paramsCriteria[1], $filterType); 
+			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
 			continue;
 		  }
 		  
 				// N paramètres
-		  if($critere->typeCritere == TypeCritere::$IN || $critere->typeCritere == TypeCritere::$NIN)
+		  if($criteria->typeCriteria == TypeCriteria::$IN || $criteria->typeCriteria == TypeCriteria::$NIN)
 		  {
 			$hql .= ' ( ';
 			$second = false; 
-			foreach($critere->paramsCritere as $param)
+			foreach($criteria->paramsCriteria as $param)
 			{
 			  if($second)
 			  {
@@ -768,7 +765,7 @@ class Core
 			  }
 			  
 			  $params[] = Core::FieldToDBValue($param, $filterType); 
-			  $hql .= $critere->fieldname.TypeCritere::$EQ.' ? ';
+			  $hql .= $criteria->fieldname.TypeCriteria::$EQ.' ? ';
 			  
 			  $second = true;
 			}
@@ -777,28 +774,28 @@ class Core
 		  }
 		  
 		  //Traitement spécifique
-		  if($critere->typeCritere == TypeCritere::$EMPTY)
+		  if($criteria->typeCriteria == TypeCriteria::$EMPTY)
 		  {
-			$hql .= ' ( '.$critere->fieldname .' is null || ' . $critere->fieldname . "= '')";
+			$hql .= ' ( '.$criteria->fieldname .' is null || ' . $criteria->fieldname . "= '')";
 			continue;
 		  }
-		  if($critere->typeCritere == TypeCritere::$NEMPTY)
+		  if($criteria->typeCriteria == TypeCriteria::$NEMPTY)
 		  {
-			$hql .= ' ( '.$critere->fieldname .' is not null && ' . $critere->fieldname . "!= '')";
+			$hql .= ' ( '.$criteria->fieldname .' is not null && ' . $criteria->fieldname . "!= '')";
 			continue;
 		  }
 						 
-		  throw new Exception("Le Critere $critere->typeCritere n'est pas encore pris en charge");
+		  throw new Exception("Le Criteria $criteria->typeCriteria n'est pas encore pris en charge");
 		}
-		$queryExemple = $select.$hql;
+		$queryExample = $select.$hql;
 
-		Trace::info("SelectByExemple : ".$queryExemple."   ".print_r($params, true));
+		Trace::info("SelectByExample : ".$queryExample."   ".print_r($params, true));
 
-		$result = $db->Execute($queryExemple, $params);
+		$result = $db->Execute($queryExample, $params);
 
-		if ($result === false){die($db->ErrorMsg().Trace::error("Database error durant la requete par Exemple!"));}
+		if ($result === false){die($db->ErrorMsg().Trace::error("Database error durant la requete par Example!"));}
 
-		Trace::info("SelectByExemple : ".$result->RecordCount()." resultat(s)");
+		Trace::info("SelectByExample : ".$result->RecordCount()." resultat(s)");
 
 		$entitys = array();
 		while ($row = $result->FetchRow())
@@ -817,10 +814,10 @@ class Core
      *  <code>
      *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
      * 
-     *       $exemple = new Exemple();
-     *       $exemple->addCritere('lastName', TypeCritere::$EQ, array('roger'), true);
+     *       $example = new Example();
+     *       $example->addCriteria('lastName', TypeCriteria::$EQ, array('roger'), true);
      * 
-     *       Core::deleteByExemple($customer, $exemple);
+     *       Core::deleteByExample($customer, $example);
      * </code>
      * 
      *  Example : delete the customers with Id >= 90
@@ -828,10 +825,10 @@ class Core
      * <code>
      *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
      * 
-     *       $exemple = new Exemple();
-     *       $exemple->addCritere('customer_id', TypeCritere::$GTE, array(90));
+     *       $example = new Example();
+     *       $example->addCriteria('customer_id', TypeCriteria::$GTE, array(90));
      * 
-     *       Core::deleteByExemple($customer, $exemple);
+     *       Core::deleteByExample($customer, $example);
      * </code>
      * 
      * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
@@ -839,22 +836,22 @@ class Core
      * NOTE 2 : you can add as many Criterias as you want in an Example Object
      * 
      * @param Entity an instance of the entity
-     * @param Exemple the Object Exemple with some Criterias inside
+     * @param Example the Object Example with some Criterias inside
      * 
-     * @see Exemple
-     * @see TypeCritere
+     * @see Example
+     * @see TypeCriteria
      */
-	public static final function deleteByExemple(Entity &$entityParam, Exemple $Exemple)
+	public static final function deleteByExample(Entity &$entityParam, Example $Example)
 	{
 
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
 
-		$criteres = $Exemple->getCriteres();
+		$criterias = $Example->getCriterias();
 		$delete = "delete from ".$entityParam->getDbname();
 		$hql = "";
 		$params = array();
-		foreach($criteres as $critere)
+		foreach($criterias as $criteria)
 		{
 		  if(!empty($hql))
 		  {
@@ -866,49 +863,49 @@ class Core
 			$hql .= ' WHERE ';
 		  }
 
-		  $filterType = $listeField[$critere->fieldname]->getType();
+		  $filterType = $listeField[$criteria->fieldname]->getType();
 		  
 				// 1 paramètre  
-		  if($critere->typeCritere == TypeCritere::$EQ || $critere->typeCritere == TypeCritere::$NEQ 
-			|| $critere->typeCritere == TypeCritere::$GT || $critere->typeCritere == TypeCritere::$GTE 
-			|| $critere->typeCritere == TypeCritere::$LT || $critere->typeCritere == TypeCritere::$LTE 
-			|| $critere->typeCritere == TypeCritere::$BEFORE || $critere->typeCritere == TypeCritere::$AFTER
-			|| $critere->typeCritere == TypeCritere::$LIKE || $critere->typeCritere == TypeCritere::$NLIKE)
+		  if($criteria->typeCriteria == TypeCriteria::$EQ || $criteria->typeCriteria == TypeCriteria::$NEQ 
+			|| $criteria->typeCriteria == TypeCriteria::$GT || $criteria->typeCriteria == TypeCriteria::$GTE 
+			|| $criteria->typeCriteria == TypeCriteria::$LT || $criteria->typeCriteria == TypeCriteria::$LTE 
+			|| $criteria->typeCriteria == TypeCriteria::$BEFORE || $criteria->typeCriteria == TypeCriteria::$AFTER
+			|| $criteria->typeCriteria == TypeCriteria::$LIKE || $criteria->typeCriteria == TypeCriteria::$NLIKE)
 		  {  
-			$params[] = Core::FieldToDBValue($critere->paramsCritere[0], $filterType); 
-			$hql .= $critere->fieldname.$critere->typeCritere.' ? ';
+			$params[] = Core::FieldToDBValue($criteria->paramsCriteria[0], $filterType); 
+			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? ';
 			continue;
 		  }
 		  
 				// 0 paramètre
-		  if($critere->typeCritere == TypeCritere::$NULL || $critere->typeCritere == TypeCritere::$NNULL)
+		  if($criteria->typeCriteria == TypeCriteria::$NULL || $criteria->typeCriteria == TypeCriteria::$NNULL)
 		  {  
-			$hql .= $critere->fieldname.$critere->typeCritere;
+			$hql .= $criteria->fieldname.$criteria->typeCriteria;
 			continue;
 		  }
 		  
 				// 2 paramètres  
-		  if($critere->typeCritere == TypeCritere::$BETWEEN)
+		  if($criteria->typeCriteria == TypeCriteria::$BETWEEN)
 		  {  
-			$params[] = Core::FieldToDBValue($critere->paramsCritere[0], $filterType); 
-			$params[] = Core::FieldToDBValue($critere->paramsCritere[1], $filterType); 
-			$hql .= $critere->fieldname.$critere->typeCritere.' ? AND ?';
+			$params[] = Core::FieldToDBValue($criteria->paramsCriteria[0], $filterType); 
+			$params[] = Core::FieldToDBValue($criteria->paramsCriteria[1], $filterType); 
+			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
 			continue;
 		  }
 				
 				// N paramètres
-				if($critere->typeCritere == TypeCritere::$IN || $critere->typeCritere == TypeCritere::$NIN)
+				if($criteria->typeCriteria == TypeCriteria::$IN || $criteria->typeCriteria == TypeCriteria::$NIN)
 				{
 					$hql .= ' ( ';
 					$second = false; 
-					foreach($critere->paramsCritere as $param)
+					foreach($criteria->paramsCriteria as $param)
 					{
 						if($second)
 						{
 							$hql .= ' OR ';
 						}
 						$params[] = Core::FieldToDBValue($param, $filterType); 
-						$hql .= $critere->fieldname.TypeCritere::$EQ.' ? ';
+						$hql .= $criteria->fieldname.TypeCriteria::$EQ.' ? ';
 						
 						$second = true;
 					}
@@ -916,13 +913,13 @@ class Core
 					continue;
 				}                        
 		  
-		  throw new Exception("Le Critere $critere->typeCritere n'est pas encore pris en charge");
+		  throw new Exception("Le Criteria $criteria->typeCriteria n'est pas encore pris en charge");
 		}
-		$queryExemple = $delete.$hql;
+		$queryExample = $delete.$hql;
 										
 
-		$result = $db->Execute($queryExemple, $params);
-		if ($result === false){die("Database error durant la requete par Exemple!");}
+		$result = $db->Execute($queryExample, $params);
+		if ($result === false){die("Database error durant la requete par Example!");}
 	}
       
     /**
@@ -1255,9 +1252,9 @@ class Core
 
 		eval('$entity = new '.$cle[0].'();');
 																  
-		$exemple = new Exemple();    
-		$exemple->addCritere($cle[1],TypeCritere::$EQ,array($entityId));
-		$assocs = Core::selectByExemple($entity, $exemple);
+		$example = new Example();    
+		$example->addCriteria($cle[1],TypeCriteria::$EQ,array($entityId));
+		$assocs = Core::selectByExample($entity, $example);
 
 		$listField = $entity->getFields();
 		foreach($listField as $field)
@@ -1300,9 +1297,9 @@ class Core
 	 *
 	 * @return a message if a link is still present. nothing if the integrity is ok
      */
-	public static final function verifIntegrity(Orm $module, Entity &$entity, $sid)
+	public static final function verifIntegrity(Entity &$entity, $sid)
 	{
-		$listeEntitys = MyAutoload::getAllInstances($module->getName());
+		$listeEntitys = MyAutoload::getAllInstances($entity->getModuleName());
 
 		foreach($listeEntitys as $key=>$anEntity)
 		{
@@ -1322,9 +1319,9 @@ class Core
 			  
 			  if(strtolower ($vals[0]) == strtolower ($entity->getName()))
 			  {
-				$Exemple = new Exemple();
-				$Exemple->addCritere($field->getName(), TypeCritere::$EQ, array($sid));
-				$entitys = Core::selectByExemple($anEntity, $Exemple);
+				$Example = new Example();
+				$Example->addCriteria($field->getName(), TypeCriteria::$EQ, array($sid));
+				$entitys = Core::selectByExample($anEntity, $Example);
 				if(count($entitys) > 0)
 				{
 				  return "La ligne &agrave; supprimer est encore utilis&eacute;e par &laquo; ".$anEntity->getName()." &raquo;";
@@ -1398,9 +1395,9 @@ class Core
 		if(count($newCle) == 1)
 		{
 		  TRACE::info("# : "." count(\$newCle) == 1 , donc sortie ");
-		  $Exemple = new Exemple;
-		  $Exemple->addCritere($fieldname, TypeCritere::$IN, $values);
-		  $entitys = Core::selectByExemple($previousEntity, $Exemple);
+		  $Example = new Example;
+		  $Example->addCriteria($fieldname, TypeCriteria::$IN, $values);
+		  $entitys = Core::selectByExample($previousEntity, $Example);
 		  TRACE::info("# : ".count($entitys)." R&eacute;sultat(s) retourn&eacute;s");
 		  return $entitys;
 		} else
@@ -1470,15 +1467,15 @@ class Core
 		}
 
 
-		$Exemple = new Exemple;
+		$Example = new Example;
 		if($nextEntity instanceof EntityAssociation)
 		{
-		  $Exemple->addCritere($previousEntity->getPk()->getName(), TypeCritere::$IN, $ids);
+		  $Example->addCriteria($previousEntity->getPk()->getName(), TypeCriteria::$IN, $ids);
 		} else
 		{
-		  $Exemple->addCritere($fieldname, TypeCritere::$IN, $ids);
+		  $Example->addCriteria($fieldname, TypeCriteria::$IN, $ids);
 		}
-		$entitys = Core::selectByExemple($previousEntity, $Exemple);
+		$entitys = Core::selectByExample($previousEntity, $Example);
 
 		return $entitys;
 	}

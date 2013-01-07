@@ -305,6 +305,28 @@ abstract class Entity
 	
 	}
 	
+	/**
+	 * Shotcut to save the entity. if the primaryKey is setted, it will be an update operation, else an insert.
+	 **/
+	public function save(){
+	
+	}
+	
+	/**
+	 * Shotcut to delete the entity
+	 **/
+	public function delete(){
+		if($this->pk == null) {
+			throw new IllegalArgumentException("you can't delete the entity ".$this->getName()." because it doesn't have any Primary-Key");
+		}
+		
+		if($this->fields[$this->pk] == null) {
+			throw new IllegalArgumentException("you can't delete the entity ".$this->getName()." because its Primary-Key doesn't have any value");
+		}
+		
+		Core::deleteByIds($this, array($this->fields[$this->pk]));
+	}
+	
     /**
     * Can be overriden Let you modify some data just before saving the data into the datatable.
     * 
