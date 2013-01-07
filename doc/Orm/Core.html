@@ -70,13 +70,13 @@
 									</div>
 																<div class="method-definition">
 					static 						<span class="method-result">void</span>
-										<a href="#deleteByExemple" title="details" class="method-name">deleteByExemple</a>
-											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>&nbsp;<span class="var-name">$Exemple</span>)
+										<a href="#deleteByExample" title="details" class="method-name">deleteByExample</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Example.html">Example</a></span>&nbsp;<span class="var-name">$Example</span>)
 									</div>
 																<div class="method-definition">
 					static 						<span class="method-result">void</span>
 										<a href="#deleteByIds" title="details" class="method-name">deleteByIds</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$ids</span>)
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$ids</span>)
 									</div>
 																<div class="method-definition">
 					static 						<span class="method-result">void</span>
@@ -106,7 +106,7 @@
 																<div class="method-definition">
 					static 						<span class="method-result">array</span>
 										<a href="#insertEntity" title="details" class="method-name">insertEntity</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">&$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$rows</span>)
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$rows</span>)
 									</div>
 																<div class="method-definition">
 					static 						<span class="method-result">void</span>
@@ -125,8 +125,8 @@
 									</div>
 																<div class="method-definition">
 					static 						<span class="method-result">void</span>
-										<a href="#selectByExemple" title="details" class="method-name">selectByExemple</a>
-											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>&nbsp;<span class="var-name">$exemple</span>)
+										<a href="#selectByExample" title="details" class="method-name">selectByExample</a>
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Example.html">Example</a></span>&nbsp;<span class="var-name">$example</span>)
 									</div>
 																<div class="method-definition">
 					static 						<span class="method-result"><a href="../Orm/Entity.html">Entity</a></span>
@@ -141,12 +141,12 @@
 																<div class="method-definition">
 					static 						<span class="method-result">void</span>
 										<a href="#updateEntity" title="details" class="method-name">updateEntity</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$rows</span>)
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$rows</span>)
 									</div>
 																<div class="method-definition">
 					static 						<span class="method-result">a</span>
 										<a href="#verifIntegrity" title="details" class="method-name">verifIntegrity</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entity</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$sid</span>)
+											(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entity</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">$sid</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">2</span>)
 									</div>
 								
 												<div class="method-definition">
@@ -212,7 +212,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method countAll</span> (line <span class="line-number">529</span>)
+		<span class="method-title">static method countAll</span> (line <span class="line-number">526</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -304,7 +304,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method dbValueToField</span> (line <span class="line-number">1003</span>)
+		<span class="method-title">static method dbValueToField</span> (line <span class="line-number">1000</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -334,31 +334,31 @@
 		
 			
 	</div>
-<a name="methoddeleteByExemple" id="deleteByExemple"><!-- --></a>
+<a name="methoddeleteByExample" id="deleteByExample"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method deleteByExemple</span> (line <span class="line-number">847</span>)
+		<span class="method-title">static method deleteByExample</span> (line <span class="line-number">844</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Allow delete a list of Entity from a list of Criteria</p>
 <p class="description"><p>Example : delete the customers with lastName 'Roger' (no casse sensitive)</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Exemple.html">Exemple</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple</span><span class="src-sym">-&gt;</span><span class="src-id">addCritere</span><span class="src-sym">(</span><span class="src-str">'lastName'</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/TypeCritere.html">TypeCritere</a></span><span class="src-sym">::</span><span class="src-var">$EQ</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'roger'</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-id">true</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$example&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Example.html">Example</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$example</span><span class="src-sym">-&gt;</span><span class="src-id">addCriteria</span><span class="src-sym">(</span><span class="src-str">'lastName'</span><span class="src-sym">,&nbsp;</span><span class="src-id">TypeCriteria</span><span class="src-sym">::</span><span class="src-var">$EQ</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'roger'</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-id">true</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methoddeleteByExemple">deleteByExemple</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$exemple</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methoddeleteByExample">deleteByExample</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$example</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol></div></p><p>Example : delete the customers with Id &gt;= 90</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Exemple.html">Exemple</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple</span><span class="src-sym">-&gt;</span><span class="src-id">addCritere</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/TypeCritere.html">TypeCritere</a></span><span class="src-sym">::</span><span class="src-var">$GTE</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">90</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$example&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Example.html">Example</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$example</span><span class="src-sym">-&gt;</span><span class="src-id">addCriteria</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span><span class="src-sym">,&nbsp;</span><span class="src-id">TypeCriteria</span><span class="src-sym">::</span><span class="src-var">$GTE</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">90</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">Core</span><span class="src-sym">::</span><span class="src-id">deleteByExemple</span><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$exemple</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">Core</span><span class="src-sym">::</span><span class="src-id">deleteByExample</span><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$example</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol></div></p><p>NOTE : EQ =&gt; <strong>EQ</strong>uals, GTE =&gt; <strong>G</strong>reater <strong>T</strong>han or <strong>E</strong>quals</p><p>NOTE 2 : you can add as many Criterias as you want in an Example Object</p></p>
 	<ul class="tags">
-				<li><span class="field">see:</span> <a href="../Orm/Exemple.html">Exemple</a></li>
-				<li><span class="field">see:</span> <a href="../Orm/TypeCritere.html">TypeCritere</a></li>
+				<li><span class="field">see:</span> <a href="../Orm/Example.html">Example</a></li>
+				<li><span class="field">see:</span> TypeCriteria</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -366,9 +366,9 @@
 	    static
 		<span class="method-result">void</span>
 		<span class="method-name">
-			deleteByExemple
+			deleteByExample
 		</span>
-					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>&nbsp;<span class="var-name">$Exemple</span>)
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Example.html">Example</a></span>&nbsp;<span class="var-name">$Example</span>)
 			</div>
 	
 			<ul class="parameters">
@@ -376,8 +376,8 @@
 				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
 				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
 					<li>
-				<span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>
-				<span class="var-name">$Exemple</span><span class="var-description">: the Object Exemple with some Criterias inside</span>			</li>
+				<span class="var-type"><a href="../Orm/Example.html">Example</a></span>
+				<span class="var-name">$Example</span><span class="var-description">: the Object Example with some Criterias inside</span>			</li>
 				</ul>
 		
 			
@@ -386,14 +386,14 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method deleteByIds</span> (line <span class="line-number">469</span>)
+		<span class="method-title">static method deleteByIds</span> (line <span class="line-number">466</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Delete information into database</p>
 <p class="description"><p>Example for a single deletion :</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methoddeleteByIds">deleteByIds</a><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">,&nbsp;</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">1</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methoddeleteByIds">deleteByIds</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">1</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol></div></p><p>Example for multiple deletion :</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-num">1</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$myArray</span><span class="src-sym">[</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-num">2</span><span class="src-sym">;</span></div></li>
@@ -401,7 +401,7 @@
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methoddeleteByIds">deleteByIds</a><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">,</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methoddeleteByIds">deleteByIds</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol></div></p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
@@ -413,13 +413,10 @@
 		<span class="method-name">
 			deleteByIds
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$ids</span>)
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$ids</span>)
 			</div>
 	
 			<ul class="parameters">
-					<li>
-				<span class="var-type">Orm</span>
-				<span class="var-name">$module</span><span class="var-description">: the module which extends the Orm module</span>			</li>
 					<li>
 				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
 				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
@@ -464,7 +461,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method FieldToDBValue</span> (line <span class="line-number">975</span>)
+		<span class="method-title">static method FieldToDBValue</span> (line <span class="line-number">972</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -498,7 +495,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method getEntitysAssociable</span> (line <span class="line-number">1118</span>)
+		<span class="method-title">static method getEntitysAssociable</span> (line <span class="line-number">1115</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -604,7 +601,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method getEntitysAssocieesLiees</span> (line <span class="line-number">1245</span>)
+		<span class="method-title">static method getEntitysAssocieesLiees</span> (line <span class="line-number">1242</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -744,7 +741,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method insertEntity</span> (line <span class="line-number">239</span>)
+		<span class="method-title">static method insertEntity</span> (line <span class="line-number">238</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -756,7 +753,7 @@
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodinsertEntity">insertEntity</a><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">,&nbsp;</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodinsertEntity">insertEntity</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol></div></p><p>Important : you must not set the primaryKey value. It will be calculate by the system it-self</p></p>
 	<ul class="tags">
 				<li><span class="field">return:</span> the list of the new Ids (customer_id in my example)</li>
@@ -769,13 +766,10 @@
 		<span class="method-name">
 			insertEntity
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">&$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$rows</span>)
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$rows</span>)
 			</div>
 	
 			<ul class="parameters">
-					<li>
-				<span class="var-type">Orm</span>
-				<span class="var-name">&$module</span><span class="var-description">: the module which extends the Orm module</span>			</li>
 					<li>
 				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
 				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
@@ -790,7 +784,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method makeDeepSearch</span> (line <span class="line-number">1381</span>)
+		<span class="method-title">static method makeDeepSearch</span> (line <span class="line-number">1378</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -842,7 +836,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method rowToEntity</span> (line <span class="line-number">950</span>)
+		<span class="method-title">static method rowToEntity</span> (line <span class="line-number">947</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -886,7 +880,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method selectAll</span> (line <span class="line-number">551</span>)
+		<span class="method-title">static method selectAll</span> (line <span class="line-number">548</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -913,31 +907,31 @@
 		
 			
 	</div>
-<a name="methodselectByExemple" id="selectByExemple"><!-- --></a>
+<a name="methodselectByExample" id="selectByExample"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method selectByExemple</span> (line <span class="line-number">698</span>)
+		<span class="method-title">static method selectByExample</span> (line <span class="line-number">695</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Allow search a list of Entity from a list of Criteria</p>
 <p class="description"><p>Example : find the customers with lastName 'Roger' (no casse sensitive)</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Exemple.html">Exemple</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple</span><span class="src-sym">-&gt;</span><span class="src-id">addCritere</span><span class="src-sym">(</span><span class="src-str">'lastName'</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/TypeCritere.html">TypeCritere</a></span><span class="src-sym">::</span><span class="src-var">$EQ</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'roger'</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-id">true</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$example&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Example.html">Example</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$example</span><span class="src-sym">-&gt;</span><span class="src-id">addCriteria</span><span class="src-sym">(</span><span class="src-str">'lastName'</span><span class="src-sym">,&nbsp;</span><span class="src-id">TypeCriteria</span><span class="src-sym">::</span><span class="src-var">$EQ</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'roger'</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-id">true</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodselectByExemple">selectByExemple</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$exemple</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodselectByExample">selectByExample</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$example</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol></div></p><p>Example : find the customers with Id &gt;= 90</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Exemple.html">Exemple</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$exemple</span><span class="src-sym">-&gt;</span><span class="src-id">addCritere</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span><span class="src-sym">,&nbsp;</span><span class="src-id"><a href="../Orm/TypeCritere.html">TypeCritere</a></span><span class="src-sym">::</span><span class="src-var">$GTE</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">90</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$example&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Orm/Example.html">Example</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$example</span><span class="src-sym">-&gt;</span><span class="src-id">addCriteria</span><span class="src-sym">(</span><span class="src-str">'customer_id'</span><span class="src-sym">,&nbsp;</span><span class="src-id">TypeCriteria</span><span class="src-sym">::</span><span class="src-var">$GTE</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">90</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">Core</span><span class="src-sym">::</span><span class="src-id">selectByExemple</span><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$exemple</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">Core</span><span class="src-sym">::</span><span class="src-id">selectByExample</span><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$example</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol></div></p><p>NOTE : EQ =&gt; <strong>EQ</strong>uals, GTE =&gt; <strong>G</strong>reater <strong>T</strong>han or <strong>E</strong>quals</p><p>NOTE 2 : you can add as many Criterias as you want in an Example Object</p></p>
 	<ul class="tags">
-				<li><span class="field">see:</span> <a href="../Orm/Exemple.html">Exemple</a></li>
-				<li><span class="field">see:</span> <a href="../Orm/TypeCritere.html">TypeCritere</a></li>
+				<li><span class="field">see:</span> <a href="../Orm/Example.html">Example</a></li>
+				<li><span class="field">see:</span> TypeCriteria</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -945,9 +939,9 @@
 	    static
 		<span class="method-result">void</span>
 		<span class="method-name">
-			selectByExemple
+			selectByExample
 		</span>
-					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>&nbsp;<span class="var-name">$exemple</span>)
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"><a href="../Orm/Example.html">Example</a></span>&nbsp;<span class="var-name">$example</span>)
 			</div>
 	
 			<ul class="parameters">
@@ -955,8 +949,8 @@
 				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
 				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
 					<li>
-				<span class="var-type"><a href="../Orm/Exemple.html">Exemple</a></span>
-				<span class="var-name">$exemple</span><span class="var-description">: the Object Exemple with some Criterias inside</span>			</li>
+				<span class="var-type"><a href="../Orm/Example.html">Example</a></span>
+				<span class="var-name">$example</span><span class="var-description">: the Object Example with some Criterias inside</span>			</li>
 				</ul>
 		
 			
@@ -965,7 +959,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method selectById</span> (line <span class="line-number">587</span>)
+		<span class="method-title">static method selectById</span> (line <span class="line-number">584</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -999,7 +993,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method selectByIds</span> (line <span class="line-number">605</span>)
+		<span class="method-title">static method selectByIds</span> (line <span class="line-number">602</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1033,7 +1027,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method updateEntity</span> (line <span class="line-number">354</span>)
+		<span class="method-title">static method updateEntity</span> (line <span class="line-number">352</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1045,7 +1039,7 @@
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$customer&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Orm/MyAutoload.html">MyAutoload</a></span>.<span class="src-id">getInstance</span><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-id">GetName</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">,&nbsp;</span><span class="src-str">'customer'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodupdateEntity">updateEntity</a><span class="src-sym">(</span><span class="src-var">$this</span><span class="src-sym">,&nbsp;</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../Orm/Core.html">Core</a></span><span class="src-sym">::</span><a href="../Orm/Core.html#methodupdateEntity">updateEntity</a><span class="src-sym">(</span><span class="src-var">$customer</span><span class="src-sym">,&nbsp;</span><span class="src-var">$myArray</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol></div></p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
@@ -1057,13 +1051,10 @@
 		<span class="method-name">
 			updateEntity
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$rows</span>)
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entityParam</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$rows</span>)
 			</div>
 	
 			<ul class="parameters">
-					<li>
-				<span class="var-type">Orm</span>
-				<span class="var-name">$module</span><span class="var-description">: the module which extends the Orm module</span>			</li>
 					<li>
 				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
 				<span class="var-name">&$entityParam</span><span class="var-description">: an instance of the entity</span>			</li>
@@ -1078,7 +1069,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method verifIntegrity</span> (line <span class="line-number">1303</span>)
+		<span class="method-title">static method verifIntegrity</span> (line <span class="line-number">1300</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1095,19 +1086,19 @@
 		<span class="method-name">
 			verifIntegrity
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$module</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entity</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$sid</span>)
+					(<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">&$entity</span>, <span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>&nbsp;<span class="var-name">$sid</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">2</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">2</span><span class="var-description">: the id of the Entity to verify</span>			</li>
+					<li>
 				<span class="var-type">Orm</span>
-				<span class="var-name">$module</span><span class="var-description">: the module which extends the Orm module</span>			</li>
+				<span class="var-name">&$entity</span><span class="var-description">: the module which extends the Orm module</span>			</li>
 					<li>
 				<span class="var-type"><a href="../Orm/Entity.html">Entity</a></span>
-				<span class="var-name">&$entity</span><span class="var-description">: an instance of the entity</span>			</li>
-					<li>
-				<span class="var-type">mixed</span>
-				<span class="var-name">$sid</span><span class="var-description">: the id of the Entity to verify</span>			</li>
+				<span class="var-name">$sid</span><span class="var-description">: an instance of the entity</span>			</li>
 				</ul>
 		
 			
@@ -1143,7 +1134,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Sun, 06 Jan 2013 17:07:32 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Mon, 07 Jan 2013 23:17:44 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>
