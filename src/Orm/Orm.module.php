@@ -214,6 +214,15 @@ class Orm extends CMSModule {
 		  Trace::debug("fichier $fn introuvable, on passe<br/>");
 	   }
 	}
+	
+	/**
+	 * Shortcut to call all the instances for a single module
+	 *
+	 * @return List<Entity> the entities for the current parent's namespace
+	 **/
+	public function getAllInstances(){
+		return MyAutoload::getAllInstances(parent::GetName());
+	}
 	/*
 	public function autoload_classes_addon($classname){
 		Trace::debug("&nbsp;&nbsp;&nbsp;$classname<br/>");

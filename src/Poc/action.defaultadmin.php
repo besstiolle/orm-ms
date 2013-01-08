@@ -19,7 +19,7 @@ if (!function_exists("cmsms")) exit;
 <h2>Test #1 : does Entities from /lib are loaded ?</h2>
 
 <?php
-	$entities = MyAutoload::getAllInstances($this->GetName());
+	$entities = $this->getAllInstances();
 	
 	$expected = 1;
 	$result = count($entities);
@@ -34,7 +34,7 @@ if (!function_exists("cmsms")) exit;
 <h2>Test #2 : can we lunch creation of tables</h2>
 <?php
 	try{
-		$entities = MyAutoload::getAllInstances($this->GetName());
+		$entities = $this->getAllInstances();
 		foreach($entities as $anEntity)
 		{
 			Core::dropTable($anEntity);
@@ -180,7 +180,7 @@ if (!function_exists("cmsms")) exit;
 <h2>Test #9 : can I also save directly a Entity with Entity->save() ?</h2>
 <?php
 	
-	$country4 = MyAutoload::getInstance($this->getName(), 'country');
+	$country4 = new Country();
 	$country4->set('label', 'China');
 	$country4->set('iso_code', 'cn');
 	$copyChina = $country4->save();
