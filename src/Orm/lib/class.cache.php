@@ -117,7 +117,7 @@ final class Cache
 	 */	
 	public static final function clearCache()
 	{
-		unset(self::$cache);
+		self::$cache=null;
 	}
 
 	/**

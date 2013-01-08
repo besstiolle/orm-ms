@@ -297,7 +297,7 @@ class Core
 			{
 			  $val = $row[$field->getName()];
 			}
-
+			
 			$params[] = Core::FieldToDBValue($val, $field->getType());
 			
 		  }
@@ -326,6 +326,9 @@ class Core
 		  }
 		}
 
+		//empty cache
+		Cache::clearCache();
+		
 		return $arrayKEY;
 
 	}
@@ -434,6 +437,9 @@ class Core
 			Indexing::UpdateWords($entityParam->getModuleName(), Core::SelectById($entityParam,$KEY));
 		  }
 		}
+		
+		//empty cache
+		Cache::clearCache();
 	}
   
     /**
@@ -514,6 +520,9 @@ class Core
 		  }
 		  
 		}
+		
+		//empty cache
+		Cache::clearCache();
 	}
    
     /**
@@ -969,7 +978,7 @@ class Core
      * 
      * @see CAST
      */
-	public static final function FieldToDBValue($data, CAST $type)
+	public static final function FieldToDBValue($data, $type)
 	{
 		switch($type)
 		{

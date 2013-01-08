@@ -37,6 +37,7 @@ if (!function_exists("cmsms")) exit;
 		$entities = MyAutoload::getAllInstances($this->GetName());
 		foreach($entities as $anEntity)
 		{
+			Core::dropTable($anEntity);
 			Core::createTable($anEntity);
 		}
 		echo "<p class='success'>It seems it work :)</p>";
@@ -85,26 +86,68 @@ if (!function_exists("cmsms")) exit;
 ?>
 
 
+<h2>Test #5 : can we save some entities ?</h2>
 <?php
-/*
-	$requete = "DESCRIBE cms_groups";
-	$result = $db->execute($requete);
-	if ($result === false)
-    {
-        throw new Exception("Database error durant la requête!".$db->ErrorMsg());
-    }
-	
-	$expected = 1; 
-	$result = $result->RecordCount();
+	$country = MyAutoload::getInstance($this->getName(), 'country');
+	$myArray = array();
+	$myArray[] = array('label'=>'France', 'iso_code'=>'fr');    
+    $myArray[] = array('label'=>'Spain', 'iso_code'=>'es');
+    $myArray[] = array('label'=>'England', 'iso_code'=>'en'); 
+	Core::insertEntity($country, $myArray);
+		
+	$expected = 3; 
+	$result = Core::countAll($country);
 	$class = '';
 	if($result == $expected){
 		$class = $cssSuccess;
 	} else {
 		$class = $cssError;
 	}
-	echo "<p class='$class'>we expected $expected sequences, we have got $result sequences</p>";
+	echo "<p class='$class'>we expected $expected entities in tables, we have got $result entities in tables</p>";
+?>
 
-*/
+<h2>Test #6 : Also, does values are correctly saved ?</h2>
+<?php
+	$country3 = Core::selectById($country,3);
+		
+	$expected = 'England'; 
+	$result = $country3->get('label');
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected label, we have got $result label in the entitie #3</p>";
+?>
+
+<h2>Test #7 : Can we made some update ?</h2>
+<?php
+	$myArray = array();
+    $myArray[] = array('country_id'=>3, 'label'=>'Belgium', 'iso_code'=>'be'); 
+	Core::updateEntity($country, $myArray);
+	
+	$expected = 3; 
+	$result = Core::countAll($country);
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected entities in tables, we have got $result entities in tables</p>";
+	
+	$country3 = Core::selectById($country,3);
+		
+	$expected = 'Belgium'; 
+	$result = $country3->get('label');
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected label, we have got $result label in the entitie #3</p>";
 ?>
 
 <?php

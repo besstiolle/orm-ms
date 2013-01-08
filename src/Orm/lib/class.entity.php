@@ -368,6 +368,10 @@ abstract class Entity
 		return $array;
 	}
 	
+	public static function isIndexable(){
+		return false;
+	}
+	
 }
 
 ?>
