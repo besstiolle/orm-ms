@@ -72,17 +72,23 @@ After :
 ```php
 $entities = MyAutoload::getAllInstances($this->GetName());
 foreach($entities as $anEntity)
-{  Core::createTable($anEntity);}
+{
+  //Create tables for each entity
+  Core::createTable($anEntity);
+}
 
-$css = MyAutoload::getInstance($this->GetName(), 'css');
-$myArray = array();
-$myArray[] = array('css_name'=>'Module: Quotes Made Simple'
-          , 'css_text'=>file_get_contents('stylesheet.css')
-          , 'media_type'=>''
-          , 'create_date'=>date()
-          , 'modified_date'=>date()
-          );
-Core::insertEntity($this, $css, $myArray);
+//Instanciate a new Css entity
+$css = MyAutoload::getInstance('css');
+
+//Populate values
+$css->set('css_name','Module: Quotes Made Simple');
+$css->set('css_text',file_get_contents('stylesheet.css'));
+$css->set('media_type','');
+$css->set('create_date',date());
+$css->set('modified_date',date());
+
+//Save the entity
+$css->save();
 ```
 Questions ? :]
 
