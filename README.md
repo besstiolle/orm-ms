@@ -70,7 +70,7 @@ $result = $db->Execute($query, array($new_css_id, $css_name, $css_text, $media_t
 ```
 After :
 ```php
-$entities = MyAutoload::getAllInstances($this->GetName());
+$entities = $this->getAllInstances();
 foreach($entities as $anEntity)
 {
   //Create tables for each entity
@@ -78,7 +78,7 @@ foreach($entities as $anEntity)
 }
 
 //Instanciate a new Css entity
-$css = MyAutoload::getInstance('css');
+$css = new Css();
 
 //Populate values
 $css->set('css_name','Module: Quotes Made Simple');

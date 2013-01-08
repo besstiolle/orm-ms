@@ -108,7 +108,12 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																																																																																																																																												<div class="method-definition">
+																																																																																																																																				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#isIndexable" title="details" class="method-name">isIndexable</a>
+										()
+									</div>
+																																								<div class="method-definition">
 					static 						<span class="method-result">array<Entity></span>
 										<a href="#sort" title="details" class="method-name">sort</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">$array</span>)
@@ -189,13 +194,13 @@
 										<a href="#isFieldByNameExists" title="details" class="method-name">isFieldByNameExists</a>
 											(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
 									</div>
-																<div class="method-definition">
+																								<div class="method-definition">
 											<span class="method-result">mixed</span>
 										<a href="#processValueForSave" title="details" class="method-name">processValueForSave</a>
 											(<span class="var-type">array</span>&nbsp;<span class="var-name">$rows</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$args</span> = <span class="var-default">null</span>])
 									</div>
 																<div class="method-definition">
-											<span class="method-result">void</span>
+											<span class="method-result">the</span>
 										<a href="#save" title="details" class="method-name">save</a>
 										()
 									</div>
@@ -304,11 +309,41 @@
 		</div>
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
-<a name="methodsort" id="sort"><!-- --></a>
+<a name="methodisIndexable" id="isIndexable"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">static method sort</span> (line <span class="line-number">362</span>)
+		<span class="method-title">static method isIndexable</span> (line <span class="line-number">395</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">May be override in your Entity's definition to allow Search module indexing your entities's data</p>
+<p class="description"><p>Example of function isIndexable() in a Customer Entity</p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">static&nbsp;</span><span class="src-key">function&nbsp;</span><a href="../Orm/Entity.html#methodisIndexable">isIndexable</a><span class="src-sym">(</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">return&nbsp;</span><span class="src-id">this</span><span class="src-sym">-&gt;</span><a href="../Orm/Entity.html#methodget">get</a><span class="src-sym">[</span><span class="src-str">'isActivated'</span><span class="src-sym">]</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			isIndexable
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodsort" id="sort"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method sort</span> (line <span class="line-number">372</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -343,7 +378,7 @@
 	</div>
 
 <a name="method__construct" id="__construct"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">Constructor __construct</span> (line <span class="line-number">78</span>)
@@ -391,7 +426,7 @@
 				</ul>
 	</div>
 <a name="methodadd" id="add"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">add</span> (line <span class="line-number">115</span>)
@@ -429,10 +464,10 @@
 				</ul>
 	</div>
 <a name="methoddelete" id="delete"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">delete</span> (line <span class="line-number">318</span>)
+		<span class="method-title">delete</span> (line <span class="line-number">328</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -453,7 +488,7 @@
 			
 	</div>
 <a name="methodget" id="get"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">get</span> (line <span class="line-number">236</span>)
@@ -484,7 +519,7 @@
 			
 	</div>
 <a name="methodgetDbname" id="getDbname"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">getDbname</span> (line <span class="line-number">188</span>)
@@ -509,7 +544,7 @@
 			
 	</div>
 <a name="methodgetFieldByName" id="getFieldByName"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">getFieldByName</span> (line <span class="line-number">163</span>)
@@ -540,7 +575,7 @@
 			
 	</div>
 <a name="methodgetFields" id="getFields"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">getFields</span> (line <span class="line-number">150</span>)
@@ -565,7 +600,7 @@
 			
 	</div>
 <a name="methodgetModuleName" id="getModuleName"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">getModuleName</span> (line <span class="line-number">209</span>)
@@ -590,7 +625,7 @@
 			
 	</div>
 <a name="methodgetName" id="getName"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">getName</span> (line <span class="line-number">199</span>)
@@ -615,7 +650,7 @@
 			
 	</div>
 <a name="methodgetPk" id="getPk"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">getPk</span> (line <span class="line-number">136</span>)
@@ -641,7 +676,7 @@
 			
 	</div>
 <a name="methodgetSeqname" id="getSeqname"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">getSeqname</span> (line <span class="line-number">220</span>)
@@ -666,7 +701,7 @@
 			
 	</div>
 <a name="methodgetValues" id="getValues"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">getValues</span> (line <span class="line-number">279</span>)
@@ -691,7 +726,7 @@
 			
 	</div>
 <a name="methodinitForeignKEY" id="initForeignKEY"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">initForeignKEY</span> (line <span class="line-number">285</span>)
@@ -722,7 +757,7 @@
 			
 	</div>
 <a name="methodinitTable" id="initTable"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">initTable</span> (line <span class="line-number">106</span>)
@@ -747,7 +782,7 @@
 			
 	</div>
 <a name="methodisFieldByNameExists" id="isFieldByNameExists"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">isFieldByNameExists</span> (line <span class="line-number">177</span>)
@@ -777,10 +812,10 @@
 			
 	</div>
 <a name="methodprocessValueForSave" id="processValueForSave"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">processValueForSave</span> (line <span class="line-number">338</span>)
+		<span class="method-title">processValueForSave</span> (line <span class="line-number">348</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -810,20 +845,21 @@
 			
 	</div>
 <a name="methodsave" id="save"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">save</span> (line <span class="line-number">311</span>)
+		<span class="method-title">save</span> (line <span class="line-number">313</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Shotcut to save the entity. if the primaryKey is setted, it will be an update operation, else an insert.</p>
 	<ul class="tags">
+				<li><span class="field">return:</span> entity saved with its new new Id (customer_id in my example) if it's an insertion</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		<span class="method-result">the</span>
 		<span class="method-name">
 			save
 		</span>
@@ -834,7 +870,7 @@
 			
 	</div>
 <a name="methodset" id="set"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">set</span> (line <span class="line-number">261</span>)
@@ -872,7 +908,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Mon, 07 Jan 2013 23:17:45 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Tue, 08 Jan 2013 22:33:17 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>
