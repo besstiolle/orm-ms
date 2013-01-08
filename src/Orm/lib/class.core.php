@@ -21,7 +21,7 @@ class Core
     * Protected constructor
     *     
     */
-  protected function __construct() {}
+	protected function __construct() {}
       
     /**
     * transforms the entity's structure into adodb informations 
@@ -29,61 +29,63 @@ class Core
     * @param Entity the entity
     * @return the adodb informations
     */
-  public static final function getFieldsToHql(Entity &$entity)
-  {    
-    $hql = '';
-    
-    $listeField = $entity->getFields();
-    
-        //Pour chaque champs contenu dans l'entité
-    foreach($listeField as $field)
-    {
-      //On ne cree pas les champs qui sont des liaisons externes sur des tables associatives
-      if($field->isAssociateKEY())
-        continue;
-    
-      if(!empty($hql))
-      {
-        $hql .= ' , ';
-      }
-      
-      $hql .= ' '.$field->getName().' ';
-      
-      switch($field->getType())
-      {
-        case CAST::$STRING : $hql .= 'C'; 
-          if($field->getSize() != "" )
-          {$hql.= " (".$field->getSize().") ";} break;
-        
-        case CAST::$INTEGER : $hql .= 'I'; 
-          if($field->getSize() != "" )
-          {$hql.= " (".$field->getSize().") ";} break;
-        
-        case CAST::$NUMERIC : $hql .= 'N'; 
-          if($field->getSize() != "" )
-          {$hql.= " (".$field->getSize().") ";} break;
-        
-        case CAST::$BUFFER : $hql .= 'X'; break;
+	protected static final function getFieldsToHql(Entity &$entity)
+	{    
+		$hql = '';
 
-        case CAST::$DATE : $hql .= 'D'; break;
+		$listeField = $entity->getFields();
 
-        case CAST::$TIME : $hql .= 'T'; break;   
+		//Pour chaque champs contenu dans l'entité
+		foreach($listeField as $field) {
+			//On ne cree pas les champs qui sont des liaisons externes sur des tables associatives
+			if($field->isAssociateKEY()) {
+				continue;
+			}	
 
-        case CAST::$TS : $hql .= 'I (10) '; break; //workaround for the real timestamp missing in ADODBLITE
-      }
-      
-      if($field->isPrimaryKEY())
-      {
-        $hql .= ' KEY ';
-      }
-            
-    }
-    
-        //Trace de débug
-    Trace::info($hql);
-    
-    return $hql;
-  }
+			if(!empty($hql)) {
+				$hql .= ' , ';
+			}
+
+			$hql .= ' '.$field->getName().' ';
+
+			switch($field->getType()) {
+				case CAST::$STRING : 
+					$hql .= 'C'; 
+					if($field->getSize() != "" ) {$hql.= " (".$field->getSize().") ";} 
+					break;
+
+				case CAST::$INTEGER : 
+					$hql .= 'I'; 
+					if($field->getSize() != "" ) {$hql.= " (".$field->getSize().") ";} 
+					break;
+
+				case CAST::$NUMERIC : 
+					$hql .= 'N'; 
+					if($field->getSize() != "" )
+					{$hql.= " (".$field->getSize().") ";} 
+					break;
+
+				case CAST::$BUFFER : $hql .= 'X'; break;
+
+				case CAST::$DATE : $hql .= 'D'; break;
+
+				case CAST::$TIME : $hql .= 'T'; break;   
+
+				case CAST::$TS : $hql .= 'I (10) '; break; //workaround for the real timestamp missing in ADODBLITE
+			}
+
+			if($field->isPrimaryKEY())
+			{
+				$hql .= ' KEY ';
+			}
+				
+		}
+
+		Trace::info($hql);
+
+		return $hql;
+	}
+
     /**
     * Create a table into Database from the structure of an Entity
     *  Will also create the sequence if it's needed
@@ -121,7 +123,7 @@ class Core
     *  The best way to create its table into the database : 
     * 
     * <code>
-    *   $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+    *   $customer = MyAutoload::getInstance($this->GetName(), 'customer');
     *   Core::createTable($customer);
     * </code>
     * 
@@ -193,7 +195,7 @@ class Core
     *  the code must be :
     * 
     * <code>
-    *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+    *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
     *       Core::alterTable($customer, "ADD `newColumn` INT NOT NULL");
     *       Core::alterTable($customer, "DROP `oldColumn`");
     * </code>
@@ -212,234 +214,198 @@ class Core
 	}
     
     /**
-    * Insert data into database. The third parameter must follow this scheme
-    * 
-    * Example for 3 new Customers : customer_id, name, lastName (optionnal) 
-    *   
-    * 
-    * <code>
-    *       $myArray = array();
-    *       $myArray[] = array('lastName'=>'', 'name'=>'Smith');
-    *       $myArray[] = array('name'=>'Durant');
-    *       $myArray[] = array('lastName'=>'John', 'name'=>'Doe');
-    * 
-    *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
-    * 
-    *       Core::insertEntity($customer, $myArray);
-    * </code>
-    * 
-    *  Important : you must not set the primaryKey value. It will be calculate by the system it-self
-    *                                      
-    * @param Entity an instance of the entity
-    * @param array the array with all the values in differents associative array
-	*
-    * @return array the list of the new Ids (customer_id in my example)
-    */
-	public static final function insertEntity(Entity &$entityParam, $rows)
+     * Insert data into database.
+     * 
+     * Example for a new Customer : customer_id, name, lastName (optionnal) 
+     *   
+     * <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     *       
+     *       $customer->set('name','Durant');
+     *       $customer->set('lastName'=>'John');
+     * 
+     *       Core::insertEntity($customer);
+     * </code>
+	 *
+	 * You could also code for the last line : $customer->save();  it will automatically 
+     * 
+     * Important : you must not set the primaryKey value. It will be calculate by the system it-self
+     *                                      
+     * @param Entity an instance of the entity
+	 *
+     * @return the entity saved with its new new Id (customer_id in my example)
+     */
+	public static final function insertEntity(Entity &$entityParam)
 	{
 
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
-					
-		$sqlReady = false;
-
-		//Tableau de retour contiendra les clés crées
-		$arrayKEY = array();
+		$listeValues = $entityParam->getValues();
 
 		$queryInsert = 'INSERT INTO '.$entityParam->getDbname().' (%s) values (%s)';
 
 		$str1 = "";
 		$str2 = "";
+
+		$params = array();
+			   
+		//On verifie que toutes les valeurs necessaires sont transmises
 		foreach($listeField as $field)
 		{
-
-		  if($field->isAssociateKEY())
-			continue;
-
-		  if(!empty($str1))
-		  {
-			$str1 .= ',';
-			$str2 .= ',';
-		  }
-		  $str1 .= ' '.$field->getName().' ';
-		  $str2 .= '?';
-		}
-
-		foreach($rows as $row)
-		{
-		  $params = array();
-					   
-		  //On verifie que toutes les valeurs necessaires sont transmises
-		  foreach($listeField as $field)
-		  {
-			if($field->isAssociateKEY())
-			  continue;
-			
-			//Champs vide mais pas une cle automatique et ni un champs spécial
-			if(!$field->isPrimaryKEY() 
-			  && !$field->isNullable() 
-			  && (!isset($row[$field->getName()]) || (empty($row[$field->getName()]) && $row[$field->getName()] !== 0))
-			  && !($field instanceof Field_SPE))
-			{
-			  throw new Exception('la valeur du champs '.$field->getName().' de la classe '.$entityParam->getName().' est manquante');
+			if($field->isAssociateKEY()) {
+				continue;
 			}
 
-			 //On génère une nouvelle cléf pour toutes les clé primaire
-			if($field->isPrimaryKEY() && empty($row[$field->getName()]))
-			{
-			  //Nouvelle cle
-			  $row[$field->getName()] = $db->GenID($entityParam->getSeqname());
-			  $arrayKEY[] = $row[$field->getName()];
+			if(!empty($str1)) {
+				$str1 .= ',';
+				$str2 .= ',';
+			}
+			$str1 .= ' '.$field->getName().' ';
+			$str2 .= '?';
+			
+			if($field->isPrimaryKEY()) {
+				if(!empty($listeValues[$field->getName()])) {
+					throw new IllegalArgumentException('Primary Key '.$field->getName().' can\'t be setted during insert operation for Entity'.$entityParam->getName());
+				} else {
+					$newId = $db->GenID($entityParam->getSeqname());
+					$listeValues[$field->getName()] = $newId;
+					$entityParam->set($field->getName(), $newId);
+				}
+			}
+			
+			//Empty Field that shouldn't be !
+			if(!$field->isNullable() && !isset($listeValues[$field->getName()])) {
+				throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' can\'t be null');
 			}
 			
 			$val = null;
-			if(isset($row[$field->getName()]))
+			if(isset($listeValues[$field->getName()]))
 			{
-			  $val = $row[$field->getName()];
+				$params[] = Core::FieldToDBValue($listeValues[$field->getName()], $field->getType());
+			} else {
+				$params[] = null;
 			}
-			
-			$params[] = Core::FieldToDBValue($val, $field->getType());
-			
-		  }
-		  
-		  $sqlReady = true;
-		  
-		  //Exécution
-		  $db->debug = true;
-		  
-			Trace::debug("insertEntity : ".sprintf($queryInsert, $str1, $str2));
-		  
-		  $result = $db->Execute(sprintf($queryInsert, $str1, $str2), $params);
-		  if ($result === false)
-		  {
+		}
+		  		  
+		//Execution
+		$db->debug = true;
+
+		Trace::debug("insertEntity : ".sprintf($queryInsert, $str1, $str2));
+
+		$result = $db->Execute(sprintf($queryInsert, $str1, $str2), $params);
+		if ($result === false) {
 			Trace::error(print_r($params, true).'<br/>');
 			Trace::error(sprintf($queryInsert, $str1, $str2).'<br/>');
 			Trace::error("Database error durant l'insert!".$db->ErrorMsg());
 			throw new Exception("Database error durant l'insert!".$db->ErrorMsg());
-		  }
-		  
-		  if($entityParam->isIndexable())
-		  {  
-			// $modops = cmsms()->GetModuleOperations();
-			// Indexing::setSearch($modops->GetSearchModule());
-			Indexing::AddWords($entityParam->getModuleName(), Core::SelectById($entityParam,$arrayKEY[0]));
-		  }
 		}
 
+		if($entityParam->isIndexable()) {  
+			Indexing::AddWords($entityParam->getModuleName(), Core::SelectById($entityParam,$arrayKEY[0]));
+		}
+		
 		//empty cache
 		Cache::clearCache();
 		
-		return $arrayKEY;
+		return $entityParam;
 
 	}
-   
+	
     /**
-    *  Update data into database. The third parameter must follow this scheme
-    * 
-    * Example for 3 new Customers : customer_id, name, lastName (optionnal) 
-    * 
-    * <code>
-    *       $myArray = array();
-    *       $myArray[] = array('customer_id'=>1, 'lastName'=>null, 'name'=>'Dupont');    <-- update Name value, erase lastName value in database
-    *       $myArray[] = array('customer_id'=>2, 'name'=>'Durant');                      <-- update Name value
-    *       $myArray[] = array('customer_id'=>3, 'lastName'=>'John', 'name'=>'Doe');     <-- update Name value and lastName value
-    * 
-    *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
-    * 
-    *       Core::updateEntity($customer, $myArray);
-    * </code>
-	*
-    * @param Entity an instance of the entity
-    * @param array the array with all the values in differents associative array
-    */
-	public static final function updateEntity(Entity &$entityParam, array $rows)
+     *  Update data into database. The third parameter must follow this scheme
+     * 
+     * Example for a new Customer : 
+     * 
+     * <code>
+     *       $myArray = array();
+     *       $myArray[] = array('customer_id'=>1, 'lastName'=>null, 'name'=>'Dupont');    <-- update Name value, erase lastName value in database
+     *       $myArray[] = array('customer_id'=>2, 'name'=>'Durant');                      <-- update Name value
+     *       $myArray[] = array('customer_id'=>3, 'lastName'=>'John', 'name'=>'Doe');     <-- update Name value and lastName value
+     * 
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     *       
+     *       $customer = Core::selectById($customer, 1);
+     *       $customer->set('lastName'=>'NewLastName');
+     * 
+     *       Core::updateEntity($customer);
+     * </code>
+     * 	 
+     * You could also code for the last line : $customer->save();  it will automatically 
+	 *
+     * @param Entity an instance of the entity
+	 *
+	 * @return the entity saved with its new Id (customer_id in my example)
+     */	
+	public static final function updateEntity(Entity &$entityParam)
 	{
 
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
+		$values = $entityParam->getValues();
 
+		$str = "";
+		$where = '';
+		$params = array();
+		$hasKey = false;
+		  
+		//On verifie que toutes les valeurs necessaires sont transmises
+		foreach($listeField as $field) {
+		
+			//If it's not set
+			if(empty($values[$field->getName()])) {
+			
+				//If it's a primaryKey we throw a exception
+				if($field->isPrimaryKEY()) {
+					throw new IllegalArgumentException('the primaryKey '.$field->getName().' is missing for the entity : '.$entityParam->getName());
+				}
+				
+				//an empty associatif field : no problem, we can pass
+				if($field->isAssociateKEY())
+				{
+					continue;
+				}
+				
+				//If it's a no nullable field we throw a exception
+				if(!$field->isNullable()) {
+					throw new IllegalArgumentException('the field '.$field->getName().' is not nullable for the entity : '.$entityParam->getName());
+				}
+			}
+			
+			//If it's a primaryKey
+			if($field->isPrimaryKEY()) {
+				$where = ' WHERE '.$field->getName().' = ?';
+				$hasKey = true;
+				$keyValue = $values[$field->getName()];
+			}
 
-		foreach($rows as $row)
-		{
-		  $str = "";
-		  $where = '';
-		  $params = array();
-		  
-		  //Nettoyage des eventuelles valeurs pourries transmises
-		  foreach($row as $KEY=>$value)
-		  {
-			if(empty($listeField[$KEY]))
-			{
-			  unset($row[$KEY]);
-			}
-		  }      
-		  
-		  $hasKEY = false;
-		  //On verifie que toutes les valeurs necessaires sont transmises
-		  foreach($listeField as $field)
-		  {
-			//Si le champs vide est une cle : erreur
-			if($field->isPrimaryKEY())
-			{
-			  if(empty($row[$field->getName()]))
-			  {
-				throw new Exception('l\'id n\'est pas fournie : '.$field->getName());
-			  } 
-			  
-			  $where = ' WHERE '.$field->getName().' = ?';
-			  $hasKEY = true;
-			  $KEY = $row[$field->getName()];
-			  
-			}
-			
-			//Si n'est pas définit dans les lignes à mettre à jour, on ne met simplement pas à jour
-			if(!isset($row[$field->getName()]))
-			{
-			  continue;
-			}
-			
-			if(empty($row[$field->getName()]) && $field->isNullable())
-			{
-						//Nothing to do
-			}
-			
-			//Champs associatif : on passe
-			if(empty($row[$field->getName()]) && $field->isAssociateKEY())
-			{
-			  continue;
-			}
-			
-			if(!empty($str))
-			{
+			if(!empty($str)) {
 			  $str .= ',';
 			}
-			
+
 			$str .= ' '.$field->getName().' = ? ';
-			
-			$params[] = Core::FieldToDBValue($row[$field->getName()], $field->getType());
-			
-		  }
-		  
-		  if($hasKEY)
-		  {
-			$params[] = $KEY;
-		  }
-		  
 
-		  $queryUpdate = 'UPDATE '.$entityParam->getDbname().' SET '.$str.$where;
+			$params[] = Core::FieldToDBValue($values[$field->getName()], $field->getType());
 
-		  
-		  //Excecution
-		  $result = $db->Execute($queryUpdate, $params);
-		  if ($result === false){die("Database error durant l'update!");}
-		  if($entityParam->isIndexable())
-		  {  
-			Indexing::UpdateWords($entityParam->getModuleName(), Core::SelectById($entityParam,$KEY));
-		  }
+		}
+
+		if($hasKey) {
+			$params[] = $keyValue;
+		}
+
+		$queryUpdate = 'UPDATE '.$entityParam->getDbname().' SET '.$str.$where;
+
+
+		//Excecution
+		$result = $db->Execute($queryUpdate, $params);
+		if ($result === false){die("Database error durant l'update!");}
+		if($entityParam->isIndexable()) {  
+			Indexing::UpdateWords($entityParam->getModuleName(), $entityParam);
 		}
 		
 		//empty cache
 		Cache::clearCache();
+		
+		return $entityParam;
 	}
   
     /**
@@ -448,7 +414,7 @@ class Core
     * Example for a single deletion : 
     * 
     * <code>
-    *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+    *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
     * 
     *       Core::deleteByIds($customer, array(1);
     * </code>
@@ -461,7 +427,7 @@ class Core
     *       $myArray[] = 2;
     *       $myArray[] = 3;
     * 
-    *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+    *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
     * 
     *       Core::deleteByIds($customer, $myArray);
     * </code>
@@ -582,7 +548,6 @@ class Core
 		return $entitys;
 	}
   
-    
     /**
     * Return a Entity from its Id
     * 
@@ -672,7 +637,7 @@ class Core
      * Example : find the customers with lastName 'Roger' (no casse sensitive)
      * 
      *  <code>
-     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
      * 
      *       $example = new Example();
      *       $example->addCriteria('lastName', TypeCriteria::$EQ, array('roger'), true);
@@ -683,7 +648,7 @@ class Core
      *  Example : find the customers with Id >= 90
      * 
      * <code>
-     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
      * 
      *       $example = new Example();
      *       $example->addCriteria('customer_id', TypeCriteria::$GTE, array(90));
@@ -821,7 +786,7 @@ class Core
      * Example : delete the customers with lastName 'Roger' (no casse sensitive)
      * 
      *  <code>
-     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
      * 
      *       $example = new Example();
      *       $example->addCriteria('lastName', TypeCriteria::$EQ, array('roger'), true);
@@ -832,7 +797,7 @@ class Core
      *  Example : delete the customers with Id >= 90
      * 
      * <code>
-     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
      * 
      *       $example = new Example();
      *       $example->addCriteria('customer_id', TypeCriteria::$GTE, array(90));
@@ -940,7 +905,7 @@ class Core
      *       $myArray1 = array('customer_id'=>1, 'name'=>'Dupont');       
      *       $myArray2 = array('customer_id'=>2, 'name'=>'Durand', 'lastName'=>'Joe');       
      *   
-     *       $customer = MyAutoload.getInstance($this->GetName(), 'customer');
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
      * 
      *       $customer1 = Core::rowToEntity($customer, $myArray1);
      *       $customer2 = Core::rowToEntity($customer, $myArray2);
@@ -978,8 +943,12 @@ class Core
      * 
      * @see CAST
      */
-	public static final function FieldToDBValue($data, $type)
+	protected static final function FieldToDBValue($data, $type)
 	{
+		if($data == null){
+			return null;
+		}
+		
 		switch($type)
 		{
 		  case CAST::$STRING : return $data;
@@ -1006,7 +975,7 @@ class Core
      * 
      * @see CAST
      */
-	public static final function dbValueToField($data, $type)
+	protected static final function dbValueToField($data, $type)
 	{
 		switch($type)
 		{
@@ -1112,7 +1081,7 @@ class Core
 	 * And now the code to find the potentials Tag for my Blog : 
 	 *
 	 * <code>
-	 *   $blog = MyAutoload.getInstance($this->GetName(), 'blog');
+	 *   $blog = MyAutoload::getInstance($this->GetName(), 'blog');
 	 *   $tags = Core::getEntitysAssociable($blog,'tags');
 	 * </code>
      * 
@@ -1238,7 +1207,7 @@ class Core
 	 * And now the code to find the Tag already linked with my Blog #45: 
 	 *
 	 * <code>
-	 *   $blog = MyAutoload.getInstance($this->GetName(), 'blog');
+	 *   $blog = MyAutoload::getInstance($this->GetName(), 'blog');
 	 *   $tags = Core::getEntitysAssocieesLiees($blog,'tags', 45);
 	 * </code>
      * 
@@ -1375,7 +1344,7 @@ class Core
      *  I could also write a better code : 
      * 
      * <code>
-	 *   $order = MyAutoload.getInstance($this->GetName(), 'order');
+	 *   $order = MyAutoload::getInstance($this->GetName(), 'order');
      *   $orders = Core::makeDeepSearch(order, 'Order.customer_id.adress_id.city_id.zipcode', array('01234', '4567'));
      * </code>
      * 

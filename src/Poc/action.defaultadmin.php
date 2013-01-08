@@ -88,15 +88,23 @@ if (!function_exists("cmsms")) exit;
 
 <h2>Test #5 : can we save some entities ?</h2>
 <?php
-	$country = MyAutoload::getInstance($this->getName(), 'country');
-	$myArray = array();
-	$myArray[] = array('label'=>'France', 'iso_code'=>'fr');    
-    $myArray[] = array('label'=>'Spain', 'iso_code'=>'es');
-    $myArray[] = array('label'=>'England', 'iso_code'=>'en'); 
-	Core::insertEntity($country, $myArray);
+	$country1 = new Country();
+	$country1->set('label', 'France');
+	$country1->set('iso_code', 'fr');
+	Core::insertEntity($country1);
+	
+	$country2 = new Country();
+	$country2->set('label', 'Spain');
+	$country2->set('iso_code', 'es');
+	Core::insertEntity($country2);
+	
+	$country3 = new Country();	
+	$country3->set('label', 'England');
+	$country3->set('iso_code', 'en');
+	Core::insertEntity($country3);
 		
 	$expected = 3; 
-	$result = Core::countAll($country);
+	$result = Core::countAll(new Country());
 	$class = '';
 	if($result == $expected){
 		$class = $cssSuccess;
@@ -108,7 +116,7 @@ if (!function_exists("cmsms")) exit;
 
 <h2>Test #6 : Also, does values are correctly saved ?</h2>
 <?php
-	$country3 = Core::selectById($country,3);
+	$country3 = Core::selectById(new Country(),3);
 		
 	$expected = 'England'; 
 	$result = $country3->get('label');
@@ -123,12 +131,12 @@ if (!function_exists("cmsms")) exit;
 
 <h2>Test #7 : Can we made some update ?</h2>
 <?php
-	$myArray = array();
-    $myArray[] = array('country_id'=>3, 'label'=>'Belgium', 'iso_code'=>'be'); 
-	Core::updateEntity($country, $myArray);
+	$country3->set('label', 'Belgium');
+	$country3->set('iso_code', 'be');
+	Core::updateEntity($country3);
 	
 	$expected = 3; 
-	$result = Core::countAll($country);
+	$result = Core::countAll(new Country());
 	$class = '';
 	if($result == $expected){
 		$class = $cssSuccess;
@@ -137,7 +145,7 @@ if (!function_exists("cmsms")) exit;
 	}
 	echo "<p class='$class'>we expected $expected entities in tables, we have got $result entities in tables</p>";
 	
-	$country3 = Core::selectById($country,3);
+	$country3 = Core::selectById(new Country(),3);
 		
 	$expected = 'Belgium'; 
 	$result = $country3->get('label');
@@ -149,6 +157,68 @@ if (!function_exists("cmsms")) exit;
 	}
 	echo "<p class='$class'>we expected $expected label, we have got $result label in the entitie #3</p>";
 ?>
-
+<h2>Test #8 : Do we have problem if we try to set null a not nullable field ?</h2>
 <?php
+	$country3->set('label', null);
+	
+	$expected = 'one'; 
+	$result = 'no';
+	try{
+		Core::updateEntity($country3);
+	} catch (IllegalArgumentException $iae) {
+		$result = 'one';
+	}
+	
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected exception, we have got $result exception caused by null value in the entity #3</p>";
+?>
+
+<h2>Test #9 : can I also save directly a Entity with Entity->save() ?</h2>
+<?php
+	
+	$country4 = MyAutoload::getInstance($this->getName(), 'country');
+	$country4->set('label', 'China');
+	$country4->set('iso_code', 'cn');
+	$copyChina = $country4->save();
+	
+	$expected = '4'; 
+	$result = $copyChina->get('country_id');
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected id #$expected in the returned Entity, we have got id #$result label in the returned entity</p>";
+	
+	$country4 = Core::selectById(new Country(),4);
+		
+	$expected = 'China'; 
+	$result = $country4->get('label');
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected label, we have got $result label in the entity #4</p>";
+	
+	$country4->set('label', 'China_bis');
+	$country4->save();
+	
+	$country4 = Core::selectById(new Country(),4);
+		
+	$expected = 'China_bis'; 
+	$result = $country4->get('label');
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected label, we have got $result label in the entity #4</p>";
 ?>

@@ -307,9 +307,19 @@ abstract class Entity
 	
 	/**
 	 * Shotcut to save the entity. if the primaryKey is setted, it will be an update operation, else an insert.
+	 *
+	 * @return the entity saved with its new new Id (customer_id in my example) if it's an insertion
 	 **/
 	public function save(){
+		if($this->pk == null) {
+			throw new IllegalArgumentException("you can't save the entity ".$this->getName()." because it doesn't have any Primary-Key");
+		}
 	
+		if($this->get($this->pk) == null) {
+			return Core::insertEntity($this);
+		} else {
+			return Core::updateEntity($this);
+		}
 	}
 	
 	/**
@@ -320,7 +330,7 @@ abstract class Entity
 			throw new IllegalArgumentException("you can't delete the entity ".$this->getName()." because it doesn't have any Primary-Key");
 		}
 		
-		if($this->fields[$this->pk] == null) {
+		if($this->get($this->pk) == null) {
 			throw new IllegalArgumentException("you can't delete the entity ".$this->getName()." because its Primary-Key doesn't have any value");
 		}
 		
@@ -368,6 +378,20 @@ abstract class Entity
 		return $array;
 	}
 	
+	/**
+	 * May be override in your Entity's definition to allow Search module indexing your entities's data
+	 * 
+	 * Example of function isIndexable() in a Customer Entity
+	 *  
+	 *  <code>
+	 *       
+	 *	public static function isIndexable()
+	 *	{
+	 *		return this->get['isActivated'];
+	 *	}
+	 * 
+	 *  </code>
+	 **/
 	public static function isIndexable(){
 		return false;
 	}

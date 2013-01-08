@@ -19,7 +19,7 @@
  *  	$db = cmsms()->GetDb();
  *  	
  *  	//Defines a new Customer entity
- *  	$entity = MyAutoload.getInstance('myModule', 'customer');
+ *  	$entity = MyAutoload::getInstance('myModule', 'customer');
  *  	
  *  	//Select all Customers
  *  	$querySelect = 'Select * FROM '.$entity->getDbname();
