@@ -21,7 +21,7 @@ if (!function_exists("cmsms")) exit;
 <?php
 	$entities = $this->getAllInstances();
 	
-	$expected = 1;
+	$expected = 4;
 	$result = count($entities);
 	$class = '';
 	if($result == $expected){
@@ -55,7 +55,7 @@ if (!function_exists("cmsms")) exit;
         throw new Exception("Database error durant la requête!".$db->ErrorMsg());
     }
 	
-	$expected = 2; // don't forget the Sequence
+	$expected = 7; // don't forget the Sequence
 	$result = $result->RecordCount();
 	$class = '';
 	if($result == $expected){
@@ -74,7 +74,7 @@ if (!function_exists("cmsms")) exit;
         throw new Exception("Database error durant la requête!".$db->ErrorMsg());
     }
 	
-	$expected = 1; 
+	$expected = 3; 
 	$result = $result->RecordCount();
 	$class = '';
 	if($result == $expected){

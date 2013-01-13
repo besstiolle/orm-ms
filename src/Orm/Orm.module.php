@@ -185,34 +185,30 @@ class Orm extends CMSModule {
 			require_once($entityFile);
 			eval('$entity = new '.$element['name'].'();');
 		}
-		/*
-		foreach($liste as $file)
+		foreach($liste['associate'] as $element)
 		{
-			if($file != "." && $file != ".." && !is_dir($file) 
-				&& stripos($file, 'class.') !== FALSE
-				&& stripos($file, 'class.add.') === FALSE)
-			{
-				Trace::debug("import class du module ".$this->getName().": ".cms_join_path($repertoire,$file)."<br/>");
-				require_once(cms_join_path($repertoire,$file));
-			} 
-		}*/
+			$entityFile = cms_join_path($repertoire,$element['file']);
+			Trace::debug("import associate entite ".$entityFile." dans le module ".$this->getName()."<br/>");
+			require_once($entityFile);
+			eval('$entity = new '.$element['name'].'();');
+		}
 	}
 	
 	public function autoload_classes($classname){
-	   Trace::debug("&nbsp;&nbsp;&nbsp; Need $classname<br/>");
-	   $Orm = new Orm();
-	   $path = $Orm->GetMyModulePath();
+		Trace::debug("&nbsp;&nbsp;&nbsp; Need $classname<br/>");
+		$Orm = new Orm();
+		$path = $Orm->GetMyModulePath();
 		$fn = cms_join_path($path,"lib","class.".strtolower($classname).".php");
 
-	   
-	  Trace::debug("import class du framework via ".$this->getName().": $fn<br/>");
-	   
-	   if(file_exists($fn)){
-		  require_once($fn);
-		  Trace::debug("import $fn ok<br/>");
-	   } else {
-		  Trace::debug("fichier $fn introuvable, on passe<br/>");
-	   }
+
+		Trace::debug("import class du framework via ".$this->getName().": $fn<br/>");
+
+		if(file_exists($fn)){
+			require_once($fn);
+			Trace::debug("import $fn ok<br/>");
+		} else {
+			Trace::debug("fichier $fn introuvable, on passe<br/>");
+		}
 	}
 	
 	/**
