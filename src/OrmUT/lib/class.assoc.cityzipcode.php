@@ -3,7 +3,7 @@ class CityZipCode extends EntityAssociation
 {
 	public function __construct()
 	{
-		parent::__construct('poc', 'cityzipcode');
+		parent::__construct('ormut', 'cityzipcode');
 		
 		$this->add(new Field('city_id'	
 			, CAST::$INTEGER

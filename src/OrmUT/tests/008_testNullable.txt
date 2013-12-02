@@ -1,0 +1,20 @@
+
+<h2>Test #8 : Do we have problem if we try to set null a not nullable field ?</h2>
+<?php
+	$country3->set('label', null);
+	
+	$expected = 'one'; 
+	$result = 'no';
+	try{
+		Core::updateEntity($country3);
+	} catch (IllegalArgumentException $iae) {
+		$result = 'one';
+	}
+	
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected exception, we have got $result exception caused by null value in the entity #3</p>";
+?>

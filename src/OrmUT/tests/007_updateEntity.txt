@@ -1,0 +1,29 @@
+
+<h2>Test #7 : Can we made some update ?</h2>
+<?php
+	$country3->set('label', 'Belgium');
+	$country3->set('iso_code', 'be');
+	Core::updateEntity($country3);
+	
+	$expected = 3; 
+	$result = Core::countAll(new Country());
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected entities in tables, we have got $result entities in tables</p>";
+	
+	$country3 = Core::findById(new Country(),3);
+		
+	$expected = 'Belgium'; 
+	$result = $country3->get('label');
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected label, we have got $result label in the entitie #3</p>";
+?>

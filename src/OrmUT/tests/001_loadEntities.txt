@@ -1,0 +1,16 @@
+
+<h2>Test #1 : does Entities from /lib are loaded ?</h2>
+
+<?php
+	$entities = $this->getAllInstances();
+	
+	$expected = 4;
+	$result = count($entities);
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected classes, we have got $result classes</p>";
+?> 

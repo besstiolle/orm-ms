@@ -23,23 +23,19 @@
 	*/
 class Orm extends CMSModule {
 
-	function __construct()
-	{
+	function __construct() {
 		parent::__construct();
 	}
 
-	function GetName()
-	{
+	function GetName() {
 		return 'Orm';
 	}
 
-	function GetFriendlyName()
-	{
+	function GetFriendlyName() {
 		return $this->Lang('friendlyname');
 	}
 
-	function GetVersion()
-	{
+	function GetVersion() {
 		return '0.0.1';
 	}
   
@@ -48,105 +44,84 @@ class Orm extends CMSModule {
     	return array();
 	}
 
-	function GetHelp()
-	{
+	function GetHelp() {
 		return $this->Lang('help');
 	}
 
-	function GetAuthor()
-	{
+	function GetAuthor() {
 		return 'Kevin Danezis (aka Bess)';
 	}
 
-	function GetAuthorEmail()
-	{
+	function GetAuthorEmail() {
 		return 'contact at furie point be';
 	}
 
-	function GetChangeLog()
-	{
+	function GetChangeLog() {
 		return $this->Lang('changelog');
 	}
 
-	function GetAdminDescription()
-	{
+	function GetAdminDescription() {
 		return $this->Lang('moddescription');
 	}
 
-	function MinimumCMSVersion()
-	{
+	function MinimumCMSVersion() {
 		return "1.11.0";
 	}
 
-	function IsPluginModule()
-	{
+	function IsPluginModule() {
 		return false;
 	}
 
-	function HasAdmin()
-	{
+	function HasAdmin() {
 		return true;
 	}
 
-	function GetAdminSection()
-	{
+	function GetAdminSection() {
 		return 'extensions';
 	}
 
-	function VisibleToAdminUser()
-	{
+	function VisibleToAdminUser() {
 		return true;
 	}
 
-	function InitializeFrontend()
-	{
+	function InitializeFrontend() {
 	}
 
-	function InitializeAdmin()
-	{
+	function InitializeAdmin() {
 	}
 
-	function AllowSmartyCaching()
-	{
+	function AllowSmartyCaching() {
 		return false;
 	}
 
-	function LazyLoadFrontend()
-	{
+	function LazyLoadFrontend() {
 		return false;
 	}
 
-	function LazyLoadAdmin()
-	{
+	function LazyLoadAdmin() {
 	  return false;
 	}
 	
-	function SetParameters()
-	{  
+	function SetParameters() {  
 	}
 
-	function InstallPostMessage()
-	{
+	function InstallPostMessage() {
 		return $this->Lang('postinstall');
 	}
 
-	function UninstallPostMessage()
-	{
+	function UninstallPostMessage() {
 		return $this->Lang('postuninstall');
 	}
 
-	function UninstallPreMessage()
-	{
+	function UninstallPreMessage() {
 		return $this->Lang('really_uninstall');
 	}  
 	
-	function DisplayErrorPage($msg)
-	{
+	function DisplayErrorPage($msg) {
 		echo "<h3>".$msg."</h3>";
 	} 
 		 
-	private function GetMyModulePath()
-	{
+	private function GetMyModulePath() {
 		/*$config = cmsms()->getConfig();
 		if(strpos(parent::GetModulePath(), $config['root_path']) !== FALSE)
 		{*/	return parent::GetModulePath();/*}
@@ -154,8 +129,7 @@ class Orm extends CMSModule {
 		{	return cms_join_path($config['root_path'], 'modules', $this->getName());}*/
 	}
 
-	protected function __autoload()
-	{	
+	protected function __autoload() {	
 		spl_autoload_register(array($this, 'autoload_classes'));
 		//spl_autoload_register(array($this, 'autoload_classes_addon'));
 		
@@ -250,8 +224,7 @@ class Orm extends CMSModule {
 		}
 	}*/
 	/*
-	function SearchReindex(&$module = null)
-	{
+	function SearchReindex(&$module = null) {
 		//On évite de s'auto-indexer.
 		if($this->getName() == 'Mmmfs')
 			return;		
@@ -263,8 +236,7 @@ class Orm extends CMSModule {
 	/**
 	 * Appelée par Search pour afficher un résultat
 	 *//*
-	function SearchResult($returnid, $entityId, $attr = '')
-	{	
+	function SearchResult($returnid, $entityId, $attr = '') {	
 		//On ne retourne rien de Mmmfs de toute manière
 		if($this->getName() == 'Mmmfs')
 			return;	

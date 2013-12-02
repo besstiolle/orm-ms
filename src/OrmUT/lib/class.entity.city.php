@@ -1,28 +1,28 @@
 <?php
-class ZipCode extends Entity
+class City extends Entity
 {
 	public function __construct()
 	{
-		parent::__construct('poc','zipcode');
+		parent::__construct('ormut','city');
 		
-		$this->add(new Field('zipcode_id'		
+		$this->add(new Field('city_id'		
 			, CAST::$INTEGER
 			, null	
 			, null 		// is not nullable
 			, KEY::$PK	// is a primary key (auto-incremented)
 		));
 		
-		$this->add(new Field('code'		
+		$this->add(new Field('label'		
 			, CAST::$STRING
 			, 50	
 		));
 		
-		$this->add(new Field('cities'				
+		$this->add(new Field('zipcodes'				
 			, CAST::$NONE
 			, null
 			, TRUE
 			, KEY::$AK 
-			, 'CityZipCode.city_id'
+			, 'CityZipCode.zipcode_id'
 		));
 	}	
 }

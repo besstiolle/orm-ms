@@ -301,7 +301,7 @@ class Core
 		}
 
 		if($entityParam->isIndexable()) {  
-			Indexing::AddWords($entityParam->getModuleName(), Core::SelectById($entityParam,$arrayKEY[0]));
+			Indexing::AddWords($entityParam->getModuleName(), Core::findById($entityParam,$arrayKEY[0]));
 		}
 		
 		//empty cache
@@ -324,7 +324,7 @@ class Core
      * 
      *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
      *       
-     *       $customer = Core::selectById($customer, 1);
+     *       $customer = Core::findById($customer, 1);
      *       $customer->set('lastName'=>'NewLastName');
      * 
      *       Core::updateEntity($customer);
@@ -393,7 +393,6 @@ class Core
 		}
 
 		$queryUpdate = 'UPDATE '.$entityParam->getDbname().' SET '.$str.$where;
-
 
 		//Excecution
 		$result = $db->Execute($queryUpdate, $params);
@@ -520,7 +519,7 @@ class Core
 	*
     * @return array<Entity> list of Entities found
     */
-	public static final function selectAll(Entity &$entityParam)
+	public static final function findAll(Entity &$entityParam)
 	{
 
 		$db = cmsms()->GetDb();
@@ -555,9 +554,9 @@ class Core
     * @param int the Id to find
     * @return Entity the Entity found or NULL
     */
-	public static final function selectById(Entity &$entityParam,$id)
+	public static final function findById(Entity &$entityParam,$id)
 	{
-		$liste = Core::selectByIds($entityParam, array($id));
+		$liste = Core::findByIds($entityParam, array($id));
 			
 			if(!isset($liste[0]))
 				return null;
@@ -573,7 +572,7 @@ class Core
 	*
     * @return array<Entity> list of Entities found
     */
-	public static final function selectByIds(Entity &$entityParam, $ids)
+	public static final function findByIds(Entity &$entityParam, $ids)
 	{
 		if(count($ids) == 0)
 		  return array();
@@ -642,7 +641,7 @@ class Core
      *       $example = new Example();
      *       $example->addCriteria('lastName', TypeCriteria::$EQ, array('roger'), true);
      * 
-     *       Core::selectByExample($customer, $example);
+     *       Core::findByExample($customer, $example);
      * </code>
      * 
      *  Example : find the customers with Id >= 90
@@ -653,7 +652,7 @@ class Core
      *       $example = new Example();
      *       $example->addCriteria('customer_id', TypeCriteria::$GTE, array(90));
      * 
-     *       Core::selectByExample($customer, $example);
+     *       Core::findByExample($customer, $example);
      * </code>
      * 
      * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
@@ -666,7 +665,7 @@ class Core
      * @see Example
      * @see TypeCriteria
      */
-	public static final function selectByExample(Entity &$entityParam, Example $example)
+	public static final function findByExample(Entity &$entityParam, Example $example)
 	{
 
 		$db = cmsms()->GetDb();
@@ -763,13 +762,13 @@ class Core
 		}
 		$queryExample = $select.$hql;
 
-		Trace::info("SelectByExample : ".$queryExample."   ".print_r($params, true));
+		Trace::info("findByExample : ".$queryExample."   ".print_r($params, true));
 
 		$result = $db->Execute($queryExample, $params);
 
 		if ($result === false){die($db->ErrorMsg().Trace::error("Database error durant la requete par Example!"));}
 
-		Trace::info("SelectByExample : ".$result->RecordCount()." resultat(s)");
+		Trace::info("findByExample : ".$result->RecordCount()." resultat(s)");
 
 		$entitys = array();
 		while ($row = $result->FetchRow())
@@ -959,9 +958,9 @@ class Core
 		  
 		  case CAST::$BUFFER : return $data;
 		  
-		  case CAST::$DATE : return cmsms()->GetDb()->DBDate($data);       
+		  case CAST::$DATE : return str_replace("'", "", cmsms()->GetDb()->DBDate($data));       
 		  
-		  case CAST::$TIME : return cmsms()->GetDb()->DBDate($data);     
+		  case CAST::$TIME : return str_replace("'", "", cmsms()->GetDb()->DBTimeStamp($data));     
 
 		  case CAST::$TS : return $data;  
 		}
@@ -987,10 +986,10 @@ class Core
 		  
 		  case CAST::$BUFFER : return $data;
 		  
-		  case CAST::$DATE : return cmsms()->GetDb()->UnixTimeStamp($data);
+		  case CAST::$DATE : return cmsms()->GetDb()->UnixDate($data);
 		  
-		  case CAST::$TIME : return cmsms()->GetDb()->UnixTimeStamp($data);
-
+		  case CAST::$TIME : return $data;//return cmsms()->GetDb()->UnixTimeStamp($data);
+		  
 		  case CAST::$TS : return $data;
 
 		}
@@ -1116,7 +1115,7 @@ class Core
 		  //Evaluation de la eclass en cours
 		  eval('$entity = new '.$cle[0].'();');
 		  
-		  $liste = Core::selectAll($entity);
+		  $liste = Core::findAll($entity);
 		  
 		  return $liste;
 		} 
@@ -1232,7 +1231,7 @@ class Core
 																  
 		$example = new Example();    
 		$example->addCriteria($cle[1],TypeCriteria::$EQ,array($entityId));
-		$assocs = Core::selectByExample($entity, $example);
+		$assocs = Core::findByExample($entity, $example);
 
 		$listField = $entity->getFields();
 		foreach($listField as $field)
@@ -1256,7 +1255,7 @@ class Core
 		  //Evaluation de la eclass en cours
 		  eval('$entity = new '.$cle[0].'();');
 		  
-		  $liste = Core::selectByIds($entity, $ids);
+		  $liste = Core::findByIds($entity, $ids);
 		  
 		  Trace::debug("getEntitysAssocieesLiees : "."resultat : ".count($liste));
 		  
@@ -1299,7 +1298,7 @@ class Core
 			  {
 				$Example = new Example();
 				$Example->addCriteria($field->getName(), TypeCriteria::$EQ, array($sid));
-				$entitys = Core::selectByExample($anEntity, $Example);
+				$entitys = Core::findByExample($anEntity, $Example);
 				if(count($entitys) > 0)
 				{
 				  return "La ligne &agrave; supprimer est encore utilis&eacute;e par &laquo; ".$anEntity->getName()." &raquo;";
@@ -1375,7 +1374,7 @@ class Core
 		  TRACE::info("# : "." count(\$newCle) == 1 , donc sortie ");
 		  $Example = new Example;
 		  $Example->addCriteria($fieldname, TypeCriteria::$IN, $values);
-		  $entitys = Core::selectByExample($previousEntity, $Example);
+		  $entitys = Core::findByExample($previousEntity, $Example);
 		  TRACE::info("# : ".count($entitys)." R&eacute;sultat(s) retourn&eacute;s");
 		  return $entitys;
 		} else
@@ -1453,7 +1452,7 @@ class Core
 		{
 		  $Example->addCriteria($fieldname, TypeCriteria::$IN, $ids);
 		}
-		$entitys = Core::selectByExample($previousEntity, $Example);
+		$entitys = Core::findByExample($previousEntity, $Example);
 
 		return $entitys;
 	}

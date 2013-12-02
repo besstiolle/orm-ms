@@ -1,0 +1,16 @@
+
+<h2>Test #2 : can we lunch creation of tables</h2>
+<?php
+	try{
+		$entities = $this->getAllInstances();
+		foreach($entities as $anEntity)
+		{
+			Core::dropTable($anEntity);
+			Core::createTable($anEntity);
+		}
+		echo "<p class='success'>It seems it work :)</p>";
+	} catch (Exception $e){
+		echo "<p class='fail'>fail ... :(</p>";
+	}
+	
+?> 

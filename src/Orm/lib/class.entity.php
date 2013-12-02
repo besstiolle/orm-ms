@@ -295,10 +295,10 @@ abstract class Entity
 		
 		if($sid == null)
 		{
-			$liste = Core::selectAll($entity);
+			$liste = Core::findAll($entity);
 		} else
 		{
-			$liste = Core::selectByIds($entity, array($sid));
+			$liste = Core::findByIds($entity, array($sid));
 		}
 		
 		return array($entity,$liste);
@@ -334,7 +334,7 @@ abstract class Entity
 			throw new IllegalArgumentException("you can't delete the entity ".$this->getName()." because its Primary-Key doesn't have any value");
 		}
 		
-		Core::deleteByIds($this, array($this->fields[$this->pk]));
+		Core::deleteByIds($this, array($this->get($this->pk)));
 	}
 	
     /**

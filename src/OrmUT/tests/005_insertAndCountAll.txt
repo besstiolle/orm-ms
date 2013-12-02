@@ -1,0 +1,29 @@
+
+<h2>Test #5 : can we save some entities ?</h2>
+<?php
+	$country1 = new Country();
+	$country1->set('label', 'France');
+	$country1->set('iso_code', 'fr');
+	$country1->save();
+	
+	$country2 = new Country();
+	$country2->set('label', 'Spain');
+	$country2->set('iso_code', 'es');
+	//Another way to insert a Entity
+	Core::insertEntity($country2);
+	
+	$country3 = new Country();	
+	$country3->set('label', 'England');
+	$country3->set('iso_code', 'en');
+	$country3->save();
+		
+	$expected = 3; 
+	$result = Core::countAll(new Country());
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected entities in tables, we have got $result entities in tables</p>";
+?>

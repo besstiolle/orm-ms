@@ -1,0 +1,20 @@
+
+<h2>Test #4 : do we have all the sequences created ?</h2>
+<?php
+	$requete = "SHOW TABLES FROM `".$config['db_name']."` LIKE 'cms_module_ormut_%_seq'";
+	$result = $db->execute($requete);
+	if ($result === false)
+    {
+        throw new Exception("Database error durant la requête!".$db->ErrorMsg());
+    }
+	
+	$expected = 3; 
+	$result = $result->RecordCount();
+	$class = '';
+	if($result == $expected){
+		$class = $cssSuccess;
+	} else {
+		$class = $cssError;
+	}
+	echo "<p class='$class'>we expected $expected sequences, we have got $result sequences</p>";
+?>
