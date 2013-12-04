@@ -1,9 +1,27 @@
 orm-ms
 ======
 
-A very simple Orm layer for Cms Made Simple
--------------------------------------------
-because an example is worth a thousand speeches, here  a install file in a random CmsMadeSimple Module
+*A delightful and powerful ORM system to improve the API of CmsMadeSimple.*
+
+Why should i use an ORM framework into my own module
+---------------------------------------------------
+
+Less code (up to -75%) equals less bug and obviously it's a easier way to manage your modules. this framework provide a impressive list of basics [CRUD's functionnalities](http://en.wikipedia.org/wiki/CRUD) but also advanced functionnalities : 
+
+*  findAll, findById, findByIds, countAll, delete, save
+*  findByExample, deleteByExample
+*  A **caching system** for the best performances
+*  Primary Keys, Foreign Keys, Associate Keys (many-to-one, one-to-many, many-to-many)
+
+And we're already thinking about the future
+
+*  the **"lazymode = false"** functionnality to allow you autoloading the clusters of objects
+*  the **IUUD**' implementation  
+*  the **"unique key"** functionnality
+*  the **"composite primary key"** functionnality
+*  ...
+
+And because an example is worth a thousand speeches, here an example with an install file in a random CmsMadeSimple Module
 
 Before : 
 ```php
@@ -22,44 +40,6 @@ $sqlarray = $dict->CreateTableSQL(cms_db_prefix().'module_quotegroups', $flds, $
 $dict->ExecuteSQLArray($sqlarray);
 $db->CreateSequence( cms_db_prefix()."module_quotegroups_seq" );
 
-$flds= "
-		id I,
-    type I		
-	";
-
-$taboptarray = array('mysql' => 'TYPE=MyISAM');
-$sqlarray = $dict->CreateTableSQL(cms_db_prefix().'module_quotes', $flds, $taboptarray);
-$dict->ExecuteSQLArray($sqlarray);
-$db->CreateSequence( cms_db_prefix()."module_quotes_seq" );
-
-$flds= "
-		quoteid I,
-    name C(80),
-		value X
-	";
-$taboptarray = array('mysql' => 'TYPE=MyISAM');
-$sqlarray = $dict->CreateTableSQL(cms_db_prefix().'module_quoteprops', $flds, $taboptarray);
-$dict->ExecuteSQLArray($sqlarray);
-
-
-$flds= "
-		id I,
-    name C(80),
-		isdefault I,
-		content X
-	";
-$taboptarray = array('mysql' => 'TYPE=MyISAM');
-$sqlarray = $dict->CreateTableSQL(cms_db_prefix().'module_quotetemplates', $flds, $taboptarray);
-$dict->ExecuteSQLArray($sqlarray);
-$db->CreateSequence( cms_db_prefix()."module_quotetemplates_seq" );
-
-$flds= "
-		quoteid I,
-    groupid I		
-	";
-$taboptarray = array('mysql' => 'TYPE=MyISAM');
-$sqlarray = $dict->CreateTableSQL(cms_db_prefix().'module_quoteconnections', $flds, $taboptarray);
-$dict->ExecuteSQLArray($sqlarray);
 
 $new_css_id = $db->GenID(cms_db_prefix() . "css_seq");
 $css_name = "Module: Quotes Made Simple";
@@ -69,16 +49,13 @@ $query = "INSERT INTO " . cms_db_prefix() . "css (css_id, css_name, css_text, me
 $result = $db->Execute($query, array($new_css_id, $css_name, $css_text, $media_type, $db->DBTimeStamp(time()), $db->DBTimeStamp(time())));
 ```
 After :
-```php
-$entities = $this->getAllInstances();
-foreach($entities as $anEntity)
-{
-  //Create tables for each entity
-  Core::createTable($anEntity);
-}
 
+```php
 //Instanciate a new Css entity
 $css = new Css();
+
+//Create its table
+Core::createTable($css);
 
 //Populate values
 $css->set('css_name','Module: Quotes Made Simple');
@@ -90,6 +67,14 @@ $css->set('modified_date',date());
 //Save the entity
 $css->save();
 ```
-Questions ? :]
 
-Less code (-75%) equals less bug and obviously is a easier way to manage your code.
+So have you other questions ? 
+
+
+Where should i start ?
+----------------------
+
+*   You should start by taking a look on the [wiki of this project](https://github.com/besstiolle/orm-ms/wiki). 
+*   After making your first step with the documentation you could try by yourself the [Orm-Skeleton module](http://dev.cmsmadesimple.org/project/files/1250#package-1235) to see how it's good to doing so much with so few code
+*   If you need to start your project you can also read the **manual of the death** with our  [apidoc](http://orm.furie.be/apidoc/index.html) fully up-to-date !
+*   Okay so you need more functionnalities ? why don't you [share your ideas](https://github.com/besstiolle/orm-ms/issues?state=open) with us ! i love the ideas <3
