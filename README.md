@@ -16,7 +16,7 @@ Less code (up to -75%) equals less bug and obviously it's a easier way to manage
 And we're already thinking about the future
 
 *  the **"lazymode = false"** functionnality to allow you autoloading the clusters of objects
-*  the **IUUD**' implementation  
+*  the **[UUID](http://en.wikipedia.org/wiki/Universally_unique_identifier)** implementation  
 *  the **"unique key"** functionnality
 *  the **"composite primary key"** functionnality
 *  ...
