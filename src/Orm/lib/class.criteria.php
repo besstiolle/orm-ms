@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains Critere class
+ * Contains Criteria class
  * 
  * @since 0.0.1
  * @author Bess
@@ -16,7 +16,7 @@
  * @author Bess
  * @package Orm
  **/
-final class Critere
+final class Criteria
 {
 	/**
 	 * Name of the field 
@@ -26,12 +26,12 @@ final class Critere
 	/**
 	 * Type of Criteria
 	 */
-	public $typeCritere;
+	public $typeCriteria;
 	
 	/**
 	 * Parameters for the type of Criteria
 	 */
-	public $paramsCritere;
+	public $paramsCriteria;
 	
 	/**
 	 * Boolean if we must ignore case
@@ -42,19 +42,19 @@ final class Critere
     * Public Constructor
     * 
     * @param string Name of the field 
-    * @param TypeCritere Type of Criteria
-    * @param array all the parameters used for the parameter $typeCritere
-    * @param boolean [Optionnal] if we must ignore the case (aze equals AZE) or not. Default value is "false"
+    * @param TypeCriteria Type of Criteria
+    * @param array all the parameters used for the parameter $typeCriteria
+    * @param boolean [Optional] if we must ignore the case (aze equals AZE) or not. Default value is "false"
     *
-	* @return Critere a Criteria
+	* @return Criteria a Criteria
 	*
-	* @see TypeCritere
+	* @see TypeCriteria
     */
-	public function __construct($fieldname, $typeCritere, $paramsCritere, $ignoreCase = false)
+	public function __construct($fieldname, $typeCriteria, $paramsCriteria, $ignoreCase = false)
 	{
 		$this->fieldname = $fieldname;
-		$this->typeCritere = $typeCritere;
-		$this->paramsCritere = $paramsCritere;
+		$this->typeCriteria = $typeCriteria;
+		$this->paramsCriteria = $paramsCriteria;
 		$this->ignoreCase = $ignoreCase;
 	}
 	

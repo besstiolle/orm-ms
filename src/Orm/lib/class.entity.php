@@ -75,8 +75,7 @@ abstract class Entity
      * 
      * @see MyAutoload
      */
-	protected function __construct($moduleName, $name, $prefixe = null, $dbName = null)
-	{
+	protected function __construct($moduleName, $name, $prefixe = null, $dbName = null) {
 		$this->moduleName = strtolower($moduleName);
 		$this->name = strtolower($name);
 		
@@ -95,7 +94,7 @@ abstract class Entity
 		
 		$this->dbname = cms_db_prefix().Entity::$_CONST_MOD.'_'.$prefixe.'_'.$this->dbname;
 		
-		//On ajoute une instance de soit dans l'autoload
+		// We add an instance of our-serf into the autoload
 		myAutoload::addInstance($this->moduleName,$this);
 	}
 	
@@ -112,11 +111,10 @@ abstract class Entity
 	* 
 	* @exception IllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
     */
-	protected function add(Field $newField)
-	{
+	protected function add(Field $newField) {
 		$this->fields[$newField->getName()] = $newField;
 
-		//Ajout d'une sequence sur les cle
+		//Add a sequence on the keys
 		if($newField->isPrimaryKEY())
 		{
 			if($this->pk != null)
@@ -133,8 +131,7 @@ abstract class Entity
     * @return Field the PrimaryKey Field
     * @exception IllegalArgumentException if there is no PrimaryKey Field
     */
-	public function getPk()
-	{
+	public function getPk() {
 		if($this->pk == null)
 			throw new IllegalArgumentException("the entity ".$this->getName()." doesn't have any Primary-Key");
 		
@@ -147,21 +144,19 @@ abstract class Entity
     * @return array<Field> an array with all the Fields
     * 
     */
-	public function getFields()
-	{
+	public function getFields() {
 		return $this->fields;
 	}
 	
     /**
-    * retourn a Field by name
+    * return a Field by name
     * 
     * @param string the name
     * @return Field the Field
     * 
     * @exception IllegalArgumentException if no Field exist for the name
     */
-	public function getFieldByName($name)
-	{
+	public function getFieldByName($name) {
 		if(isset($this->fields[$name]))
 			return $this->fields[$name];
 		
@@ -174,8 +169,7 @@ abstract class Entity
     * @param string the name
     * @return Boolean if exists
     */
-	public function isFieldByNameExists($name)
-	{
+	public function isFieldByNameExists($name) {
 		return isset($this->fields[$name]);
 	}
 	
@@ -185,8 +179,7 @@ abstract class Entity
     * @return string the name of the table into the database
     * 
     */
-	public function getDbname()
-	{
+	public function getDbname() {
 		return $this->dbname;
 	}
 	
@@ -196,8 +189,7 @@ abstract class Entity
     * @return string the name of the entity
     * 
     */
-	public function getName()
-	{
+	public function getName() {
 		return $this->name;
 	}
 	
@@ -206,8 +198,7 @@ abstract class Entity
 	 *  
 	 *  @return string the name of the current module.
 	 **/
-	public function getModuleName()
-	{
+	public function getModuleName() {
 		return $this->moduleName;
 	}
 	
@@ -217,8 +208,7 @@ abstract class Entity
     * @return string the name of the sequence or NULL
     * 
     */
-	public function getSeqname()
-	{
+	public function getSeqname() {
 		if(empty($this->seqname))
 			return null;
 		
@@ -233,17 +223,16 @@ abstract class Entity
     * 
     * @exception IllegalArgumentException if no Field exists for the name
     */
-	public function get($fieldName)
-	{
-		$fieldnameSid = explode("_sid", $fieldName);
-		$fieldnameSid = $fieldnameSid[0];
-		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldnameSid,$this->fields))
-		{
+	public function get($fieldName) {
+
+		//$fieldnameSid = explode("_sid", $fieldName);
+		//$fieldnameSid = $fieldnameSid[0];
+		$fieldnameSid = $fieldName;
+		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldnameSid,$this->fields)) {
 			throw new IllegalArgumentException("fonction Get : Field $fieldName not found for entity ".$this->getName());
 		}
 		
-		if(!isset($this->values[$fieldName]))
-		{
+		if(!isset($this->values[$fieldName])) {
 			return null;
 		}
 		
@@ -258,12 +247,12 @@ abstract class Entity
     * 
     * @exception IllegalArgumentException if no Field exists for the name
     */
-	public function set($fieldName,$value)
-	{
+	public function set($fieldName,$value) {
 		$fieldnameSid = explode("_sid", $fieldName);
 		$fieldnameSid = $fieldnameSid[0];
-		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldnameSid,$this->fields))
-		{throw new IllegalArgumentException('fonction Set : cle '.$fieldName.' non trouvee dans l\'entite');}
+		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldnameSid,$this->fields)) {
+			throw new IllegalArgumentException("function Set : Field $fieldName not found into the entity".$this->getName());
+		}
 		
 		$this->values[$fieldName] = $value;
 	}
@@ -276,22 +265,20 @@ abstract class Entity
     * @return array an associative array
     * 
     */
-	public function getValues()
-	{
+	public function getValues() {
 		return $this->values;
 	}
 	
-	
-	public function initForeignKEY($fieldName, $sid = null)
-	{			
+	/*
+	public function initForeignKEY($fieldName, $sid = null) {			
 		$field = $this->getFieldByName($fieldName);
 		
 		if($field->getKEYName() == '')
-			throw new IllegalArgumentException("Le champs $fieldName ne possede aucune cle etrangere associee");
+			throw new IllegalArgumentException("The field $fieldName doesn't own any foreign key associated");
 			
 		$cle = explode('.',$field->getKEYName(),2);
-		//Evaluation de la eclass en cours
-		eval('$entity = new '.$cle[0].'();');
+		
+		$entity = new $cle[0]();
 		
 		if($sid == null)
 		{
@@ -303,10 +290,10 @@ abstract class Entity
 		
 		return array($entity,$liste);
 	
-	}
+	}*/
 	
 	/**
-	 * Shotcut to save the entity. if the primaryKey is setted, it will be an update operation, else an insert.
+	 * Shortcut to save the entity. if the primaryKey is setted, it will be an update operation, else an insert.
 	 *
 	 * @return the entity saved with its new new Id (customer_id in my example) if it's an insertion
 	 **/
@@ -323,7 +310,7 @@ abstract class Entity
 	}
 	
 	/**
-	 * Shotcut to delete the entity
+	 * Shortcut to delete the entity
 	 **/
 	public function delete(){
 		if($this->pk == null) {
@@ -338,9 +325,9 @@ abstract class Entity
 	}
 	
     /**
-    * Can be overriden Let you modify some data just before saving the data into the datatable.
+    * Can be overridden Let you modify some data just before saving the data into the datatable.
     * 
-    * @param array all the values to procee
+    * @param array all the values to process
     * @param array more parameters if you need, if you want
     * 
     * @return mixed to define
@@ -352,7 +339,7 @@ abstract class Entity
 	
 	/**
 	 * Call the compareTo function into your Entity to sort the Entities.
-	 * To activate this fonctionnality, The Entity must implement ISortable Interface.
+	 * To activate this functionality, The Entity must implement ISortable Interface.
 	 *
 	 * Example of function compareTo() in a Customer Entity
 	 *  <code>
@@ -369,10 +356,8 @@ abstract class Entity
 	 *
 	 * @return array<Entity> the list of entity gracefully sorted
 	 */
-	public static function sort(array $array)
-	{
-		//http://php.net/manual/fr/function.get-called-class.php
-		//PHP 5.3.0 only
+	public static function sort(array $array) {
+
 		usort($array, array(get_called_class(), "compareTo"));
 	
 		return $array;

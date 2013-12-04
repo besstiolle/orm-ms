@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains the Core Class
+ * Contains the class Core
  * 
  * @since 0.0.1
  * @author Bess
@@ -35,12 +35,17 @@ class Core
 
 		$listeField = $entity->getFields();
 
-		//Pour chaque champs contenu dans l'entité
+		//For each Field contained in the entity
 		foreach($listeField as $field) {
-			//On ne cree pas les champs qui sont des liaisons externes sur des tables associatives
+			//We don't create the Field which are links externals on associative tables
 			if($field->isAssociateKEY()) {
 				continue;
 			}	
+			
+			//We don't create the transient Fields 
+			if($field->getType() == CAST::$NONE) {
+				continue;
+			}
 
 			if(!empty($hql)) {
 				$hql .= ' , ';
@@ -138,8 +143,8 @@ class Core
 		$taboptarray = array( 'mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
 		$dict = NewDataDictionary( $db );
 		$hql = Core::getFieldsToHql($entityParam);
-
-		//Appel aux méthodes de l'API de adodb pour créer effectivement la table.
+		
+		//Calling the adodb functionalities
 		$sqlarray = $dict->CreateTableSQL($entityParam->getDbname(), 
 												$hql,
 												$taboptarray);
@@ -155,10 +160,10 @@ class Core
 		   
 		Trace::debug("createTable : ".print_r($sqlarray, true).'<br/>');
 
-		//Optionnel : créera une séquence associee
+		//If necessary, it will create a sequence on the table.
 		if($entityParam->getSeqname() != null){$db->CreateSequence($entityParam->getSeqname());}
 
-		//On initialise la table.
+		//We initiate the table.
 		$entityParam->initTable();
 	}
     
@@ -178,12 +183,12 @@ class Core
 		$sqlarray = $dict->DropTableSQL($entityParam->getDbname());
 		$dict->ExecuteSQLArray($sqlarray);
 
-		//Optionnel : supprimera une sequence associee
+		//If necessary, it will delete a sequence on the table.
 		if($entityParam->getSeqname() != null){$db->DropSequence($entityParam->getSeqname());}
 	}  
   
     /**
-    * Will modifie the table of the Entity in parameters with the SQL query in parameters
+    * Will edit the table of the Entity in parameters with the SQL query in parameters
     * 
     *   example : if you need to do 
     * 
@@ -216,7 +221,7 @@ class Core
     /**
      * Insert data into database.
      * 
-     * Example for a new Customer : customer_id, name, lastName (optionnal) 
+     * Example for a new Customer : customer_id, name, lastName (optional) 
      *   
      * <code>
      *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
@@ -249,7 +254,7 @@ class Core
 
 		$params = array();
 			   
-		//On verifie que toutes les valeurs necessaires sont transmises
+		//All the required values must be present
 		foreach($listeField as $field)
 		{
 			if($field->isAssociateKEY()) {
@@ -291,7 +296,6 @@ class Core
 		$db->debug = true;
 
 		Trace::debug("insertEntity : ".sprintf($queryInsert, $str1, $str2));
-
 		$result = $db->Execute(sprintf($queryInsert, $str1, $str2), $params);
 		if ($result === false) {
 			Trace::error(print_r($params, true).'<br/>');
@@ -348,7 +352,7 @@ class Core
 		$params = array();
 		$hasKey = false;
 		  
-		//On verifie que toutes les valeurs necessaires sont transmises
+		//All the required values must be present
 		foreach($listeField as $field) {
 		
 			//If it's not set
@@ -359,7 +363,7 @@ class Core
 					throw new IllegalArgumentException('the primaryKey '.$field->getName().' is missing for the entity : '.$entityParam->getName());
 				}
 				
-				//an empty associatif field : no problem, we can pass
+				//an empty associative field : no problem, we can pass
 				if($field->isAssociateKEY())
 				{
 					continue;
@@ -394,7 +398,7 @@ class Core
 
 		$queryUpdate = 'UPDATE '.$entityParam->getDbname().' SET '.$str.$where;
 
-		//Excecution
+		//Execution
 		$result = $db->Execute($queryUpdate, $params);
 		if ($result === false){die("Database error durant l'update!");}
 		if($entityParam->isIndexable()) {  
@@ -465,7 +469,7 @@ class Core
 
 		$queryDelete = 'DELETE FROM '.$entityParam->getDbname().' WHERE '.$where;
 
-		//Excecution
+		//Execution
 		$result = $db->Execute($queryDelete, $params);
 		if ($result === false){die("Database error durant la suppression!");}
 
@@ -526,108 +530,135 @@ class Core
 
 		$querySelect = 'Select * FROM '.$entityParam->getDbname();
 
-			//Si déjà présent en cache, on le retourne 
-		if(Cache::isCache($querySelect))
-		{
+		//If it's already in the cache, we return the result
+		if(Cache::isCache($querySelect)) {
 		  return Cache::getCache($querySelect);
-		}
+		} 
 		  
 		$result = $db->Execute($querySelect);
-		if ($result === false){die("Database error durant la requete par Ids!");}
+		if ($result === false){die("Database error during Core::findAll(Entity &$entityParam)");}
 
+		$entities = Core::_processArrayEntity($entityParam, $result);
+		
+		//We push the result into the cache before return it
+		Cache::setCache($querySelect, null, $entities);
+
+		return array_values($entities);
+	}
+	
+	/**
+	 * Inner function to factorize some code for each "find*" functions
+	 *  It will retrieve all the informations on the AK's Field
+	 *
+     * @param Entity an instance of the entity  
+	 * @param resultQuery the returned value of sql execution
+	 *
+     * @return array<Entity> list of Entities populate with all the informations on AK's Field
+	 **/
+	private function _processArrayEntity(Entity &$entityParam, $resultQuery){
+	
+		$db = cmsms()->GetDb();
+		
 		$entitys = array();
-		while ($row = $result->FetchRow())
-		{
-		  $entitys[] = Core::rowToEntity($entityParam, $row);
+		while ($row = $resultQuery->FetchRow()) {
+		  $anEntity = Core::rowToEntity($entityParam, $row);
+		  $entitys[$anEntity->get($anEntity->getPk()->getName())] = $anEntity;
 		}
-
-			//On repousse dans le cache le résultat avant de le retourner   
-		Cache::setCache($querySelect, null, $entitys);
-
+				
+		//Test the presence of $AK
+		$listeField = $entityParam->getFields();
+		foreach($listeField as $field) {
+		  if($field->isAssociateKEY()) {
+			
+			//Initiate the field associate with an empty array.
+			foreach(array_keys($entitys) as $key){
+				$entitys[$key]->set($field->getName(), array());
+			}
+		  
+			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
+			$entityAssoc = new $entityAssocName();
+			
+			$queryAdd = 'SELECT * FROM '.$entityAssoc->getDbname().' WHERE '.$fieldAssociateName.' in ('.implode(',',array_keys($entitys)).')';
+			$result = $db->Execute($queryAdd);
+			if ($result === false){die("Database error during request to get associative entity $entityAssocName!");}
+			while ($rowAssociate = $result->FetchRow()) {
+				$arrayIdEntitiesDest = $entitys[$rowAssociate[$fieldAssociateName]]->get($field->getName());
+				$arrayIdEntitiesDest[] = $rowAssociate[$entityAssoc->getPk()->getName()];
+				$entitys[$rowAssociate[$fieldAssociateName]]->set($field->getName(),$arrayIdEntitiesDest);
+			}
+		  } 
+		}
+		
 		return $entitys;
 	}
   
-    /**
-    * Return a Entity from its Id
-    * 
-    * @param Entity an instance of the entity  
-    * @param int the Id to find
-    * @return Entity the Entity found or NULL
-    */
-	public static final function findById(Entity &$entityParam,$id)
+	/**
+	* Return a Entity from its Id
+	* 
+	* @param Entity an instance of the entity  
+	* @param int the Id to find
+	* @return Entity the Entity found or NULL
+	*/
+	public static final function findById(Entity &$entityParam, $id)
 	{
 		$liste = Core::findByIds($entityParam, array($id));
-			
-			if(!isset($liste[0]))
-				return null;
-			
+		
+		if(!isset($liste[0])){
+			return null;
+		}
+		
 		return $liste[0];
 	}
   
-    /**
-    * Return Entities from their Ids
-    * 
-    * @param Entity an instance of the entity  
-    * @param array list of the Ids to find
+	/**
+	* Return Entities from their Ids
+	* 
+	* @param Entity an instance of the entity  
+	* @param array list of the Ids to find
 	*
-    * @return array<Entity> list of Entities found
-    */
+	* @return array<Entity> list of Entities found
+	*/
 	public static final function findByIds(Entity &$entityParam, $ids)
 	{
 		if(count($ids) == 0)
 		  return array();
 			
-
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
-
 		$where = "";
 			
-		foreach($listeField as $field)
-		{
-
-		  if(!$field->isPrimaryKEY())
-		  { 
+		foreach($listeField as $field) {
+		  if(!$field->isPrimaryKEY()) { 
 			continue;
 		  }
 		  
-		  foreach($ids as $id)
-		  {
-		  
-			if(!empty($where))
-			{
+		  foreach($ids as $id) {
+			if(!empty($where)) {
 			  $where .= ' OR ';
 			}
 				  
 			$where .= $field->getName().' = ?';
-			
 			$params[] = Core::FieldToDBValue($id, $field->getType());
 		  }
 		}
 
 		$querySelect = 'Select * FROM '.$entityParam->getDbname().' WHERE '.$where;
 
-			//Si déjà présent en cache, on le retourne
-		if(Cache::isCache($querySelect,$params))
-		{
+		//Si déjà présent en cache, on le retourne
+		if(Cache::isCache($querySelect,$params)) {
 		  return Cache::getCache($querySelect,$params);
 		}
 
-		//Excecution
+		//Execution
 		$result = $db->Execute($querySelect, $params);
 		if ($result === false){die("Database error durant la requete par Ids!");}
 
-		$entitys = array();
-		while ($row = $result->FetchRow())
-		{
-		  $entitys[] = Core::rowToEntity($entityParam, $row);
-		}
-			
-			//On repousse dans le cache le résultat avant de le retourner
-		Cache::setCache($querySelect,$params, $entitys);
-			
-		return $entitys;
+		$entities = Core::_processArrayEntity($entityParam, $result);
+		
+		//We push the result into the cache before return it
+		Cache::setCache($querySelect, null, $entities);
 
+		return array_values($entities);
 	}
   
     /**
@@ -675,7 +706,7 @@ class Core
 		$select = "select * from ".$entityParam->getDbname();
 		$hql = "";
 		$params = array();
-		//  die("spp,".count($criterias));
+		
 		foreach($criterias as $criteria)
 		{
 		  if(!empty($hql))
@@ -770,13 +801,12 @@ class Core
 
 		Trace::info("findByExample : ".$result->RecordCount()." resultat(s)");
 
-		$entitys = array();
-		while ($row = $result->FetchRow())
-		{
-		  $entitys[] = Core::rowToEntity($entityParam, $row);
-		}
+		$entities = Core::_processArrayEntity($entityParam, $result);
+		
+		//We push the result into the cache before return it
+		Cache::setCache($querySelect, null, $entities);
 
-		return $entitys;
+		return array_values($entities);
 
 	}
     /**
@@ -1089,7 +1119,7 @@ class Core
 	 *
      * @return array<Entity> a list of the Entities linked to the entity in the parameters by the fieldName in the Parameters
      */
-	public static final function getEntitysAssociable(Entity &$entityParam,$fieldname)
+/*	public static final function getEntitysAssociable(Entity &$entityParam,$fieldname)
 	{
 		$field = $entityParam->getFieldByName($fieldname);
 		if($field->getKEYName() == '')
@@ -1097,7 +1127,7 @@ class Core
 			
 		$cle = explode('.',$field->getKEYName(),2);
 
-		eval('$entity = new '.$cle[0].'();');
+		$entity = new $cle[0]();
 										   
 
 		$listField = $entity->getFields();
@@ -1108,18 +1138,17 @@ class Core
 				
 		  $cle = explode('.',$field->getKEYName(),2);
 		  
-		  if(strtolower($cle[0]) == $entityParam->getName())
+		  if(strtolower($cle[0]) == $entityParam->getName()) {
 			continue;
-			  
-		  
-		  //Evaluation de la eclass en cours
-		  eval('$entity = new '.$cle[0].'();');
+		  }
+			
+		  $entity = new $cle[0]();
 		  
 		  $liste = Core::findAll($entity);
 		  
 		  return $liste;
 		} 
-	}
+	}*/
 
     /**
      * Return the entities 'B' which are already associate to an Entity 'A' 
@@ -1216,7 +1245,7 @@ class Core
 	 *
      * @return array<Entity> a list of the Entities linked to the entity in the parameters by the fieldName in the Parameters
      */
-	public static final function getEntitysAssocieesLiees(Entity &$entityParam, $fieldname, $entityId)
+	/*public static final function getEntitysAssocieesLiees(Entity &$entityParam, $fieldname, $entityId)
 	{
 		Trace::debug("getEntitysAssocieesLiees : ".$entityParam->getName()." ".$fieldname." ".$entityId);
 
@@ -1227,7 +1256,7 @@ class Core
 		  
 		$cle = explode('.',$field->getKEYName(),2);
 
-		eval('$entity = new '.$cle[0].'();');
+		$entity = new $cle[0]();
 																  
 		$example = new Example();    
 		$example->addCriteria($cle[1],TypeCriteria::$EQ,array($entityId));
@@ -1252,8 +1281,7 @@ class Core
 		  
 		  $cle = explode('.',$field->getKEYName(),2);
 				
-		  //Evaluation de la eclass en cours
-		  eval('$entity = new '.$cle[0].'();');
+		  $entity = new $cle[0]();
 		  
 		  $liste = Core::findByIds($entity, $ids);
 		  
@@ -1261,7 +1289,7 @@ class Core
 		  
 		  return $liste;
 		}    
-	}
+	}*/
   
     /**
      * Verify in all type of entities if anyone still has a link with the Entity passed in parameters (ForeignKEy and AssociateKey)
@@ -1278,24 +1306,19 @@ class Core
 	{
 		$listeEntitys = MyAutoload::getAllInstances($entity->getModuleName());
 
-		foreach($listeEntitys as $key=>$anEntity)
-		{
+		foreach($listeEntitys as $key=>$anEntity) {
 		  if($anEntity instanceOf EntityAssociation)
 			continue;
 			
-		  foreach($anEntity->getFields() as $field)
-		  {
-			if($field->isAssociateKEY())
-			{
+		  foreach($anEntity->getFields() as $field) {
+			if($field->isAssociateKEY()) {
 			  continue;
 			}
 			
-			if($field->getKEYName() != null)
-			{
+			if($field->getKEYName() != null) {
 			  $vals = explode('.',$field->getKEYName(),2);
 			  
-			  if(strtolower ($vals[0]) == strtolower ($entity->getName()))
-			  {
+			  if(strtolower ($vals[0]) == strtolower ($entity->getName()))  {
 				$Example = new Example();
 				$Example->addCriteria($field->getName(), TypeCriteria::$EQ, array($sid));
 				$entitys = Core::findByExample($anEntity, $Example);
@@ -1362,7 +1385,7 @@ class Core
 		  $newCle = explode('.',$cle,2);
 		  $previousEntity = $newCle[0];
 		  $cle = $newCle[1];
-		  eval('$previousEntity = new '.$previousEntity.'();');
+		  $previousEntity = new $previousEntity();
 		}
 
 		$newCle = explode('.',$cle,2);
@@ -1387,7 +1410,7 @@ class Core
 		if($field->isForeignKEY() || $field->isAssociateKey())
 		{
 		  $foreignKEY = explode('.',$field->getKEYName(),2);
-		  eval('$nextEntity = new '.$foreignKEY[0].'();');
+		  $nextEntity = new $foreignKEY[0]();
 		} 
 
 		if($field->isAssociateKey())

@@ -2,25 +2,25 @@
 
 if (!function_exists("cmsms")) exit;
 
-$user = null;
-if(!empty($params['user_id'])){
-	//Let's retrieve our user !
-	$user = Core::findById(new UserSkeleton(), $params['user_id']);
+$city = null;
+if(!empty($params['city_id'])){
+	//Let's retrieve our city !
+	$city = Core::findById(new CitySkeleton(), $params['city_id']);
 } 
 
-if($user == null){
+if($city == null){
 	// we can't delete something that doesn't exist
-	$params['error'] = "UserSkeleton not found";
+	$params['error'] = "CitySkeleton not found";
 	$this->Redirect($id, 'defaultadmin', $returnid, $params);
 }
 
 try{
 	// We simply delete the entity
-	$user->delete();
+	$city->delete();
 	$this->Redirect($id, 'defaultadmin', $returnid, $params);
 } catch (Exception $e){
 	// Ho ho ho... there is shitty information ...
-	// Let's go inform the user
+	// Let's go inform the city
 	$params['error'] = $e->getMessage();
 	$this->Redirect($id, 'defaultadmin', $returnid, $params);
 }

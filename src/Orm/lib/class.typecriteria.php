@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains the TypeCritere class
+ * Contains the TypeCriteria class
  * 
  * @since 0.0.1
  * @author Bess
@@ -9,14 +9,14 @@
  
 
 /**
- * Enum for the differents types of TypeCriteria
+ * Enum for the different types of TypeCriteria
  * 
  * 
  * @since 0.0.1
  * @author Bess
  * @package Orm
  **/
-class TypeCritere
+class TypeCriteria
 {
     /**
     * Is equals to
@@ -26,21 +26,21 @@ class TypeCritere
 	public static $EQ = ' = ';
     
     /**
-    * Is différent Of
+    * Is different Of
     * 
     * @var string
     */
 	public static $NEQ = ' != ';
     
     /**
-    * is strictly gretter than
+    * is strictly greater  than
     * 
     * @var string
     */
 	public static $GT = ' > ';
     
     /**
-    * is gretter or equals to
+    * is greater  or equals to
     * 
     * @var string
     */

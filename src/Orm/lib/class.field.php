@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains the Field Classe
+ * Contains the class Field
  *
  * @since 0.0.1
  * @author Bess
@@ -64,29 +64,26 @@ class Field
 	* @see Entity
     * 
     */
-	public function __construct($fieldname, $cast, $size = null, $nullable = false, $KEY = null, $KEYName=null)
-	{
-		if(empty($KEY) && !empty($KEYName))
-		{
+	public function __construct($fieldname, $cast, $size = null, $nullable = false, $KEY = null, $KEYName=null) {
+	
+		if(empty($KEY) && !empty($KEYName)) {
 			throw new IllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
 		}
-		if($KEY == KEY::$PK && !empty($KEYName))
-		{
+		if($KEY == KEY::$PK && !empty($KEYName)) {
 			throw new IllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
 		}
-		if(($KEY == KEY::$FK || $KEY == KEY::$AK) && empty($KEYName))
-		{
+		if(($KEY == KEY::$FK || $KEY == KEY::$AK) && empty($KEYName)) {
 			throw new IllegalConfigurationException('$FK key or $AK key for the field '.$fieldname.' need a keyName');
 		}
 		
-		if(($cast == CAST::$DATE || $cast == CAST::$BUFFER) && !empty($size))
-		{
-			throw new IllegalConfigurationException('The CAST::DATE or the CAST::BUFFER of field '.$fieldname.' musn\'t have size value');
+		if(($cast == CAST::$DATE || $cast == CAST::$BUFFER || $cast == CAST::$TIME) && !empty($size)) {
+			throw new IllegalConfigurationException('The CAST::DATE or the CAST::BUFFER or the CAST::TIME of field '.$fieldname.' must not have size value');
 		}
 		
 
-		if($nullable == null)
+		if($nullable == null) {
 			$nullable = false;
+		}
 			
 		$this->name 	= $fieldname;
 		$this->type 	= $cast;

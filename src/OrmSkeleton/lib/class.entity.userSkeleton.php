@@ -8,7 +8,7 @@ class UserSkeleton extends Entity
 	{
 		parent::__construct('ormskeleton','userskeleton');
 		
-		// A primary key, very usefull for most of your definition
+		// A primary key, very useful for most of your definitions
 		$this->add(new Field('user_id'	
 			// This parameter is simply a integer. You can choose between a lot of possibility. 
 			//  Take a look inside the class CAST for all the possibilities.
