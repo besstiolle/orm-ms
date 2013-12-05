@@ -29,8 +29,7 @@ class Core
     * @param Entity the entity
     * @return the adodb informations
     */
-	protected static final function getFieldsToHql(Entity &$entity)
-	{    
+	private static final function getFieldsToHql(Entity &$entity) {    
 		$hql = '';
 
 		$listeField = $entity->getFields();
@@ -81,7 +80,11 @@ class Core
 
 			if($field->isPrimaryKEY())
 			{
-				$hql .= ' KEY ';
+				if($entity->isAutoincrement()) {
+					$hql .= ' KEY AUTO';
+				} else {
+					$hql .= ' KEY ';
+				}
 			}
 				
 		}
@@ -137,8 +140,7 @@ class Core
 	* @param Orm the module which extends the Orm module
     * @param Entity an instance of the entity
     */
-	public static final function createTable(Entity &$entityParam)
-	{
+	public static final function createTable(Entity &$entityParam) {
 		$db = cmsms()->GetDb();
 		$taboptarray = array( 'mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
 		$dict = NewDataDictionary( $db );
@@ -160,6 +162,10 @@ class Core
 		   
 		Trace::debug("createTable : ".print_r($sqlarray, true).'<br/>');
 
+		/*if($entityParam->getName() == "userskeleton"){
+			die(($entityParam->isAutoincrement()?"AI":"SQ")." - ".$entityParam->getSeqname());
+		} */
+		
 		//If necessary, it will create a sequence on the table.
 		if($entityParam->getSeqname() != null){$db->CreateSequence($entityParam->getSeqname());}
 
@@ -173,8 +179,7 @@ class Core
     * 
     * @param Entity an instance of the entity
     */
-	public static final function dropTable(Entity &$entityParam)
-	{
+	public static final function dropTable(Entity &$entityParam) {
 
 		$db = cmsms()->GetDb();
 
@@ -209,8 +214,7 @@ class Core
     * @param Entity an instance of the entity
     * @param string the SQL query
     */
-	public static final function alterTable(Entity &$entityParam, $sql)
-	{
+	public static final function alterTable(Entity &$entityParam, $sql) {
 		$db = cmsms()->GetDb();
 			
 		$queryAlter = "ALTER TABLE ".$entityParam->getDbname()." ".$sql;    
@@ -240,8 +244,7 @@ class Core
 	 *
      * @return the entity saved with its new new Id (customer_id in my example)
      */
-	public static final function insertEntity(Entity &$entityParam)
-	{
+	public static final function insertEntity(Entity &$entityParam) {
 
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
@@ -340,8 +343,7 @@ class Core
 	 *
 	 * @return the entity saved with its new Id (customer_id in my example)
      */	
-	public static final function updateEntity(Entity &$entityParam)
-	{
+	public static final function updateEntity(Entity &$entityParam) {
 
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
@@ -438,8 +440,7 @@ class Core
     * @param Entity an instance of the entity    
     * @param array all the ids to delete ($customer_id in my example)
     */
-	public static final function deleteByIds(Entity &$entityParam, $ids)
-	{
+	public static final function deleteByIds(Entity &$entityParam, $ids) {
 
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
@@ -501,8 +502,7 @@ class Core
 	* 
     * @return int the number of occurrences from the table   
     */
-	public static final function countAll(Entity &$entityParam)
-	{
+	public static final function countAll(Entity &$entityParam) {
 
 		$db = cmsms()->GetDb();
 
@@ -523,26 +523,24 @@ class Core
 	*
     * @return array<Entity> list of Entities found
     */
-	public static final function findAll(Entity &$entityParam)
-	{
-
+	public static final function findAll(Entity &$entityParam) {
 		$db = cmsms()->GetDb();
 
 		$querySelect = 'Select * FROM '.$entityParam->getDbname();
 
 		//If it's already in the cache, we return the result
 		if(Cache::isCache($querySelect)) {
-		  return Cache::getCache($querySelect);
-		} 
-		  
-		$result = $db->Execute($querySelect);
-		if ($result === false){die("Database error during Core::findAll(Entity &$entityParam)");}
+			$entities = Cache::getCache($querySelect);
+		} else {
+			$result = $db->Execute($querySelect);
+			if ($result === false){die("Database error during Core::findAll(Entity &$entityParam)");}
 
-		$entities = Core::_processArrayEntity($entityParam, $result);
+			$entities = Core::_processArrayEntity($entityParam, $result);
+			
+			//We push the result into the cache before return it
+			Cache::setCache($querySelect, null, $entities);
+		}
 		
-		//We push the result into the cache before return it
-		Cache::setCache($querySelect, null, $entities);
-
 		return array_values($entities);
 	}
 	
@@ -555,7 +553,7 @@ class Core
 	 *
      * @return array<Entity> list of Entities populate with all the informations on AK's Field
 	 **/
-	private function _processArrayEntity(Entity &$entityParam, $resultQuery){
+	private static final function _processArrayEntity(Entity &$entityParam, $resultQuery) {
 	
 		$db = cmsms()->GetDb();
 		
@@ -599,8 +597,7 @@ class Core
 	* @param int the Id to find
 	* @return Entity the Entity found or NULL
 	*/
-	public static final function findById(Entity &$entityParam, $id)
-	{
+	public static final function findById(Entity &$entityParam, $id) {
 		$liste = Core::findByIds($entityParam, array($id));
 		
 		if(!isset($liste[0])){
@@ -618,8 +615,7 @@ class Core
 	*
 	* @return array<Entity> list of Entities found
 	*/
-	public static final function findByIds(Entity &$entityParam, $ids)
-	{
+	public static final function findByIds(Entity &$entityParam, $ids) {
 		if(count($ids) == 0)
 		  return array();
 			
@@ -644,19 +640,18 @@ class Core
 
 		$querySelect = 'Select * FROM '.$entityParam->getDbname().' WHERE '.$where;
 
-		//Si déjà présent en cache, on le retourne
-		if(Cache::isCache($querySelect,$params)) {
-		  return Cache::getCache($querySelect,$params);
+		//If it's already in the cache, we return the result
+		if(Cache::isCache($querySelect, $params)) {
+		  $entities = Cache::getCache($querySelect,$params);
+		} else {
+			$result = $db->Execute($querySelect, $params);
+			if ($result === false){die("Database error durant la requete par Ids!");}
+
+			$entities = Core::_processArrayEntity($entityParam, $result);
+			
+			//We push the result into the cache before return it
+			Cache::setCache($querySelect, null, $entities);
 		}
-
-		//Execution
-		$result = $db->Execute($querySelect, $params);
-		if ($result === false){die("Database error durant la requete par Ids!");}
-
-		$entities = Core::_processArrayEntity($entityParam, $result);
-		
-		//We push the result into the cache before return it
-		Cache::setCache($querySelect, null, $entities);
 
 		return array_values($entities);
 	}
@@ -696,8 +691,7 @@ class Core
      * @see Example
      * @see TypeCriteria
      */
-	public static final function findByExample(Entity &$entityParam, Example $example)
-	{
+	public static final function findByExample(Entity &$entityParam, Example $example) {
 
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
@@ -707,27 +701,23 @@ class Core
 		$hql = "";
 		$params = array();
 		
-		foreach($criterias as $criteria)
-		{
-		  if(!empty($hql))
-		  {
+		foreach($criterias as $criteria) {
+		  if(!empty($hql)) {
 			$hql .= ' AND ';
 		  }
 		  
-		  if(empty($hql))
-		  {
+		  if(empty($hql)) {
 			$hql .= ' WHERE ';
 		  }
 
 		  $filterType =  $listeField[$criteria->fieldname]->getType();
 		  
-				//Critéres avec 1 seul paramètre
+				//1 parameter
 		  if($criteria->typeCriteria == TypeCriteria::$EQ || $criteria->typeCriteria == TypeCriteria::$NEQ 
 			|| $criteria->typeCriteria == TypeCriteria::$GT || $criteria->typeCriteria == TypeCriteria::$GTE 
 			|| $criteria->typeCriteria == TypeCriteria::$LT || $criteria->typeCriteria == TypeCriteria::$LTE 
 			|| $criteria->typeCriteria == TypeCriteria::$BEFORE || $criteria->typeCriteria == TypeCriteria::$AFTER
-			|| $criteria->typeCriteria == TypeCriteria::$LIKE || $criteria->typeCriteria == TypeCriteria::$NLIKE)
-		  {  
+			|| $criteria->typeCriteria == TypeCriteria::$LIKE || $criteria->typeCriteria == TypeCriteria::$NLIKE) {  
 			$val = $criteria->paramsCriteria[0];
 			
 			if($criteria->typeCriteria == TypeCriteria::$LIKE || $criteria->typeCriteria == TypeCriteria::$NLIKE)
@@ -740,31 +730,26 @@ class Core
 			continue;
 		  }
 		  
-				//Sans paramètres
-		  if($criteria->typeCriteria == TypeCriteria::$NULL || $criteria->typeCriteria == TypeCriteria::$NNULL)
-		  {  
+				//0 parameter
+		  if($criteria->typeCriteria == TypeCriteria::$NULL || $criteria->typeCriteria == TypeCriteria::$NNULL) {  
 			$hql .= $criteria->fieldname.$criteria->typeCriteria;
 			continue;
 		  }
 		  
-				//deux paramètres
-		  if($criteria->typeCriteria == TypeCriteria::$BETWEEN)
-		  {  
+				//2 parameters
+		  if($criteria->typeCriteria == TypeCriteria::$BETWEEN) {  
 			$params[] = Core::FieldToDBValue($criteria->paramsCriteria[0], $filterType); 
 			$params[] = Core::FieldToDBValue($criteria->paramsCriteria[1], $filterType); 
 			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
 			continue;
 		  }
 		  
-				// N paramètres
-		  if($criteria->typeCriteria == TypeCriteria::$IN || $criteria->typeCriteria == TypeCriteria::$NIN)
-		  {
+			// N parameters
+		  if($criteria->typeCriteria == TypeCriteria::$IN || $criteria->typeCriteria == TypeCriteria::$NIN) {
 			$hql .= ' ( ';
 			$second = false; 
-			foreach($criteria->paramsCriteria as $param)
-			{
-			  if($second)
-			  {
+			foreach($criteria->paramsCriteria as $param) {
+			  if($second) {
 				$hql .= ' OR ';
 			  }
 			  
@@ -777,39 +762,40 @@ class Core
 			continue;
 		  }
 		  
-		  //Traitement spécifique
-		  if($criteria->typeCriteria == TypeCriteria::$EMPTY)
-		  {
+		  //Other cases
+		  if($criteria->typeCriteria == TypeCriteria::$EMPTY) {
 			$hql .= ' ( '.$criteria->fieldname .' is null || ' . $criteria->fieldname . "= '')";
 			continue;
 		  }
-		  if($criteria->typeCriteria == TypeCriteria::$NEMPTY)
-		  {
+		  if($criteria->typeCriteria == TypeCriteria::$NEMPTY) {
 			$hql .= ' ( '.$criteria->fieldname .' is not null && ' . $criteria->fieldname . "!= '')";
 			continue;
 		  }
 						 
-		  throw new Exception("Le Criteria $criteria->typeCriteria n'est pas encore pris en charge");
+		  throw new Exception("The Criteria $criteria->typeCriteria is not manage");
 		}
 		$queryExample = $select.$hql;
-
-		Trace::info("findByExample : ".$queryExample."   ".print_r($params, true));
-
-		$result = $db->Execute($queryExample, $params);
-
-		if ($result === false){die($db->ErrorMsg().Trace::error("Database error durant la requete par Example!"));}
-
-		Trace::info("findByExample : ".$result->RecordCount()." resultat(s)");
-
-		$entities = Core::_processArrayEntity($entityParam, $result);
 		
-		//We push the result into the cache before return it
-		Cache::setCache($querySelect, null, $entities);
+		//If it's already in the cache, we return the result
+		if(Cache::isCache($queryExample, $params)) {
+		  $entities = Cache::getCache($queryExample,$params);
+		} else {
+			$result = $db->Execute($queryExample, $params);
+			if ($result === false){die($db->ErrorMsg().Trace::error("Database error durant la requete par Example!"));}
+
+			Trace::info("findByExample : ".$result->RecordCount()." resultat(s)");
+			
+			$entities = Core::_processArrayEntity($entityParam, $result);
+			
+			//We push the result into the cache before return it
+			Cache::setCache($queryExample, null, $entities);
+		}
 
 		return array_values($entities);
 
 	}
-    /**
+   
+	/**
      * Allow delete a list of Entity from a list of Criteria
      * 
      * Example : delete the customers with lastName 'Roger' (no casse sensitive)
@@ -844,8 +830,7 @@ class Core
      * @see Example
      * @see TypeCriteria
      */
-	public static final function deleteByExample(Entity &$entityParam, Example $Example)
-	{
+	public static final function deleteByExample(Entity &$entityParam, Example $Example) {
 
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
@@ -947,8 +932,7 @@ class Core
      * @param Entity an instance of the entity
      * @param array the list with the data
     */
-	public static final function rowToEntity (Entity &$entityParam, $row)
-	{
+	public static final function rowToEntity (Entity &$entityParam, $row) {
 
 		Trace::debug("rowToEntity : ".print_r($row,true)."<br/>");
 		$listeField = $entityParam->getFields();
@@ -972,27 +956,21 @@ class Core
      * 
      * @see CAST
      */
-	protected static final function FieldToDBValue($data, $type)
-	{
+	private static final function FieldToDBValue($data, $type) {
 		if($data == null){
 			return null;
 		}
 		
-		switch($type)
-		{
+		switch($type) {
 		  case CAST::$STRING : return $data;
-		  
 		  case CAST::$INTEGER : return $data;
-		  
 		  case CAST::$NUMERIC : return $data;
-		  
 		  case CAST::$BUFFER : return $data;
+		  case CAST::$TS : return $data;
 		  
 		  case CAST::$DATE : return str_replace("'", "", cmsms()->GetDb()->DBDate($data));       
-		  
-		  case CAST::$TIME : return str_replace("'", "", cmsms()->GetDb()->DBTimeStamp($data));     
 
-		  case CAST::$TS : return $data;  
+		  case CAST::$TIME : return str_replace("'", "", cmsms()->GetDb()->DBTimeStamp($data));   
 		}
 	}
   
@@ -1004,297 +982,24 @@ class Core
      * 
      * @see CAST
      */
-	protected static final function dbValueToField($data, $type)
-	{
-		switch($type)
-		{
-		  case CAST::$STRING : return $data;
-		  
-		  case CAST::$INTEGER : return $data;
-		  
-		  case CAST::$NUMERIC : return $data;
-		  
-		  case CAST::$BUFFER : return $data;
+	private static final function dbValueToField($data, $type) {
+		switch($type) {
+		  case CAST::$STRING : return $data;		  
+		  case CAST::$INTEGER : return $data;		  
+		  case CAST::$NUMERIC : return $data;		  
+		  case CAST::$BUFFER : return $data;		  		  
+		  case CAST::$TS : return $data;
 		  
 		  case CAST::$DATE : return cmsms()->GetDb()->UnixDate($data);
-		  
 		  case CAST::$TIME : return $data;//return cmsms()->GetDb()->UnixTimeStamp($data);
-		  
-		  case CAST::$TS : return $data;
 
 		}
 	}
-    
-    /**
-     * Return the entities 'B' which could be associate to an Entity 'A' (but currently are not associate)
-     * 
-     * Example : Which Tag can i associate to my Blog that are not already linked ?
-     * 
-     * For memory, an correct AssociateKey system in Orm is 3 Entities like that : 
- 	 *  1 blog can be linked to 0/n Tag
- 	 *  1 tag can ben linked to 0/n Blog 
-	 *  So we've got : Blog (Entity) <-> Blog2Tag (EntityAssociation) <-> Tag (Entity) 
-     * 
-     * <code>
-     *    class Blog extends Entity
-     *    {
-     *        public function __construct()
-     *        {
-     *            parent::__construct('myModule','blog');
-     *            
-     *             $this->add(new Field('blog_id' 
-     *                       , CAST::$INTEGER
-     *                       , null
-     *                       , null 
-     * 						, KEY::$PK
-	 *						));
-     *             $this->add(new Field('tags' 
-     *                       , CAST::$INTEGER
-     *                       , null
-     *                       , null
-     *                       , KEY::$AK    
-     *                       , 'Blog2Tag.tag_id' 	<-- link to the associate Entity : 'Blog2Tag'  with its property 'tag_id'
-	 *						));
-     *        }
-     *    }
-     * 
-     *    class Tag extends Entity
-     *    {
-     *       public function __construct()
-     *        {
-     *            parent::__construct('myModule','tag');
-     *            
-     *             $this->add(new Field('tag_id' 
-     *                       , CAST::$INTEGER
-     *                       , null
-     *                       , null 
-     * 						, KEY::$PK
-	 *						));
-     *             $this->add(new Field('blogs' 
-     *                        , CAST::$INTEGER
-     *                        , null
-     *                        , null
-     *                        , KEY::$AK    
-     *                        , 'Blog2Tag.blog_id' <-- link to the associate Entity : 'Blog2Tag'  with its property 'blog_id'
-	 *						));
-     *        }
-     *        
-     *
-     *    }
-     * 
-     *   class Blog2Tag extends EntityAssociation
-     *   {
-     *        public function __construct()
-     *        {
-     *            parent::__construct('myModule','blog2tag');
-     *            
-     *            $this->add(new Field('blog_id'
-     *                       , CAST::$INTEGER
-     *                       , null
-     *                       , null
-     *                       , KEY::$FK
-     *                       , 'Blog.tags'
-	 *						));
-     *            $this->add(new Field('tag_id'        
-     *                        , CAST::$INTEGER
-     *                        , null
-     *                        , null
-     *                        , KEY::$FK
-     *                        , 'Tag.articles' 
-	 *						));
-     *
-     *        }    
-     *    }
-     * </code>
-	 *
-	 * And now the code to find the potentials Tag for my Blog : 
-	 *
-	 * <code>
-	 *   $blog = MyAutoload::getInstance($this->GetName(), 'blog');
-	 *   $tags = Core::getEntitysAssociable($blog,'tags');
-	 * </code>
-     * 
-     * @param Entity an instance of the entity 
-     * @param string the field's name of the Entity which will be used to start the research
-	 *
-     * @return array<Entity> a list of the Entities linked to the entity in the parameters by the fieldName in the Parameters
-     */
-/*	public static final function getEntitysAssociable(Entity &$entityParam,$fieldname)
-	{
-		$field = $entityParam->getFieldByName($fieldname);
-		if($field->getKEYName() == '')
-			throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
-			
-		$cle = explode('.',$field->getKEYName(),2);
-
-		$entity = new $cle[0]();
-										   
-
-		$listField = $entity->getFields();
-		foreach($listField as $field)
-		{
-		  if($field->getKEYName() == '')
-			throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
-				
-		  $cle = explode('.',$field->getKEYName(),2);
-		  
-		  if(strtolower($cle[0]) == $entityParam->getName()) {
-			continue;
-		  }
-			
-		  $entity = new $cle[0]();
-		  
-		  $liste = Core::findAll($entity);
-		  
-		  return $liste;
-		} 
-	}*/
-
-    /**
-     * Return the entities 'B' which are already associate to an Entity 'A' 
-     * 
-     * Example : Which Tag are already associate to my Blog ?
-     * 
-     * For memory, an correct AssociateKey system in Orm is 3 Entities like that : 
- 	 *  1 blog can be linked to 0/n Tag
- 	 *  1 tag can ben linked to 0/n Blog 
-	 *  So we've got : Blog (Entity) <-> Blog2Tag (EntityAssociation) <-> Tag (Entity) 
-     * 
-     * <code>
-     *    class Blog extends Entity
-     *    {
-     *        public function __construct()
-     *        {
-     *            parent::__construct('myModule','blog');
-     *            
-     *             $this->add(new Field('blog_id' 
-     *                       , CAST::$INTEGER
-     *                       , null
-     *                       , null 
-     * 						, KEY::$PK
-	 *						));
-     *             $this->add(new Field('tags' 
-     *                       , CAST::$INTEGER
-     *                       , null
-     *                       , null
-     *                       , KEY::$AK    
-     *                       , 'Blog2Tag.tag_id' 	<-- link to the associate Entity : 'Blog2Tag'  with its property 'tag_id'
-	 *						));
-     *        }
-     *    }
-     * 
-     *    class Tag extends Entity
-     *    {
-     *       public function __construct()
-     *        {
-     *            parent::__construct('myModule','tag');
-     *            
-     *             $this->add(new Field('tag_id' 
-     *                       , CAST::$INTEGER
-     *                       , null
-     *                       , null 
-     * 						, KEY::$PK
-	 *						));
-     *             $this->add(new Field('blogs' 
-     *                        , CAST::$INTEGER
-     *                        , null
-     *                        , null
-     *                        , KEY::$AK    
-     *                        , 'Blog2Tag.blog_id' <-- link to the associate Entity : 'Blog2Tag'  with its property 'blog_id'
-	 *						));
-     *        }
-     *        
-     *
-     *    }
-     * 
-     *   class Blog2Tag extends EntityAssociation
-     *   {
-     *        public function __construct()
-     *        {
-     *            parent::__construct('myModule','blog2tag');
-     *            
-     *            $this->add(new Field('blog_id'
-     *                       , CAST::$INTEGER
-     *                       , null
-     *                       , null
-     *                       , KEY::$FK
-     *                       , 'Blog.tags'
-	 *						));
-     *            $this->add(new Field('tag_id'        
-     *                        , CAST::$INTEGER
-     *                        , null
-     *                        , null
-     *                        , KEY::$FK
-     *                        , 'Tag.articles' 
-	 *						));
-     *
-     *        }    
-     *    }
-     * </code>
-	 *
-	 * And now the code to find the Tag already linked with my Blog #45: 
-	 *
-	 * <code>
-	 *   $blog = MyAutoload::getInstance($this->GetName(), 'blog');
-	 *   $tags = Core::getEntitysAssocieesLiees($blog,'tags', 45);
-	 * </code>
-     * 
-     * @param Entity an instance of the entity 
-     * @param string the field's name of the Entity which will be used to start the research
-	 * @param mixed entityId the id of the Blog to start the research
-	 *
-     * @return array<Entity> a list of the Entities linked to the entity in the parameters by the fieldName in the Parameters
-     */
-	/*public static final function getEntitysAssocieesLiees(Entity &$entityParam, $fieldname, $entityId)
-	{
-		Trace::debug("getEntitysAssocieesLiees : ".$entityParam->getName()." ".$fieldname." ".$entityId);
-
-		$field = $entityParam->getFieldByName($fieldname);
-
-		if($field->getKEYName() == '')
-			throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
-		  
-		$cle = explode('.',$field->getKEYName(),2);
-
-		$entity = new $cle[0]();
-																  
-		$example = new Example();    
-		$example->addCriteria($cle[1],TypeCriteria::$EQ,array($entityId));
-		$assocs = Core::findByExample($entity, $example);
-
-		$listField = $entity->getFields();
-		foreach($listField as $field)
-		{
-		  if($field->getKEYName() == null || $field->getKEYName() == '')
-			throw new Exception("Le champs $fieldname ne possede aucune cle etrangere associee pour la class ".$entityParam->getName());
-		  
-		  $cle = explode('.',$field->getKEYName(),2);
-		  
-		  if(strtolower($cle[0]) == $entityParam->getName())
-			continue;                              
-					
-		  $ids = array();
-		  foreach($assocs as $assoc)
-		  {
-			$ids[] = $assoc->get($field->getName());
-		  }                                                        
-		  
-		  $cle = explode('.',$field->getKEYName(),2);
-				
-		  $entity = new $cle[0]();
-		  
-		  $liste = Core::findByIds($entity, $ids);
-		  
-		  Trace::debug("getEntitysAssocieesLiees : "."resultat : ".count($liste));
-		  
-		  return $liste;
-		}    
-	}*/
   
     /**
      * Verify in all type of entities if anyone still has a link with the Entity passed in parameters (ForeignKEy and AssociateKey)
      * 
-     *  This function is used by the delete* functions to avoid orphelins data in database
+     *  This function is used by the delete* functions to avoid orphans data in database
      * 
 	 * @param Orm the module which extends the Orm module                                      
      * @param Entity an instance of the entity
@@ -1302,8 +1007,7 @@ class Core
 	 *
 	 * @return a message if a link is still present. nothing if the integrity is ok
      */
-	public static final function verifIntegrity(Entity &$entity, $sid)
-	{
+	public static final function verifIntegrity(Entity &$entity, $sid) {
 		$listeEntitys = MyAutoload::getAllInstances($entity->getModuleName());
 
 		foreach($listeEntitys as $key=>$anEntity) {
@@ -1340,9 +1044,9 @@ class Core
      * 
      * Example : 
      *   An Order has a link to a Customer (Order.customer_id)
-     *   A Customer has a link to an Adress (Customer.adresse_id)
-     *   An Adress has a link to a city (Adress.city_id)
-	 *   A city has a ZipCode (maybe shared by differents cities)
+     *   A Customer has a link to an Address (Customer.addresse_id)
+     *   An Address has a link to a city (Address.city_id)
+	 *   A city has a ZipCode (maybe shared by different cities)
      * 
      *  If i want the Orders for Customers from the city with zipcode equals to "01234" or "4567" I could write some shitty code !
      * 
@@ -1350,10 +1054,10 @@ class Core
      *  $cities = //Find my cities with ZipCode "01234" or "4567"
      *  foreach($cities as $city)
      *  {
-     *       $adresses = //Find the adress for the city $city
-     *       foreach($adresses as $adress)
+     *       $addresses = //Find the address for the city $city
+     *       foreach($addresses as $address)
      *       {
-     *           $customers = //Find the Customers for the adress $adress
+     *           $customers = //Find the Customers for the address $address
      *           foreach($customers as $customer)
      *           {
      *               $commandes =  //Find Traitement de recherche d'une commande possèdant le numeroclient = $customer->get('numeroclient')   
@@ -1367,7 +1071,7 @@ class Core
      * 
      * <code>
 	 *   $order = MyAutoload::getInstance($this->GetName(), 'order');
-     *   $orders = Core::makeDeepSearch(order, 'Order.customer_id.adress_id.city_id.zipcode', array('01234', '4567'));
+     *   $orders = Core::makeDeepSearch(order, 'Order.customer_id.address_id.city_id.zipcode', array('01234', '4567'));
      * </code>
      * 
      * @param Entity The entity i want to have at the end
@@ -1375,8 +1079,7 @@ class Core
      * @param array the array of value to make the comparaison
      * 
      */
-	public static final function makeDeepSearch(Entity $previousEntity, $cle, $values)
-	{    
+	public static final function makeDeepSearch(Entity $previousEntity, $cle, $values) {    
 		TRACE::info("# : "."Start makeDeepSearch() ".$previousEntity->getName()."->".$cle);
 
 		if($previousEntity == null)

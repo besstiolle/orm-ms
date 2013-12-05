@@ -52,6 +52,11 @@ abstract class Entity
 	private $pk;
 	
 	/**
+	 * Boolean : if true the framework will try to use the inner autoincrement of Mysql instead generate a new table xxx_seq like usual
+	 */
+	private $autoincrement = false;
+	
+	/**
 	 * String : constant, suffix for the sequence name into the database
 	 * */
 	public static $_CONST_SEQ = '_seq';
@@ -80,13 +85,11 @@ abstract class Entity
 		$this->name = strtolower($name);
 		
 		$this->dbname = $this->name;
-		if(!empty($dbName))
-		{
+		if(!empty($dbName)) {
 			$this->dbname = strtolower($dbName);
 		}
 		
-		if(empty($prefixe))
-		{
+		if(empty($prefixe)) {
 			$prefixe = $this->moduleName;
 		} else {
 			$prefixe = strtolower($prefixe);
@@ -115,13 +118,14 @@ abstract class Entity
 		$this->fields[$newField->getName()] = $newField;
 
 		//Add a sequence on the keys
-		if($newField->isPrimaryKEY())
-		{
+		if($newField->isPrimaryKEY()) {
 			if($this->pk != null)
 				throw new IllegalConfigurationException("Orm doesn't support multi-Primary-Key into the Entity ".$this->name);
 				
 			$this->pk = $newField->getName();
-			$this->seqname = $this->dbname.Entity::$_CONST_SEQ;
+			if(!$this->isAutoincrement()) { // no sequence if autoincrement used
+                $this->seqname = $this->dbname.Entity::$_CONST_SEQ;
+            }
 		}
 	}
 	
@@ -225,8 +229,6 @@ abstract class Entity
     */
 	public function get($fieldName) {
 
-		//$fieldnameSid = explode("_sid", $fieldName);
-		//$fieldnameSid = $fieldnameSid[0];
 		$fieldnameSid = $fieldName;
 		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldnameSid,$this->fields)) {
 			throw new IllegalArgumentException("fonction Get : Field $fieldName not found for entity ".$this->getName());
@@ -268,30 +270,7 @@ abstract class Entity
 	public function getValues() {
 		return $this->values;
 	}
-	
-	/*
-	public function initForeignKEY($fieldName, $sid = null) {			
-		$field = $this->getFieldByName($fieldName);
 		
-		if($field->getKEYName() == '')
-			throw new IllegalArgumentException("The field $fieldName doesn't own any foreign key associated");
-			
-		$cle = explode('.',$field->getKEYName(),2);
-		
-		$entity = new $cle[0]();
-		
-		if($sid == null)
-		{
-			$liste = Core::findAll($entity);
-		} else
-		{
-			$liste = Core::findByIds($entity, array($sid));
-		}
-		
-		return array($entity,$liste);
-	
-	}*/
-	
 	/**
 	 * Shortcut to save the entity. if the primaryKey is setted, it will be an update operation, else an insert.
 	 *
@@ -381,6 +360,29 @@ abstract class Entity
 		return false;
 	}
 	
+		
+	/**
+    * getter for autoincrement
+    * 
+    * @return true of the Field is autoincrement
+    */
+	public function IsAutoincrement()
+	{return $this->autoincrement;}
+	
+	/**
+	 * This function will let you define some optional configuration for your Entity
+	 *    => the field must be auto-incremental
+	 **/
+	public function garnishAutoincrement(){
+		
+		if($this->getPk() == null || $this->getPk()->getType() != CAST::$INTEGER){
+			throw new IllegalArgumentException("entity ".$this->getName()." don't have any INTEGER PK and so can't be defined autoincrement");
+		}
+		$this->autoincrement = true;
+		
+		//Remove any seq that could be add before
+        $this->seqname = null;
+	}
 }
 
 ?>
