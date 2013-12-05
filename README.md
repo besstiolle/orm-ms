@@ -21,7 +21,7 @@ And we're already thinking about the future
 *  the **"composite primary key"** functionnality
 *  ...
 
-In another vein it's important to remember that this framework is very light, **based on the best practice** of php, csmadeimple and adodb. It's totally compatible with the [API](http://apidoc.cmsmadesimple.org/) of cmsmadesimple and **it won't break your own code** if you would like to migrate a existing module
+In another vein it's important to remember that this framework is very light, **based on the best practice** of php, CmsMadeSimple and adodb. It's totally compatible with the [API](http://apidoc.cmsmadesimple.org/) of CmsMadeSimple and **it won't break your own code** if you would like to migrate a existing module
 
 And because an example is worth a thousand speeches, here an example with an install file in a random CmsMadeSimple Module
 
