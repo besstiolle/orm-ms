@@ -34,7 +34,8 @@ class CitySkeleton extends Entity
 		$this->add(new Field('country'	
 			// We'll storage the id of the country so you will be able to
 			//  get the country of this city like this : 
-			//  # $country = $myCity->get('country');
+			//  # $countryId = $myCity->get('country');
+			//  # $country = CORE::findById(new Country(), $countryId);
 			//  And play with it.
 			//  # echo $country->get('labelCountry');
 			, CAST::$INTEGER 

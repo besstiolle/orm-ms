@@ -39,7 +39,7 @@ class CountrySkeleton extends Entity
 			, TRUE 		// it's not required. A country can have zero city.
 			, KEY::$AK	// it's a associate key as soon it's a virtual link to a bunch of Cities
 			// You could see this code like "a path to go to the informations in the other Entity
-			// It's simply "nameOfTheOtherEntity.nameOfMyCorrespondence
+			// It's simply "nameOfTheOtherEntity.nameOfMyFKCorrespondence
 			, "citySkeleton.country" 
 		));
 	}	
