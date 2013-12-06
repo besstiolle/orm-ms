@@ -135,36 +135,34 @@ class Orm extends CMSModule {
 		
 		//On liste les classes déclarées dans le répertoire du module enfant
 		$repertoire = cms_join_path($this->GetMyModulePath(),'lib');
-		$dir = opendir($repertoire); 
+		
 		$liste['entities'] = array();
 		$liste['associate'] = array();
 		//$liste[''] = array();
 		
-		while($file = readdir($dir)) {
-			if(stripos($file, 'class.entity.') !== FALSE){
-				$name = substr($file , 13 ,strlen($file) - 4 - 13);
-				$liste['entities'][] = array('file'=>$file, 'name'=>$name);
-			} elseif(stripos($file, 'class.assoc.') !== FALSE) {
-				$name = substr($file , 12 ,strlen($file) - 4 - 12);
-				$liste['associate'][] = array('file'=>$file, 'name'=>$name);
+		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($repertoire));
+		foreach($objects as $name => $object){
+			if(stripos($name, 'class.entity.') !== FALSE){			
+				$classname = substr($object->getFileName() , 13 ,strlen($object->getFileName()) - 4 - 13);
+				$liste['entities'][] = array('filename'=>$name, 'basename'=>$object->getFileName(), 'classname'=>$classname);
+			} elseif(stripos($name, 'class.assoc.') !== FALSE) {
+				$classname = substr($object->getFileName() , 12 ,strlen($object->getFileName()) - 4 - 12);
+				$liste['associate'][] = array('filename'=>$name, 'basename'=>$object->getFileName(), 'classname'=>$classname);
 			} else {
 			}
 		}
-		closedir($dir);
 		
 		foreach($liste['entities'] as $element)
 		{
-			$entityFile = cms_join_path($repertoire,$element['file']);
-			Trace::debug("import entite ".$entityFile." dans le module ".$this->getName()."<br/>");
-			require_once($entityFile);
-			eval('$entity = new '.$element['name'].'();');
+			Trace::debug("import entite ".$element['filename']." dans le module ".$this->getName()."<br/>");
+			require_once($element['filename']);
+			eval('$entity = new '.$element['classname'].'();');
 		}
 		foreach($liste['associate'] as $element)
 		{
-			$entityFile = cms_join_path($repertoire,$element['file']);
-			Trace::debug("import associate entite ".$entityFile." dans le module ".$this->getName()."<br/>");
-			require_once($entityFile);
-			eval('$entity = new '.$element['name'].'();');
+			Trace::debug("import associate entite ".$element['filename']." dans le module ".$this->getName()."<br/>");
+			require_once($element['filename']);
+			eval('$entity = new '.$element['classname'].'();');
 		}
 	}
 	
