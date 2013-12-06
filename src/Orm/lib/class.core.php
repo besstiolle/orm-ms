@@ -78,6 +78,8 @@ class Core
 				case CAST::$UUID : $hql .= 'C (32) '; break;   
 
 				case CAST::$TS : $hql .= 'I (10) '; break; //workaround for the real timestamp missing in ADODBLITE
+
+				case CAST::$DATETIME : $hql .= CMS_ADODB_DT; break;   
 			}
 			
 			//Manage the default value
@@ -1006,7 +1008,8 @@ class Core
 		  
 		  case CAST::$DATE : return str_replace("'", "", cmsms()->GetDb()->DBDate($data));       
 
-		  case CAST::$TIME : return str_replace("'", "", cmsms()->GetDb()->DBTimeStamp($data));   
+		  case CAST::$TIME : return str_replace("'", "", cmsms()->GetDb()->DBTimeStamp($data));   	  
+		  case CAST::$DATETIME : return $data;
 		}
 	}
   
@@ -1029,6 +1032,7 @@ class Core
 		  
 		  case CAST::$DATE : return cmsms()->GetDb()->UnixDate($data);
 		  case CAST::$TIME : return $data;//return cmsms()->GetDb()->UnixTimeStamp($data);
+		  case CAST::$DATETIME : return $data;
 
 		}
 	}
