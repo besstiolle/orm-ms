@@ -33,7 +33,9 @@ class CAST
 	public static $NUMERIC = 4;
 	public static $TIME = 5;
 	public static $TS = 6;
-	public static $NONE = 9;
+	public static $UUID = 8;
+	
+	public static $NONE = 99;
 }
 
 ?>

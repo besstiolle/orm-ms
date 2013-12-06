@@ -75,7 +75,19 @@ class Core
 
 				case CAST::$TIME : $hql .= 'T'; break;   
 
+				case CAST::$UUID : $hql .= 'C (32) '; break;   
+
 				case CAST::$TS : $hql .= 'I (10) '; break; //workaround for the real timestamp missing in ADODBLITE
+			}
+			
+			//Manage the default value
+			if($field->getDefaultValue() != null){
+				if($field->getType() == CAST::$STRING || $field->getType() == CAST::$BUFFER) {
+					$hql .= "  DEFAULT '".str_replace("'", "''",$field->getDefaultValue())."' ";
+				} else {
+					$hql .= "  DEFAULT ".$field->getDefaultValue()." ";
+				}
+				
 			}
 
 			if($field->isPrimaryKEY())
@@ -88,12 +100,12 @@ class Core
 			}
 				
 		}
-
+	
 		Trace::info($hql);
 
 		return $hql;
 	}
-
+	
     /**
     * Create a table into Database from the structure of an Entity
     *  Will also create the sequence if it's needed
@@ -143,6 +155,7 @@ class Core
 	public static final function createTable(Entity &$entityParam) {
 		$db = cmsms()->GetDb();
 		$taboptarray = array( 'mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
+		$idxoptarrayUnique = array('UNIQUE');
 		$dict = NewDataDictionary( $db );
 		$hql = Core::getFieldsToHql($entityParam);
 		
@@ -153,21 +166,43 @@ class Core
 												
 		$result = $dict->ExecuteSQLArray($sqlarray);
 
-		if ($result === false)
-		{
+		if ($result === false) {
 			Trace::error($hql.'<br/>');
-			Trace::error("Database error durant durant la creation de la table pour l'entité " . $entityParam->getName().$db->ErrorMsg());
-			throw new Exception("Database error durant durant la creation de la table pour l'entité " . $entityParam->getName().$db->ErrorMsg());
+			Trace::error("Database error during the creation of table ".$entityParam->getDbname()." for the entity " . $entityParam->getName().$db->ErrorMsg());
+			throw new Exception("Database error during the creation of table ".$entityParam->getDbname()." for the entity " . $entityParam->getName().$db->ErrorMsg());
 		}
 		   
 		Trace::debug("createTable : ".print_r($sqlarray, true).'<br/>');
-
-		/*if($entityParam->getName() == "userskeleton"){
-			die(($entityParam->isAutoincrement()?"AI":"SQ")." - ".$entityParam->getSeqname());
-		} */
 		
 		//If necessary, it will create a sequence on the table.
-		if($entityParam->getSeqname() != null){$db->CreateSequence($entityParam->getSeqname());}
+		if($entityParam->getSeqname() != null){
+			$db->CreateSequence($entityParam->getSeqname());
+		}
+		
+		//We manage the "unique" keys
+		$listesUniqueKeys = $entityParam->getUniqueKeys();
+
+		//For each Field contained in the entity
+		foreach($listesUniqueKeys as $listField) {
+			//Case : unique index on many fields
+			if(is_array($listField)) {
+				$idxflds = implode(',', $listField);
+				$md5 = md5(serialize($listField));
+			} else {
+				$idxflds = $listField;
+				$md5 = md5($listField);
+			}
+			
+			$sqlarray = $dict->CreateIndexSQL($md5, $entityParam->getDbname(), $idxflds, $idxoptarrayUnique);
+			$result = $dict->ExecuteSQLArray($sqlarray);
+
+			if ($result === false) {
+				Trace::error($hql.'<br/>');
+				Trace::error("Database error during the creation of the unique index ".$md5."(".$idxflds.") for the entity " . $entityParam->getName().$db->ErrorMsg());
+				throw new Exception("Database error during the creation of the unique index ".$md5."(".$idxflds.") for the entity " . $entityParam->getName().$db->ErrorMsg());
+			}
+			
+		}
 
 		//We initiate the table.
 		$entityParam->initTable();
@@ -967,6 +1002,7 @@ class Core
 		  case CAST::$NUMERIC : return $data;
 		  case CAST::$BUFFER : return $data;
 		  case CAST::$TS : return $data;
+		  case CAST::$UUID : return $data;
 		  
 		  case CAST::$DATE : return str_replace("'", "", cmsms()->GetDb()->DBDate($data));       
 
@@ -989,6 +1025,7 @@ class Core
 		  case CAST::$NUMERIC : return $data;		  
 		  case CAST::$BUFFER : return $data;		  		  
 		  case CAST::$TS : return $data;
+		  case CAST::$UUID : return $data;
 		  
 		  case CAST::$DATE : return cmsms()->GetDb()->UnixDate($data);
 		  case CAST::$TIME : return $data;//return cmsms()->GetDb()->UnixTimeStamp($data);
@@ -1183,6 +1220,19 @@ class Core
 		return $entitys;
 	}
   
+	/**
+	 * Will return a UUID : a unique identifier
+	 * @since 0.0.2
+	 */
+    public static final function generateUUID(){
+		 $db = cmsms()->GetDb();
+
+		$result = $db->Execute('SELECT UUID() AS uuid;');
+
+		$row=$result->FetchRow();
+
+		return $row['uuid'];
+	}
 }
 
 ?>

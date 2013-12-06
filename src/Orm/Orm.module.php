@@ -122,11 +122,7 @@ class Orm extends CMSModule {
 	} 
 		 
 	private function GetMyModulePath() {
-		/*$config = cmsms()->getConfig();
-		if(strpos(parent::GetModulePath(), $config['root_path']) !== FALSE)
-		{*/	return parent::GetModulePath();/*}
-		else
-		{	return cms_join_path($config['root_path'], 'modules', $this->getName());}*/
+		return parent::GetModulePath();		
 	}
 
 	protected function __autoload() {	

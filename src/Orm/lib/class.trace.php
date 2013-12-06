@@ -35,7 +35,7 @@ final class Trace
 	public static $ERROR = 3;
 	
 	//Change this value from 0 to 3 to change the level of message displayed
-	public static $level = 2;
+	public static $level = 0;
 	
 	protected function __construct() {
 	}

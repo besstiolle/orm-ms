@@ -9,8 +9,14 @@ if(!empty($params['error'])) {
 }
 echo $error;
 
+echo "<h1>Basic Examples</h1>";
+
 include_once('inc_adminUser.php');
 include_once('inc_adminCountry.php');
 include_once('inc_adminCity.php');
+
+echo "<h1>Advanced Examples</h1>";
+
+//include_once('inc_adminBook.php');
 
 ?>

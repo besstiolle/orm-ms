@@ -46,10 +46,6 @@ class UserSkeleton extends Entity
 			// Another field without any size specified
 			, CAST::$TIME
 		));
-		
-		// Now we'll add more informations on our Entity
-		// 1] we want to use the Mysql system auto-increment instead using a table xxx_seq like CmsMadeSimple does
-		$this->garnishAutoincrement();
 	}	
 }
 ?>

@@ -46,6 +46,11 @@ class Field
 	 */
 	private $KEYName;
 	
+	/**
+	 * The default value. Not used by default.
+	 **/
+	private $defaultValue;
+	
     /**
     * public constructor
     * 	
@@ -161,6 +166,28 @@ class Field
     */
 	public function isNullable()
 	{return $this->nullable;}
+	
+    /**
+    * getter for defaultValue
+    * 
+    * @return mixed the default value of Field
+    * 
+    */	
+	public function getDefaultValue()
+	{return $this->defaultValue;}
+	
+   /**
+    * setter for defaultValue
+    * 
+    * @param mixed the default value of Field
+    * 
+    */	
+	public function setDefaultValue($defaultValue){
+		if($this->type == CAST::$BUFFER){
+			throw new IllegalArgumentException("the Field ".$this->name." of type BUFFER can't have a default value ");
+		}
+		$this->defaultValue = $defaultValue;
+	}
 	
 }
 

@@ -57,6 +57,11 @@ abstract class Entity
 	private $autoincrement = false;
 	
 	/**
+	 * Array, contains all the uniqueKeys for one or more columns.
+	 **/	 
+	private $uniqueKeys = array();
+	
+	/**
 	 * String : constant, suffix for the sequence name into the database
 	 * */
 	public static $_CONST_SEQ = '_seq';
@@ -366,8 +371,9 @@ abstract class Entity
     * 
     * @return true of the Field is autoincrement
     */
-	public function IsAutoincrement()
-	{return $this->autoincrement;}
+	public function IsAutoincrement() {
+		return $this->autoincrement;
+	}
 	
 	/**
 	 * This function will let you define some optional configuration for your Entity
@@ -383,6 +389,66 @@ abstract class Entity
 		//Remove any seq that could be add before
         $this->seqname = null;
 	}
+	
+	/**
+	 * Return 
+	 * @return array : the list of couple of unique index
+	 **/
+	public function getUniqueKeys() {
+		return $this->uniqueKeys;
+	}
+	
+	/**
+	 * This function will let you define some optional configuration for your Entity
+	 *    => the field have one or many Unique Key on one or many columns.
+	 *
+	 *  ex : myEntity->garnishUniqueKeys(array('field1', array('field2', 'field3'))) will create 2 unique index
+	 *
+	 * @param array a list of one or many name of field 
+	 *
+	 **/
+	public function garnishUniqueKeys($uniqueKeys){
+		
+		if(!is_array($uniqueKeys)){
+			throw new IllegalArgumentException("garnishUniqueKeys() only accept an array as parameter");
+		}
+		
+		//Test the existence of each member
+		foreach($uniqueKeys as $member){
+			if(is_array($member)){
+				foreach($member as $elt){
+					if(!$this->isFieldByNameExists($elt)){
+						throw new IllegalArgumentException("garnishUniqueKeys() only accept valid Field but ".$elt." is not a existing Field in the Entity ".$this->getName());
+					}
+				}
+			} else {
+				if(!$this->isFieldByNameExists($member)){
+					throw new IllegalArgumentException("garnishUniqueKeys() only accept valid Field but ".$member." is not a existing Field in the Entity ".$this->getName());
+				}
+			}
+		}
+	
+		$this->uniqueKeys = $uniqueKeys;
+	}
+	
+	/**
+	 * This function will let you define some optional configuration for your Entity
+	 *    => the default value of the field is ...
+	 *
+	 *  ex : myEntity->garnishDefaultValue('field1', 'some text')
+	 *
+	 * @param String the name of the Field
+	 * @param Mixed the default value.
+	 *
+	 **/
+	public function garnishDefaultValue($fieldName,$defaultValue){
+		if(!$this->isFieldByNameExists($fieldName)){
+			throw new IllegalArgumentException("garnishDefault() only accept valid Field but ".$fieldName." is not a existing Field in the Entity ".$this->getName());
+		}
+		$this->getFieldByName($fieldName)->setDefaultValue($defaultValue);
+		
+	}
+	
 }
 
 ?>
