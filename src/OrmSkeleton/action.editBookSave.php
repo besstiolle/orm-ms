@@ -2,24 +2,27 @@
 
 if (!function_exists("cmsms")) exit;
 
-if(!empty($params['city_id'])){
-	//Let's retrieve our city !
-	$city = Core::findById(new CitySkeleton(), $params['city_id']);
+if(!empty($params['book_id'])){
+	//Let's retrieve our book !
+	$book = Core::findById(new BookSkeleton(), $params['book_id']);
 } else {
-	$city = new CitySkeleton();
+	$book = new BookSkeleton();
 }	
-if(!empty($params['labelCity'])){
-	$city->set('labelCity', $params['labelCity']);
+if(!empty($params['title'])){
+	$book->set('title', $params['title']);
 }
-if(!empty($params['country'])){
-	$city->set('country', $params['country']);
-}
+if(!empty($params['description'])){
+	$book->set('description', $params['description']);
+}	
+if(!empty($params['uuid'])){
+	$book->set('uuid', $params['uuid']);
+}	
 
 try{
 	// We simply save the entity
-	$city->save();
+	$book->save();
 	// Please note that this code could also work.
-	//Core::insertEntity($city);
+	//Core::insertEntity($book);
 	
 	//Go back to the default admin page
 	$this->Redirect($id, 'defaultadmin', $returnid, $params);
@@ -29,6 +32,6 @@ try{
 	// Ho ho ho... there is shitty information ...
 	// Let's go inform the user
 	$params['error'] = $e->getMessage();
-	$this->Redirect($id, 'editCity', $returnid, $params);
+	$this->Redirect($id, 'editBook', $returnid, $params);
 }
 ?>

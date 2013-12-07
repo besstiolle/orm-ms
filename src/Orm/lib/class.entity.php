@@ -445,6 +445,12 @@ abstract class Entity
 		if(!$this->isFieldByNameExists($fieldName)){
 			throw new IllegalArgumentException("garnishDefault() only accept valid Field but ".$fieldName." is not a existing Field in the Entity ".$this->getName());
 		}
+		
+		//forbid a default value on a nullable field Because it's make no sence
+		if($this->getFieldByName($fieldName)->isNullable()){
+			throw new IllegalArgumentException("the Field ".$fieldName." in the Entity ".$this->getName()." can't accept a default value because it's setted Nullable");
+		}
+		
 		$this->getFieldByName($fieldName)->setDefaultValue($defaultValue);
 		
 	}

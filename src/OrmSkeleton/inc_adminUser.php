@@ -29,11 +29,11 @@ if($count == 0){
 	
 		// We can easily get all the values with the $object->get('fieldname') syntax
 		echo "<tr>
-				<td>".$user->get('user_id')."</td>
-				<td>".$user->get('login')."</td>
-				<td>".$user->get('name')."</td>
+				<td>".$this->securize($user->get('user_id'))."</td>
+				<td>".$this->securize($user->get('login'))."</td>
+				<td>".$this->securize($user->get('name'))."</td>
 				<td>".date("Y-m-d",$user->get('date_creation'))."</td> 
-				<td>".$user->get('hour_last_modification')."</td>
+				<td>".$this->securize($user->get('hour_last_modification'))."</td>
 				<td>".$this->CreateLink($id, 'editUserDelete', $returnid, 'delete',array('user_id'=>$user->get('user_id'))).
 					"&nbsp;-&nbsp;".
 					$this->CreateLink($id, 'editUser', $returnid, 'edit',array('user_id'=>$user->get('user_id'))).

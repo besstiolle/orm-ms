@@ -31,9 +31,9 @@ if($count == 0){
 		
 		// We can easily get all the values with the $object->get('fieldname') syntax
 		echo "<tr>
-				<td>".$city->get('city_id')."</td>
-				<td>".$city->get('labelCity')."</td>
-				<td>".$country->get('labelCountry')." (#".$city->get('country').")</td>
+				<td>".$this->securize($city->get('city_id'))."</td>
+				<td>".$this->securize($city->get('labelCity'))."</td>
+				<td>".$this->securize($country->get('labelCountry'))." (#".$city->get('country').")</td>
 				<td>".$this->CreateLink($id, 'editCityDelete', $returnid, 'delete',array('city_id'=>$city->get('city_id'))).
 					"&nbsp;-&nbsp;".
 					$this->CreateLink($id, 'editCity', $returnid, 'edit',array('city_id'=>$city->get('city_id'))).

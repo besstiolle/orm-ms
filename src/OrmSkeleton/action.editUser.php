@@ -30,12 +30,12 @@ if(!empty($params['error'])) {
 
 <?php echo $error ?>
 <?php echo $formStart; ?>
-	<input type='hidden' name='<?php echo $id; ?>user_id' value='<?php echo $user->get('user_id'); ?>' />
+	<input type='hidden' name='<?php echo $id; ?>user_id' value='<?php echo $this->securize($user->get('user_id')); ?>' />
 	<?php if($user->get('date_creation') != '') {
 		echo "Created : ".date("Y-m-d",$user->get('date_creation')); 
 	} ?><br/>
-	<label for='login'>Login : </label><input type='text' name='<?php echo $id; ?>login' value='<?php echo $user->get('login'); ?>' /><br/>
-	<label for='name'>Name : </label><input type='text' name='<?php echo $id; ?>name' value='<?php echo $user->get('name'); ?>' /><br/>
-	<label for='description'>Description : </label><textarea name='<?php echo $id; ?>description' ><?php echo $user->get('description'); ?></textarea><br/>
+	<label for='login'>Login : </label><input type='text' name='<?php echo $id; ?>login' value='<?php echo $this->securize($user->get('login')); ?>' /><br/>
+	<label for='name'>Name : </label><input type='text' name='<?php echo $id; ?>name' value='<?php echo $this->securize($user->get('name')); ?>' /><br/>
+	<label for='description'>Description : </label><textarea name='<?php echo $id; ?>description' ><?php echo $this->securize($user->get('description')); ?></textarea><br/>
 	<?php echo $submit; ?>
 </form>

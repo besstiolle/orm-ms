@@ -30,7 +30,7 @@ if(!empty($params['error'])) {
 
 <?php echo $error ?>
 <?php echo $formStart; ?>
-	<input type='hidden' name='<?php echo $id; ?>country_id' value='<?php echo $country->get('country_id'); ?>' />
-	<label for='labelCountry'>Label of the Country : </label><input type='text' name='<?php echo $id; ?>labelCountry' value='<?php echo $country->get('labelCountry'); ?>' /><br/>
+	<input type='hidden' name='<?php echo $id; ?>country_id' value='<?php echo $this->securize($country->get('country_id')); ?>' />
+	<label for='labelCountry'>Label of the Country : </label><input type='text' name='<?php echo $id; ?>labelCountry' value='<?php echo $this->securize($country->get('labelCountry')); ?>' /><br/>
 	<?php echo $submit; ?>
 </form>

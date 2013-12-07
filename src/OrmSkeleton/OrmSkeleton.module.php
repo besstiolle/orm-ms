@@ -100,6 +100,12 @@ class OrmSkeleton extends Orm
 	function DisplayErrorPage($msg) {
 		echo "<h3>".$msg."</h3>";
 	}  
+	
+	/**
+	 * a inner function for factorize some recurrent code
+	 **/
+	function securize($str){
+		return htmlentities($str, ENT_QUOTES, 'UTF-8');
+	}
 } 
-
 ?>

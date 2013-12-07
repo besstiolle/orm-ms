@@ -43,9 +43,9 @@ $selectCountries = $this->CreateInputDropdown($id, 'country', $items, -1, $selec
 
 <?php echo $error ?>
 <?php echo $formStart; ?>
-	<input type='hidden' name='<?php echo $id; ?>city_id' value='<?php echo $city->get('city_id'); ?>' />
+	<input type='hidden' name='<?php echo $id; ?>city_id' value='<?php echo $this->securize($city->get('city_id')); ?>' />
 
-	<label for='labelCity'>label of the city : </label><input type='text' name='<?php echo $id; ?>labelCity' value='<?php echo $city->get('labelCity'); ?>' /><br/>
+	<label for='labelCity'>label of the city : </label><input type='text' name='<?php echo $id; ?>labelCity' value='<?php echo $this->securize($city->get('labelCity')); ?>' /><br/>
 	<label for='country'>country : </label><?php echo $selectCountries; ?><br/>
 	<?php echo $submit; ?>
 </form>

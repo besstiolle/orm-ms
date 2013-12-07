@@ -27,7 +27,7 @@ try{
 // The illegaArgument will happen each time you don't control enough the data before inserting them
 } catch (IllegalArgumentException $e){
 	// Ho ho ho... there is shitty information ...
-	// Let's go inform the country
+	// Let's go inform the user
 	$params['error'] = $e->getMessage();
 	$this->Redirect($id, 'editCountry', $returnid, $params);
 }

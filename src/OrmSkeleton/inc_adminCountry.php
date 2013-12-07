@@ -52,9 +52,9 @@ if($count == 0){
 	
 		// We can easily get all the values with the $object->get('fieldname') syntax
 		echo "<tr>
-				<td>".$country->get('country_id')."</td>
-				<td>".$country->get('labelCountry')."</td>
-				<td>".$citiesLabel."</td>
+				<td>".$this->securize($country->get('country_id'))."</td>
+				<td>".$this->securize($country->get('labelCountry'))."</td>
+				<td>".$this->securize($citiesLabel)."</td>
 				<td>".$linkDelete.
 					"&nbsp;-&nbsp;".
 					$this->CreateLink($id, 'editCountry', $returnid, 'edit',array('country_id'=>$country->get('country_id'))).

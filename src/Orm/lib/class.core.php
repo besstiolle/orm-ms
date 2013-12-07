@@ -320,7 +320,12 @@ class Core
 			
 			//Empty Field that shouldn't be !
 			if(!$field->isNullable() && !isset($listeValues[$field->getName()])) {
-				throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' can\'t be null');
+				//Exception : if the field have a default value we set it manually
+				if($field->getDefaultValue() != null){
+					$listeValues[$field->getName()] = $field->getDefaultValue();
+				} else {
+					throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' can\'t be null');
+				}
 			}
 			
 			$val = null;
@@ -394,6 +399,11 @@ class Core
 		//All the required values must be present
 		foreach($listeField as $field) {
 		
+			//if the field is empty and we have a default value we set it manually
+			if(empty($values[$field->getName()]) && $field->getDefaultValue() != null){
+				$values[$field->getName()] = $field->getDefaultValue();
+			} 
+		
 			//If it's not set
 			if(empty($values[$field->getName()])) {
 			
@@ -403,14 +413,13 @@ class Core
 				}
 				
 				//an empty associative field : no problem, we can pass
-				if($field->isAssociateKEY())
-				{
+				if($field->isAssociateKEY()) {
 					continue;
 				}
 				
 				//If it's a no nullable field we throw a exception
 				if(!$field->isNullable()) {
-					throw new IllegalArgumentException('the field '.$field->getName().' is not nullable for the entity : '.$entityParam->getName());
+					throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' can\'t be null');
 				}
 			}
 			
