@@ -285,7 +285,7 @@ class Core
 
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
-		$listeValues = $entityParam->getValues();
+		$values = $entityParam->getValues();
 
 		$queryInsert = 'INSERT INTO '.$entityParam->getDbname().' (%s) values (%s)';
 
@@ -309,29 +309,37 @@ class Core
 			$str2 .= '?';
 			
 			if($field->isPrimaryKEY()) {
-				if(!empty($listeValues[$field->getName()])) {
+				if(!empty($values[$field->getName()])) {
 					throw new IllegalArgumentException('Primary Key '.$field->getName().' can\'t be setted during insert operation for Entity'.$entityParam->getName());
 				} else {
 					$newId = $db->GenID($entityParam->getSeqname());
-					$listeValues[$field->getName()] = $newId;
+					$values[$field->getName()] = $newId;
 					$entityParam->set($field->getName(), $newId);
 				}
 			}
 			
 			//Empty Field that shouldn't be !
-			if(!$field->isNullable() && !isset($listeValues[$field->getName()])) {
+			if(!$field->isNullable() && !isset($values[$field->getName()])) {
 				//Exception : if the field have a default value we set it manually
 				if($field->getDefaultValue() != null){
-					$listeValues[$field->getName()] = $field->getDefaultValue();
+					$values[$field->getName()] = $field->getDefaultValue();
 				} else {
 					throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' can\'t be null');
 				}
 			}
 			
+			// Control UUID type
+			if($field->getType() == CAST::$UUID && !empty($values[$field->getName()])){
+				$pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i";
+				if(FALSE === preg_match($pattern, $values[$field->getName()])){
+					throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' does\'nt match the UUID pattern : '.$pattern);
+				}
+			}
+			
 			$val = null;
-			if(isset($listeValues[$field->getName()]))
+			if(isset($values[$field->getName()]))
 			{
-				$params[] = Core::FieldToDBValue($listeValues[$field->getName()], $field->getType());
+				$params[] = Core::FieldToDBValue($values[$field->getName()], $field->getType());
 			} else {
 				$params[] = null;
 			}
@@ -421,7 +429,17 @@ class Core
 				if(!$field->isNullable()) {
 					throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' can\'t be null');
 				}
+			} else {
+				// Control UUID type
+				if($field->getType() == CAST::$UUID){
+					$pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i";
+					if(!preg_match($pattern, $values[$field->getName()])){
+						throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' does\'nt match the UUID pattern : '.$pattern);
+					}
+				}
 			}
+			
+			
 			
 			//If it's a primaryKey
 			if($field->isPrimaryKEY()) {
