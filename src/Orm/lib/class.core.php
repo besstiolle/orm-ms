@@ -375,7 +375,7 @@ class Core
 			}
 			
 			if($result != 0){
-				throw new IllegalArgumentException('an Entity '.$entityParam->getName().' with the fields XX already exists in database');
+				throw new IllegalArgumentException('an Entity '.$entityParam->getName().' with the same fields already exists in database');
 			}
 		}
 		  		  
@@ -522,7 +522,7 @@ class Core
 			}
 			
 			if($result != 0){
-				throw new IllegalArgumentException('an Entity '.$entityParam->getName().' with the fields XX already exists in database');
+				throw new IllegalArgumentException('an Entity '.$entityParam->getName().' with the same fields already exists in database');
 			}
 		}
 
