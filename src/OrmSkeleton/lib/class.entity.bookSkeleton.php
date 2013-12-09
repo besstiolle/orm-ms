@@ -41,6 +41,9 @@ class BookSkeleton extends Entity
 		
 		// 3] We will propose a default value for the description Field
 		$this->garnishDefaultValue('description',"It's a great Book");
+		
+		// 4] We add an index to column title to accelerate processing
+		//ALTER TABLE `cms_module_ormskeleton_bookskeleton` ADD INDEX ( `title` ) ;
 	}	
 }
 ?>
