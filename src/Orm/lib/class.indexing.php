@@ -69,7 +69,7 @@ final class Indexing
 		
 		$sid = $entity->get($entity->getPk()->getName());
 		
-		//echo $sid.' '.$entity->getName().' '.$content.'<br/>';
+		//echo $sid.' '.$entity->getName().' '.$content;
 		$searchmodule->AddWords($entity->getModuleName(), $sid,$entity->getName(),$content);
     }
 	

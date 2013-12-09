@@ -7,12 +7,8 @@
 	* @package Orm
 	**/
 
-	//Unique import, to use the Trace into this classe
+	//Unique import, to use the Trace into the class Orm
 	include_once(cms_join_path(dirname(__FILE__),"lib","class.trace.php"));
-
-	//Uncomment the line below to activate the debug mode
-	#Trace::$level = Trace::$DEBUG;
-	//Other value : $DEBUG|$INFO|$WARN|$ERROR
 
 	/**
 	* The Class Orm define the module Orm and allow having all the orm functionnalities into another module
@@ -25,6 +21,7 @@ class Orm extends CMSModule {
 
 	function __construct() {
 		parent::__construct();
+		Trace::$level = $this->GetPreference('loglevel', Trace::$INFO);
 	}
 
 	function GetName() {
@@ -129,12 +126,11 @@ class Orm extends CMSModule {
 		spl_autoload_register(array($this, 'autoload_classes'));
 		//spl_autoload_register(array($this, 'autoload_classes_addon'));
 		
-		//On liste les classes déclarées dans le répertoire du module enfant
+		//We're listing the class declared into the directory of the child module
 		$repertoire = cms_join_path($this->GetMyModulePath(),'lib');
 		
 		$liste['entities'] = array();
 		$liste['associate'] = array();
-		//$liste[''] = array();
 		
 		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($repertoire));
 		foreach($objects as $name => $object){
@@ -148,34 +144,36 @@ class Orm extends CMSModule {
 			}
 		}
 		
-		foreach($liste['entities'] as $element)
-		{
-			Trace::debug("import entite ".$element['filename']." dans le module ".$this->getName()."<br/>");
-			require_once($element['filename']);
-			eval('$entity = new '.$element['classname'].'();');
+		foreach($liste['entities'] as $element) {
+			$className = $element['classname'];
+			$filename = $element['filename'];
+			Trace::debug("importing Entity ".$className." into the module ".$this->getName());
+			require_once($filename);			
+			$entity = new $className();
 		}
-		foreach($liste['associate'] as $element)
-		{
-			Trace::debug("import associate entite ".$element['filename']." dans le module ".$this->getName()."<br/>");
-			require_once($element['filename']);
-			eval('$entity = new '.$element['classname'].'();');
+		foreach($liste['associate'] as $element) {
+			$className = $element['classname'];
+			$filename = $element['filename'];
+			Trace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
+			require_once($filename);
+			$entity = new $className();
 		}
 	}
 	
 	public function autoload_classes($classname){
-		Trace::debug("&nbsp;&nbsp;&nbsp; Need $classname<br/>");
+		Trace::debug("&nbsp;&nbsp;&nbsp; Need $classname");
 		$Orm = new Orm();
 		$path = $Orm->GetMyModulePath();
 		$fn = cms_join_path($path,"lib","class.".strtolower($classname).".php");
 
 
-		Trace::debug("import class du framework via ".$this->getName().": $fn<br/>");
+		Trace::debug("import class du framework via ".$this->getName().": $fn");
 
 		if(file_exists($fn)){
 			require_once($fn);
-			Trace::debug("import $fn ok<br/>");
+			Trace::debug("importing $fn with success");
 		} else {
-			Trace::debug("fichier $fn introuvable, on passe<br/>");
+			Trace::debug("File $fn not found, we skip it");
 		}
 	}
 	
@@ -189,7 +187,7 @@ class Orm extends CMSModule {
 	}
 	/*
 	public function autoload_classes_addon($classname){
-		Trace::debug("&nbsp;&nbsp;&nbsp;$classname<br/>");
+		Trace::debug("&nbsp;&nbsp;&nbsp;$classname");
 		
 		$path = $this->GetMyModulePath();
 		
@@ -210,7 +208,7 @@ class Orm extends CMSModule {
 	   
 	   if($fn != null)
 	   {
-			Trace::debug( "import d'un addon du projet ".$this->getName().": $fn<br/>");
+			Trace::debug( "import d'un addon du projet ".$this->getName().": $fn");
 	   
 			if(file_exists($fn)){
 				require_once($fn);

@@ -169,12 +169,12 @@ class Core
 		$result = $dict->ExecuteSQLArray($sqlarray);
 
 		if ($result === false) {
-			Trace::error($hql.'<br/>');
+			Trace::error($hql);
 			Trace::error("Database error during the creation of table ".$entityParam->getDbname()." for the entity " . $entityParam->getName().$db->ErrorMsg());
 			throw new Exception("Database error during the creation of table ".$entityParam->getDbname()." for the entity " . $entityParam->getName().$db->ErrorMsg());
 		}
 		   
-		Trace::debug("createTable : ".print_r($sqlarray, true).'<br/>');
+		Trace::debug("createTable : ".print_r($sqlarray, true));
 		
 		//If necessary, it will create a sequence on the table.
 		if($entityParam->getSeqname() != null){
@@ -199,7 +199,7 @@ class Core
 			$result = $dict->ExecuteSQLArray($sqlarray);
 
 			if ($result === false) {
-				Trace::error($hql.'<br/>');
+				Trace::error($hql);
 				Trace::error("Database error during the creation of the unique index ".$md5."(".$idxflds.") for the entity " . $entityParam->getName().$db->ErrorMsg());
 				throw new Exception("Database error during the creation of the unique index ".$md5."(".$idxflds.") for the entity " . $entityParam->getName().$db->ErrorMsg());
 			}
@@ -368,8 +368,8 @@ class Core
 			$result = $db->getOne($query, $arrayFind);
 			
 			if ($result === false) {
-				Trace::error(print_r($params, true).'<br/>');
-				Trace::error($query.'<br/>');
+				Trace::error(print_r($params, true));
+				Trace::error($query);
 				Trace::error("Database error during unicity control!".$db->ErrorMsg());
 				throw new Exception("Database error during unicity control!".$db->ErrorMsg());
 			}
@@ -385,8 +385,8 @@ class Core
 		Trace::debug("insertEntity : ".sprintf($queryInsert, $str1, $str2));
 		$result = $db->Execute(sprintf($queryInsert, $str1, $str2), $params);
 		if ($result === false) {
-			Trace::error(print_r($params, true).'<br/>');
-			Trace::error(sprintf($queryInsert, $str1, $str2).'<br/>');
+			Trace::error(print_r($params, true));
+			Trace::error(sprintf($queryInsert, $str1, $str2));
 			Trace::error("Database error durant l'insert!".$db->ErrorMsg());
 			throw new Exception("Database error durant l'insert!".$db->ErrorMsg());
 		}
@@ -515,8 +515,8 @@ class Core
 			$result = $db->getOne($query, $arrayFind);
 			
 			if ($result === false) {
-				Trace::error(print_r($params, true).'<br/>');
-				Trace::error($query.'<br/>');
+				Trace::error(print_r($params, true));
+				Trace::error($query);
 				Trace::error("Database error during unicity control!".$db->ErrorMsg());
 				throw new Exception("Database error during unicity control!".$db->ErrorMsg());
 			}
@@ -1066,7 +1066,7 @@ class Core
     */
 	public static final function rowToEntity (Entity &$entityParam, $row) {
 
-		Trace::debug("rowToEntity : ".print_r($row,true)."<br/>");
+		Trace::debug("rowToEntity : ".print_r($row,true));
 		$listeField = $entityParam->getFields();
 
 		$newEntity = clone $entityParam;
@@ -1290,7 +1290,7 @@ class Core
 		$ids = array();
 		foreach($entitys as $anEntity)
 		{
-		  TRACE::info("<br/>On a trouv&eacute;  : ".$anEntity->getName()."");
+		  TRACE::info("On a trouv&eacute;  : ".$anEntity->getName()."");
 		  if($anEntity instanceof EntityAssociation)
 		  {
 			$value = $anEntity->get($nomFieldRetour->getName());

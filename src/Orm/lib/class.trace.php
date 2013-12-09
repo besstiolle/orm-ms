@@ -34,8 +34,11 @@ final class Trace
 	public static $WARN = 2;
 	public static $ERROR = 3;
 	
-	//Change this value from 0 to 3 to change the level of message displayed
+	//Current level (by default)
 	public static $level = 2;
+	
+	protected static $logFile;
+	protected static $logUrl;
 	
 	protected function __construct() {
 	}
@@ -45,8 +48,7 @@ final class Trace
     * 
     * @param string the message to display
     */
-	public static final	function debug($msg)
-	{	
+	public static final	function debug($msg) {	
 		self::innerWriter(Trace::$DEBUG, 'debug', $msg);
 	}
 
@@ -55,8 +57,7 @@ final class Trace
     * 
     * @param string the message to display
     */
-	public static final	function info($msg)
-	{	
+	public static final	function info($msg) {	
 		self::innerWriter(Trace::$INFO, 'info', $msg);
 	} 
 
@@ -65,8 +66,7 @@ final class Trace
     * 
     * @param string the message to display
     */
-	public static final	function warn($msg)
-	{	
+	public static final	function warn($msg) {	
 		self::innerWriter(Trace::$WARN, 'warn', $msg);
 	} 
 
@@ -75,9 +75,34 @@ final class Trace
     * 
     * @param string the message to display
     */
-	public static final	function error($msg)
-	{	
+	public static final	function error($msg) {	
 		self::innerWriter(Trace::$ERROR, 'error', $msg);
+	}
+	
+	/**
+	 * Will return the path of the log file
+	 *
+	 * @return string the path of the log file
+	 **/
+	public static final function getLogFile(){
+		if(self::$logFile == null){
+			$config = cmsms()->GetConfig();
+			self::$logFile = $config['root_path'].'/tmp/cache/orm.log';
+		}
+		return self::$logFile;
+	}
+	
+	/**
+	 * Will return the url of the log file
+	 *
+	 * @return string the url of the log file
+	 **/
+	public static final function getLogUrl(){
+		if(self::$logUrl == null){
+			$config = cmsms()->GetConfig();
+			self::$logUrl = $config['root_url'].'/tmp/cache/orm.log';
+		}
+		return self::$logUrl;
 	}
 	
 	/**
@@ -88,10 +113,11 @@ final class Trace
 	 * @param string the message to display
 	 */
 	private static final function innerWriter($level, $cssClass, $msg){
-		if(self::$level > $level) {return;}
 		
-		//In windows
-		echo "<div class='$cssClass' >$msg</div>";
+		if(self::$level > $level) {return;}
+				
+		//in file log
+		file_put_contents(self::getLogFile() , date('Y-m-d H:i:s', time())." - [$cssClass] - $msg \n", FILE_APPEND );
 		
 		//In php log
 		error_log($msg);
