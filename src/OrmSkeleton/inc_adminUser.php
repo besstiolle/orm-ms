@@ -34,14 +34,14 @@ if($count == 0){
 				<td>".$this->securize($user->get('name'))."</td>
 				<td>".date("Y-m-d",$user->get('date_creation'))."</td> 
 				<td>".$this->securize($user->get('hour_last_modification'))."</td>
-				<td>".$this->CreateLink($id, 'editUserDelete', $returnid, 'delete',array('user_id'=>$user->get('user_id'))).
+				<td>".$this->CreateLink($id, 'editUserDelete', $returnid, $img_delete,array('user_id'=>$user->get('user_id'))).
 					"&nbsp;-&nbsp;".
-					$this->CreateLink($id, 'editUser', $returnid, 'edit',array('user_id'=>$user->get('user_id'))).
+					$this->CreateLink($id, 'editUser', $returnid, $img_edit,array('user_id'=>$user->get('user_id'))).
 				"</td>
 			</tr>";
 	}
 }
 echo "</table>";
-echo "<p>There is " . $count . " UserSkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
+echo "<p>There are " . $count . " UserSkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
 
 ?>

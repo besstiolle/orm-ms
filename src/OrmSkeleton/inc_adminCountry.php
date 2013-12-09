@@ -44,7 +44,7 @@ if($count == 0){
 		}
 		
 		if(Core::verifIntegrity($country, $country->get('country_id')) == ""){
-			$linkDelete = $this->CreateLink($id, 'editCountryDelete', $returnid, 'delete',array('country_id'=>$country->get('country_id')));
+			$linkDelete = $this->CreateLink($id, 'editCountryDelete', $returnid, $img_delete,array('country_id'=>$country->get('country_id')));
 		} else {
 			$linkDelete = '<span style="color:#CCC">still used</span>';
 		}
@@ -57,12 +57,12 @@ if($count == 0){
 				<td>".$this->securize($citiesLabel)."</td>
 				<td>".$linkDelete.
 					"&nbsp;-&nbsp;".
-					$this->CreateLink($id, 'editCountry', $returnid, 'edit',array('country_id'=>$country->get('country_id'))).
+					$this->CreateLink($id, 'editCountry', $returnid, $img_edit,array('country_id'=>$country->get('country_id'))).
 				"</td>
 			</tr>";
 	}
 }
 echo "</table>";
-echo "<p>There is " . $count . " CountrySkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
+echo "<p>There are " . $count . " CountrySkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
 
 ?>

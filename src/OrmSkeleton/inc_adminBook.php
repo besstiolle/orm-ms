@@ -30,14 +30,14 @@ if($count == 0){
 				<td>".$this->securize($book->get('book_id'))."</td>
 				<td>".$this->securize($book->get('title'))."</td>
 				<td>".$this->securize($book->get('description'))."</td>
-				<td>".$this->CreateLink($id, 'editBookDelete', $returnid, 'delete',array('book_id'=>$book->get('book_id'))).
+				<td>".$this->CreateLink($id, 'editBookDelete', $returnid, $img_delete,array('book_id'=>$book->get('book_id'))).
 					"&nbsp;-&nbsp;".
-					$this->CreateLink($id, 'editBook', $returnid, 'edit',array('book_id'=>$book->get('book_id'))).
+					$this->CreateLink($id, 'editBook', $returnid, $img_edit,array('book_id'=>$book->get('book_id'))).
 				"</td>
 			</tr>";
 	}
 }
 echo "</table>";
-echo "<p>There is " . $count . " BookSkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
+echo "<p>There are " . $count . " BookSkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
 
 ?>

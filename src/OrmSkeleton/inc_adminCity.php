@@ -34,14 +34,14 @@ if($count == 0){
 				<td>".$this->securize($city->get('city_id'))."</td>
 				<td>".$this->securize($city->get('labelCity'))."</td>
 				<td>".$this->securize($country->get('labelCountry'))." (#".$city->get('country').")</td>
-				<td>".$this->CreateLink($id, 'editCityDelete', $returnid, 'delete',array('city_id'=>$city->get('city_id'))).
+				<td>".$this->CreateLink($id, 'editCityDelete', $returnid, $img_delete,array('city_id'=>$city->get('city_id'))).
 					"&nbsp;-&nbsp;".
-					$this->CreateLink($id, 'editCity', $returnid, 'edit',array('city_id'=>$city->get('city_id'))).
+					$this->CreateLink($id, 'editCity', $returnid, $img_edit,array('city_id'=>$city->get('city_id'))).
 				"</td>
 			</tr>";
 	}
 }
 echo "</table>";
-echo "<p>There is " . $count . " CitySkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
+echo "<p>There are " . $count . " CitySkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
 
 ?>

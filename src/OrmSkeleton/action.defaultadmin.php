@@ -9,6 +9,9 @@ if(!empty($params['error'])) {
 }
 echo $error;
 
+$img_delete = cmsms()->variables['admintheme']->DisplayImage('icons/system/delete.gif','delete','','','systemicon');
+$img_edit = cmsms()->variables['admintheme']->DisplayImage('icons/system/edit.gif','edit','','','systemicon');
+
 echo "<h1>Basic Examples</h1>";
 
 include_once('inc_adminUser.php');
