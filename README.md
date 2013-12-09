@@ -12,13 +12,12 @@ Less code (up to -75%) equals less bug and obviously it's a easier way to manage
 *  findByExample, deleteByExample
 *  A **caching system** for the best performances
 *  Primary Keys, Foreign Keys, Associate Keys (many-to-one, one-to-many, many-to-many)
-*  A lot of Type of Field : String, Integer, Buffer, Date, Time, DateTime, UUID, ...
+*  A lot of Type of Field : String, Integer, Buffer, Date, Time, DateTime, **[UUID](http://en.wikipedia.org/wiki/Universally_unique_identifier)**, ...
 *  **"Unique key"**, **"default values"**, ... functionalities
 
 And we're already thinking about the future
 
 *  the **"lazymode = false"** functionality to allow you auto-loading the clusters of objects
-*  the **[UUID](http://en.wikipedia.org/wiki/Universally_unique_identifier)** implementation (#4)
 *  the **"composite primary key"** functionality
 *  ...
 
