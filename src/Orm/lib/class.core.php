@@ -75,7 +75,7 @@ class Core
 
 				case CAST::$TIME : $hql .= 'T'; break;   
 
-				case CAST::$UUID : $hql .= 'C (32) '; break;   
+				case CAST::$UUID : $hql .= 'C (36) '; break;   
 
 				case CAST::$TS : $hql .= 'I (10) '; break; //workaround for the real timestamp missing in ADODBLITE
 
@@ -286,6 +286,7 @@ class Core
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
+		$uniques = $entityParam->getUniqueKeys();
 
 		$queryInsert = 'INSERT INTO '.$entityParam->getDbname().' (%s) values (%s)';
 
@@ -331,10 +332,11 @@ class Core
 			// Control UUID type
 			if($field->getType() == CAST::$UUID && !empty($values[$field->getName()])){
 				$pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i";
-				if(FALSE === preg_match($pattern, $values[$field->getName()])){
-					throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' does\'nt match the UUID pattern : '.$pattern);
+				if(!preg_match($pattern, $values[$field->getName()])){
+					throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' doesn\'t match the UUID pattern : '.$pattern);
 				}
 			}
+			
 			
 			$val = null;
 			if(isset($values[$field->getName()]))
@@ -342,6 +344,38 @@ class Core
 				$params[] = Core::FieldToDBValue($values[$field->getName()], $field->getType());
 			} else {
 				$params[] = null;
+			}
+		}
+		
+		//control unicity on unique Field
+		foreach($uniques as $couple){
+			if(!is_array($couple)){
+				$couple = array($couple);
+			}
+			$query = 'SELECT COUNT(*) FROM '.$entityParam->getDbname().' WHERE 1 ';
+			$arrayFind = array();
+			foreach($couple as $elt){
+				if(empty($values[$elt])){
+					$query .= ' AND ' . $elt . ' IS NULL ';
+				} else {
+					$query .= ' AND ' . $elt . ' = ? ';
+					$arrayFind[] = $values[$elt];
+				}
+			}
+			$query .= ' AND ' . $entityParam->getPk()->getName() . ' != ? ';
+			$arrayFind[] = $values[$entityParam->getPk()->getName()];			
+				
+			$result = $db->getOne($query, $arrayFind);
+			
+			if ($result === false) {
+				Trace::error(print_r($params, true).'<br/>');
+				Trace::error($query.'<br/>');
+				Trace::error("Database error during unicity control!".$db->ErrorMsg());
+				throw new Exception("Database error during unicity control!".$db->ErrorMsg());
+			}
+			
+			if($result != 0){
+				throw new IllegalArgumentException('an Entity '.$entityParam->getName().' with the fields XX already exists in database');
 			}
 		}
 		  		  
@@ -398,6 +432,7 @@ class Core
 		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
+		$uniques = $entityParam->getUniqueKeys();
 
 		$str = "";
 		$where = '';
@@ -432,9 +467,10 @@ class Core
 			} else {
 				// Control UUID type
 				if($field->getType() == CAST::$UUID){
-					$pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i";
+					$pattern = '/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
+					
 					if(!preg_match($pattern, $values[$field->getName()])){
-						throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' does\'nt match the UUID pattern : '.$pattern);
+						throw new IllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' doesn\'t match the UUID pattern : '.$pattern);
 					}
 				}
 			}
@@ -456,6 +492,38 @@ class Core
 
 			$params[] = Core::FieldToDBValue($values[$field->getName()], $field->getType());
 
+		}
+		
+		//control unicity on unique Field
+		foreach($uniques as $couple){
+			if(!is_array($couple)){
+				$couple = array($couple);
+			}
+			$query = 'SELECT COUNT(*) FROM '.$entityParam->getDbname().' WHERE 1 ';
+			$arrayFind = array();
+			foreach($couple as $elt){
+				if(empty($values[$elt])){
+					$query .= ' AND ' . $elt . ' IS NULL ';
+				} else {
+					$query .= ' AND ' . $elt . ' = ? ';
+					$arrayFind[] = $values[$elt];
+				}
+			}
+			$query .= ' AND ' . $entityParam->getPk()->getName() . ' != ? ';
+			$arrayFind[] = $values[$entityParam->getPk()->getName()];			
+				
+			$result = $db->getOne($query, $arrayFind);
+			
+			if ($result === false) {
+				Trace::error(print_r($params, true).'<br/>');
+				Trace::error($query.'<br/>');
+				Trace::error("Database error during unicity control!".$db->ErrorMsg());
+				throw new Exception("Database error during unicity control!".$db->ErrorMsg());
+			}
+			
+			if($result != 0){
+				throw new IllegalArgumentException('an Entity '.$entityParam->getName().' with the fields XX already exists in database');
+			}
 		}
 
 		if($hasKey) {
