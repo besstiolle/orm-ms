@@ -5,7 +5,7 @@ if (!function_exists("cmsms")) exit;
 $city = null;
 if(!empty($params['city_id'])){
 	//Let's retrieve our city !
-	$city = Core::findById(new CitySkeleton(), $params['city_id']);
+	$city = OrmCore::findById(new CitySkeleton(), $params['city_id']);
 } 
 
 if($city == null){

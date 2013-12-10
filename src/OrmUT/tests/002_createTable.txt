@@ -5,8 +5,8 @@
 		$entities = $this->getAllInstances();
 		foreach($entities as $anEntity)
 		{
-			Core::dropTable($anEntity);
-			Core::createTable($anEntity);
+			OrmCore::dropTable($anEntity);
+			OrmCore::createTable($anEntity);
 		}
 		echo "<p class='success'>It seems it work :)</p>";
 	} catch (Exception $e){

@@ -32,7 +32,7 @@ final class MyAutoload
 	 * @param namespace namespace of the entity's module
 	 * @param string an instance of the entity
 	 */
-	public final static function addInstance($namespace, Entity $instance)
+	public final static function addInstance($namespace, OrmEntity $instance)
 	{	
 		$namespace = strtolower($namespace);
 		$name = $instance->getName();
@@ -40,10 +40,10 @@ final class MyAutoload
 				
 		if(isset(self::$instances[$namespace][$name]))
 		{
-			Trace::debug("Instance ".$name." already in memory.");
+			OrmTrace::debug("Instance ".$name." already in memory.");
 			return;
 		}
-		Trace::debug("Adding the instance ".$name." into the namespace ".$namespace);
+		OrmTrace::debug("Adding the instance ".$name." into the namespace ".$namespace);
 		self::$instances[$namespace][$name] = $instance;
 	}
 	
@@ -54,7 +54,7 @@ final class MyAutoload
 	 * @param namespace namespace of the entity's module
 	 * @param string an instance of the entity
 	 *
-	 * @return Entity an instance of entity
+	 * @return OrmEntity an instance of entity
 	 */
 	public final static function getInstance($namespace, $instanceName)
 	{
@@ -96,7 +96,7 @@ final class MyAutoload
 	 * @param namespace namespace of the entity's module
 	 * @param string an instance of the entity
 	 *
-	 * @return array<Entity> an array of all the entities
+	 * @return array<OrmEntity> an array of all the entities
 	 */
 	public final static function getAllInstances($namespace)
 	{

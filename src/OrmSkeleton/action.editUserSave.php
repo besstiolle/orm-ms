@@ -4,7 +4,7 @@ if (!function_exists("cmsms")) exit;
 
 if(!empty($params['user_id'])){
 	//Let's retrieve our user !
-	$user = Core::findById(new UserSkeleton(), $params['user_id']);
+	$user = OrmCore::findById(new UserSkeleton(), $params['user_id']);
 	$user->set('hour_last_modification', date('H:i:s'));
 } else {
 	$user = new UserSkeleton();
@@ -25,13 +25,13 @@ try{
 	// We simply save the entity
 	$user->save();
 	// Please note that this code could also work.
-	//Core::insertEntity($user);
+	//OrmCore::insertEntity($user);
 	
 	//Go back to the default admin page
 	$this->Redirect($id, 'defaultadmin', $returnid, $params);
 	
 // The illegaArgument will happen each time you don't controle enough the data before inserting them
-} catch (IllegalArgumentException $e){
+} catch (OrmIllegalArgumentException $e){
 	// Ho ho ho... there is shitty information ...
 	// Let's go inform the user
 	$params['error'] = $e->getMessage();

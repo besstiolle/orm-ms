@@ -8,7 +8,7 @@
 	**/
 
 	//Unique import, to use the Trace into the class Orm
-	include_once(cms_join_path(dirname(__FILE__),"lib","class.trace.php"));
+	include_once(cms_join_path(dirname(__FILE__),"lib","class.ormtrace.php"));
 
 	/**
 	* The Class Orm define the module Orm and allow having all the orm functionnalities into another module
@@ -21,7 +21,7 @@ class Orm extends CMSModule {
 
 	function __construct() {
 		parent::__construct();
-		Trace::$level = $this->GetPreference('loglevel', Trace::$INFO);
+		OrmTrace::$level = $this->GetPreference('loglevel', OrmTrace::$INFO);
 	}
 
 	function GetName() {
@@ -147,33 +147,33 @@ class Orm extends CMSModule {
 		foreach($liste['entities'] as $element) {
 			$className = $element['classname'];
 			$filename = $element['filename'];
-			Trace::debug("importing Entity ".$className." into the module ".$this->getName());
+			OrmTrace::debug("importing Entity ".$className." into the module ".$this->getName());
 			require_once($filename);			
 			$entity = new $className();
 		}
 		foreach($liste['associate'] as $element) {
 			$className = $element['classname'];
 			$filename = $element['filename'];
-			Trace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
+			OrmTrace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
 			require_once($filename);
 			$entity = new $className();
 		}
 	}
 	
 	public function autoload_classes($classname){
-		Trace::debug("&nbsp;&nbsp;&nbsp; Need $classname");
+		OrmTrace::debug("&nbsp;&nbsp;&nbsp; Need $classname");
 		$Orm = new Orm();
 		$path = $Orm->GetMyModulePath();
 		$fn = cms_join_path($path,"lib","class.".strtolower($classname).".php");
 
 
-		Trace::debug("import class du framework via ".$this->getName().": $fn");
+		OrmTrace::debug("import class du framework via ".$this->getName().": $fn");
 
 		if(file_exists($fn)){
 			require_once($fn);
-			Trace::debug("importing $fn with success");
+			OrmTrace::debug("importing $fn with success");
 		} else {
-			Trace::debug("File $fn not found, we skip it");
+			OrmTrace::debug("File $fn not found, we skip it");
 		}
 	}
 	
@@ -187,7 +187,7 @@ class Orm extends CMSModule {
 	}
 	/*
 	public function autoload_classes_addon($classname){
-		Trace::debug("&nbsp;&nbsp;&nbsp;$classname");
+		OrmTrace::debug("&nbsp;&nbsp;&nbsp;$classname");
 		
 		$path = $this->GetMyModulePath();
 		
@@ -208,7 +208,7 @@ class Orm extends CMSModule {
 	   
 	   if($fn != null)
 	   {
-			Trace::debug( "import d'un addon du projet ".$this->getName().": $fn");
+			OrmTrace::debug( "import d'un addon du projet ".$this->getName().": $fn");
 	   
 			if(file_exists($fn)){
 				require_once($fn);

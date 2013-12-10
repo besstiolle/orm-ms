@@ -2,49 +2,49 @@
 /**
  * A very simple example of how you can define a "User" without any relation to another Object.
  */ 
-class UserSkeleton extends Entity
+class UserSkeleton extends OrmEntity
 {
 	public function __construct()
 	{
 		parent::__construct('ormskeleton','userskeleton');
 		
 		// A primary key, very useful for most of your definitions
-		$this->add(new Field('user_id'	
+		$this->add(new OrmField('user_id'	
 			// This parameter is simply a integer. You can choose between a lot of possibility. 
 			//  Take a look inside the class CAST for all the possibilities.
-			, CAST::$INTEGER 
+			, OrmCAST::$INTEGER 
 			, null	
 			, null 		// is required ! 
-			, KEY::$PK	// is a primary key (auto-incremented)
+			, OrmKEY::$PK	// is a primary key (auto-incremented)
 		));
 		
-		$this->add(new Field('login'		
+		$this->add(new OrmField('login'		
 			// Will be transformed into a varchar(50) no-nullable into your database.
-			, CAST::$STRING
+			, OrmCAST::$STRING
 			, 50	
 		));
 		
-		$this->add(new Field('name'		
-			, CAST::$STRING
+		$this->add(new OrmField('name'		
+			, OrmCAST::$STRING
 			, 50	
 		));
 				
-		$this->add(new Field('description'		
+		$this->add(new OrmField('description'		
 			// This time we choose a buffer, a bloc of text without limit of size.
-			, CAST::$BUFFER
+			, OrmCAST::$BUFFER
 			, null
 			// When it setted to "TRUE" (or "true"), the field won't be required
 			, true 
 		));
 			
-		$this->add(new Field('date_creation'		
+		$this->add(new OrmField('date_creation'		
 			// Another field without any size specified
-			, CAST::$DATE
+			, OrmCAST::$DATE
 		));
 			
-		$this->add(new Field('hour_last_modification'		
+		$this->add(new OrmField('hour_last_modification'		
 			// Another field without any size specified
-			, CAST::$TIME
+			, OrmCAST::$TIME
 		));
 	}	
 }

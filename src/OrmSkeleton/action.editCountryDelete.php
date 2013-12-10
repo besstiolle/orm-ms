@@ -5,7 +5,7 @@ if (!function_exists("cmsms")) exit;
 $country = null;
 if(!empty($params['country_id'])){
 	//Let's retrieve our country !
-	$country = Core::findById(new CountrySkeleton(), $params['country_id']);
+	$country = OrmCore::findById(new CountrySkeleton(), $params['country_id']);
 } 
 
 if($country == null){
@@ -14,7 +14,7 @@ if($country == null){
 	$this->Redirect($id, 'defaultadmin', $returnid, $params);
 }
 
-if(Core::verifIntegrity($country, $country->get('country_id')) != ""){
+if(OrmCore::verifIntegrity($country, $country->get('country_id')) != ""){
 	// we can't delete something that still used by something else
 	$params['error'] = "CountrySkeleton still used by another Entity";
 	$this->Redirect($id, 'defaultadmin', $returnid, $params);

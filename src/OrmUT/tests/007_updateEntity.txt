@@ -3,10 +3,10 @@
 <?php
 	$country3->set('label', 'Belgium');
 	$country3->set('iso_code', 'be');
-	Core::updateEntity($country3);
+	OrmCore::updateEntity($country3);
 	
 	$expected = 3; 
-	$result = Core::countAll(new Country());
+	$result = OrmCore::countAll(new CountryOrmUT());
 	$class = '';
 	if($result == $expected){
 		$class = $cssSuccess;
@@ -15,7 +15,7 @@
 	}
 	echo "<p class='$class'>we expected $expected entities in tables, we have got $result entities in tables</p>";
 	
-	$country3 = Core::findById(new Country(),3);
+	$country3 = OrmCore::findById(new CountryOrmUT(),3);
 		
 	$expected = 'Belgium'; 
 	$result = $country3->get('label');

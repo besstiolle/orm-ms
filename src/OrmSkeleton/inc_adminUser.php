@@ -6,7 +6,7 @@ if (!function_exists("cmsms")) exit;
 $user = new UserSkeleton();
 
 // In the same way i can interrogate the table of UserSkeleton : 
-$count = Core::countAll(new UserSkeleton());
+$count = OrmCore::countAll(new UserSkeleton());
 
 $link = $this->CreateLink($id, 'editUser', $returnid, 'add');
 
@@ -22,7 +22,7 @@ if($count == 0){
 	echo "<tr><td colspan='5'><center>no record in database</center></td></tr>";
 } else {
 	//I can also retrieve all the UserSkeleton
-	$all = Core::findAll(new UserSkeleton());
+	$all = OrmCore::findAll(new UserSkeleton());
 	
 	//And iterate over each one
 	foreach($all as $user){

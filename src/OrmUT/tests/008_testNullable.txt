@@ -6,8 +6,8 @@
 	$expected = 'one'; 
 	$result = 'no';
 	try{
-		Core::updateEntity($country3);
-	} catch (IllegalArgumentException $iae) {
+		OrmCore::updateEntity($country3);
+	} catch (OrmIllegalArgumentException $iae) {
 		$result = 'one';
 	}
 	

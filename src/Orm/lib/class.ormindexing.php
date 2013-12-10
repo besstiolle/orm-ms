@@ -18,7 +18,7 @@
  * @author Bess
  * @package Orm
  **/   
-final class Indexing
+final class OrmIndexing
 {	
 	
 	protected function __construct() {
@@ -91,7 +91,7 @@ final class Indexing
 					$liste = Core::selectAll($entity);
 				} else {
 					$example = new Example();
-					$example->addCriteria(Field_Active::$name, TypeCriteria::$EQ, array(1));
+					$example->addCriteria(Field_Active::$name, OrmTypeCriteria::$EQ, array(1));
 					$liste = Core::selectByExample($entity, $example);
 				}
 				

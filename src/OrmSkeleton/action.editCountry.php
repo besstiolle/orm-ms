@@ -4,7 +4,7 @@ if (!function_exists("cmsms")) exit;
 
 if(!empty($params['country_id'])){
 	//Let's retrieve our country !
-	$country = Core::findById(new CountrySkeleton(), $params['country_id']);
+	$country = OrmCore::findById(new CountrySkeleton(), $params['country_id']);
 	$action = "Edition";
 	if($country == null){
 		// We create a new one

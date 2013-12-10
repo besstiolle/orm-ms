@@ -5,7 +5,7 @@ if (!function_exists("cmsms")) exit;
 //Create all the tables automatically 
 $entities = MyAutoload::getAllInstances($this->GetName());
 foreach($entities as $anEntity) {
-	Core::createTable($anEntity);
+	OrmCore::createTable($anEntity);
 }
 
 // put mention into the admin log

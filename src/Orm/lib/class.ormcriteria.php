@@ -16,7 +16,7 @@
  * @author Bess
  * @package Orm
  **/
-final class Criteria
+/*final */class OrmCriteria
 {
 	/**
 	 * Name of the field 
@@ -57,7 +57,6 @@ final class Criteria
 		$this->paramsCriteria = $paramsCriteria;
 		$this->ignoreCase = $ignoreCase;
 	}
-	
 }
 
 ?>

@@ -6,7 +6,7 @@ if (!function_exists("cmsms")) exit;
 $book = new BookSkeleton();
 
 // In the same way i can interrogate the table of BookSkeleton : 
-$count = Core::countAll(new BookSkeleton());
+$count = OrmCore::countAll(new BookSkeleton());
 
 $link = $this->CreateLink($id, 'editBook', $returnid, 'add');
 
@@ -20,7 +20,7 @@ if($count == 0){
 	echo "<tr><td colspan='5'><center>no record in database</center></td></tr>";
 } else {
 	//I can also retrieve all the BookSkeleton
-	$all = Core::findAll(new BookSkeleton());
+	$all = OrmCore::findAll(new BookSkeleton());
 	
 	//And iterate over each one
 	foreach($all as $book){
