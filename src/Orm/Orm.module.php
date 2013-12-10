@@ -7,7 +7,7 @@
 	* @package Orm
 	**/
 
-	//Unique import, to use the Trace into the class Orm
+	//Unique import, to use the OrmTrace into the class Orm
 	include_once(cms_join_path(dirname(__FILE__),"lib","class.ormtrace.php"));
 
 	/**
@@ -180,7 +180,7 @@ class Orm extends CMSModule {
 	/**
 	 * Shortcut to call all the instances for a single module
 	 *
-	 * @return List<Entity> the entities for the current parent's namespace
+	 * @return List<OrmEntity> the entities for the current parent's namespace
 	 **/
 	public function getAllInstances(){
 		return MyAutoload::getAllInstances(parent::GetName());
@@ -221,8 +221,8 @@ class Orm extends CMSModule {
 		if($this->getName() == 'Mmmfs')
 			return;		
 			
-		// Indexing::setSearch($module);
-		Indexing::SearchReindex($this->getName());
+		// OrmIndexing::setSearch($module);
+		OrmIndexing::SearchReindex($this->getName());
 	}*/
 
 	/**
@@ -233,7 +233,7 @@ class Orm extends CMSModule {
 		if($this->getName() == 'Mmmfs')
 			return;	
 		
-		return Indexing::SearchResult($this, $id, $returnid, $entityId, $attr);
+		return OrmIndexing::SearchResult($this, $id, $returnid, $entityId, $attr);
 	}*/
 
 } 

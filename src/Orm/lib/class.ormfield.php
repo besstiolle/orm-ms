@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains the class Field
+ * Contains the class OrmField
  *
  * @since 0.0.1
  * @author Bess
@@ -55,13 +55,13 @@ class OrmField
     * public constructor
     * 	
     * @param string the (unique) name of the field
-    * @param CAST The OrmCAST value of the field example : OrmOrmCAST::$INTEGER
+    * @param OrmCAST The OrmCAST value of the field example : OrmOrmCAST::$INTEGER
     * @param int The max size of the field. May be null if $type is Date, Time, Buffer, None ...
     * @param true if the value may be NULL. Default value is false
-    * @param KEY the KEY value of the field. May be null example: OrmKEY::$PK for a primary key
+    * @param OrmKEY the KEY value of the field. May be null example: OrmKEY::$PK for a primary key
     * @param string the name of the key. Only used for ForeignKey and AssociateKey example : "Customer.customer_id" in the field "customer" of an entity "Order".
     * 
-    * @return Field the Field Object
+    * @return OrmField the Field Object
     * 
     * 
     * @see OrmCAST
@@ -72,17 +72,17 @@ class OrmField
 	public function __construct($fieldname, $cast, $size = null, $nullable = false, $KEY = null, $KEYName=null) {
 	
 		if(empty($KEY) && !empty($KEYName)) {
-			throw new IllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
+			throw new OrmIllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
 		}
 		if($KEY == OrmKEY::$PK && !empty($KEYName)) {
-			throw new IllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
+			throw new OrmIllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
 		}
 		if(($KEY == OrmKEY::$FK || $KEY == OrmKEY::$AK) && empty($KEYName)) {
-			throw new IllegalConfigurationException('$FK key or $AK key for the field '.$fieldname.' need a keyName');
+			throw new OrmIllegalConfigurationException('$FK key or $AK key for the field '.$fieldname.' need a keyName');
 		}
 		
 		if(($cast == OrmCAST::$DATE || $cast == OrmCAST::$BUFFER || $cast == OrmCAST::$TIME) && !empty($size)) {
-			throw new IllegalConfigurationException('The OrmCAST::DATE or the OrmCAST::BUFFER or the OrmCAST::TIME of field '.$fieldname.' must not have size value');
+			throw new OrmIllegalConfigurationException('The OrmCAST::DATE or the OrmCAST::BUFFER or the OrmCAST::TIME of field '.$fieldname.' must not have size value');
 		}
 		
 
@@ -112,7 +112,7 @@ class OrmField
     * 
     * @return string the CAST value of Field
     * 
-    * @see CAST
+    * @see OrmCAST
     * 
     */	
 	public function getType()
@@ -184,7 +184,7 @@ class OrmField
     */	
 	public function setDefaultValue($defaultValue){
 		if($this->type == OrmCAST::$BUFFER){
-			throw new IllegalArgumentException("the Field ".$this->name." of type BUFFER can't have a default value ");
+			throw new OrmIllegalArgumentException("the Field ".$this->name." of type BUFFER can't have a default value ");
 		}
 		$this->defaultValue = $defaultValue;
 	}

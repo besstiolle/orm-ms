@@ -3,7 +3,7 @@ class CountryOrmUT extends OrmEntity
 {
 	public function __construct()
 	{
-		parent::__construct('ormut','country');
+		parent::__construct('ormut','CountryOrmUT');
 		
 		$this->add(new OrmField('country_id'		
 			, OrmCAST::$INTEGER

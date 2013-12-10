@@ -3,7 +3,7 @@ class CityZipCodeOrmUT extends OrmEntityAssociation
 {
 	public function __construct()
 	{
-		parent::__construct('ormut', 'cityzipcode');
+		parent::__construct('ormut', 'CityZipCodeOrmUT');
 		
 		$this->add(new OrmField('city_id'	
 			, OrmCAST::$INTEGER

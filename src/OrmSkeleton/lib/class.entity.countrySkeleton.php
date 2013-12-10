@@ -17,7 +17,7 @@ class CountrySkeleton extends OrmEntity
 		// A primary key, very useful for most of your definitions
 		$this->add(new OrmField('country_id'	
 			// This parameter is simply a integer. You can choose between a lot of possibility. 
-			//  Take a look inside the class CAST for all the possibilities.
+			//  Take a look inside the class OrmCAST for all the possibilities.
 			, OrmCAST::$INTEGER 
 			, null	
 			, null 		// is required ! 

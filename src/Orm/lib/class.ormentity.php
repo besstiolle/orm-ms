@@ -8,7 +8,7 @@
  **/
  
 /**
- * Abstract Classes describing the frame of an Entity into Orm
+ * Abstract Classes describing the frame of an OrmEntity into Orm
  *
  * @since 0.0.1
  * @author Bess
@@ -73,7 +73,7 @@ abstract class OrmEntity
 	
 	
     /**
-     * constructor protected to avoid a direct instanciation like "new Entity()"
+     * constructor protected to avoid a direct instanciation like "new OrmEntity()"
      * Each time a entity is constructed, we place a copy into the autoloader.
      * 
      * @param string The name of the module who calling this method (so not "Orm")
@@ -81,7 +81,7 @@ abstract class OrmEntity
      * @param string [optional] Prefix to use into database for table. If not setted, it will use the name of your module
      * @param string [optional] The name of table for this entity. If not setted, it will use the name of your entity
      *
-     * @return Entity the entity as a new instance
+     * @return OrmEntity the entity as a new instance
      * 
      * @see MyAutoload
      */
@@ -115,7 +115,7 @@ abstract class OrmEntity
     /**
     * Add a new Field into the list of Fields
     * 
-    * @param Field the object Field to add
+    * @param OrmField the object Field to add
 	* 
 	* @exception OrmIllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
     */
@@ -137,7 +137,7 @@ abstract class OrmEntity
     /**
     * Return the PrimaryKey Field
     * 
-    * @return Field the PrimaryKey Field
+    * @return OrmField the PrimaryKey Field
     * @exception OrmIllegalArgumentException if there is no PrimaryKey Field
     */
 	public function getPk() {
@@ -161,7 +161,7 @@ abstract class OrmEntity
     * return a Field by name
     * 
     * @param string the name
-    * @return Field the Field
+    * @return OrmField the Field
     * 
     * @exception OrmIllegalArgumentException if no Field exist for the name
     */
@@ -328,7 +328,7 @@ abstract class OrmEntity
 	 * Example of function compareTo() in a Customer Entity
 	 *  <code>
 	 *       
-	 *	public static function compareTo(Entity $entity1, Entity $entity2)
+	 *	public static function compareTo(OrmEntity $entity1, OrmEntity $entity2)
 	 *	{
 	 *		$compare = strcmp($entity1->get('name'), $entity2->get('name'));
 	 *      	return $compare;
@@ -336,9 +336,9 @@ abstract class OrmEntity
 	 * 
 	 *  </code>
 	 *
-	 * @param array<Entity> the list of Entity to sort
+	 * @param array<OrmEntity> the list of Entity to sort
 	 *
-	 * @return array<Entity> the list of entity gracefully sorted
+	 * @return array<OrmEntity> the list of Entity gracefully sorted
 	 */
 	public static function sort(array $array) {
 

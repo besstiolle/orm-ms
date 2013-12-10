@@ -35,9 +35,9 @@ final class OrmIndexing
     * 
     * @param string le nom du module.
     */
-	public static final	function DeleteAllWords(Entity $entity)
+	public static final	function DeleteAllWords(OrmEntity $entity)
 	{	
-		$searchmodule = Indexing::getSearch();
+		$searchmodule = OrmIndexing::getSearch();
 		$searchmodule->DeleteWords($entity->getModuleName(), null, $entity->getName());
 	}
 
@@ -46,19 +46,19 @@ final class OrmIndexing
     * 
     * @param string le nom du module.
     */
-	public static final	function DeleteWords(Entity $entity, $sid = null)
+	public static final	function DeleteWords(OrmEntity $entity, $sid = null)
 	{	
 		if($sid == null)
 			$sid = $entity->get($entity->getPk()->getName());
 		
-		$searchmodule = Indexing::getSearch();
+		$searchmodule = OrmIndexing::getSearch();
 		$searchmodule->DeleteWords($entity->getModuleName(), $sid, $entity->getName());
 	}
 	
 	
 	public static final	function AddWords($entity)
     {
-		$searchmodule = Indexing::getSearch();
+		$searchmodule = OrmIndexing::getSearch();
 		$fields = $entity->getFields();
 		
 		$content = '';
@@ -74,8 +74,8 @@ final class OrmIndexing
     }
 	
 	public static final	function UpdateWords($entity) {
-		Indexing::DeleteWords($entity);
-		Indexing::AddWords($entity);
+		OrmIndexing::DeleteWords($entity);
+		OrmIndexing::AddWords($entity);
 	}
 
 	public static function SearchReindex($moduleName) {
@@ -84,19 +84,19 @@ final class OrmIndexing
 		
 			if($entity->isIndexable()) {
 			
-				Indexing::DeleteAllWords($entity);
+				OrmIndexing::DeleteAllWords($entity);
 				
 				$liste = array();
 				if(!$entity->isFieldByNameExists(Field_Active::$name)) {
-					$liste = Core::selectAll($entity);
+					$liste = OrmCore::selectAll($entity);
 				} else {
-					$example = new Example();
+					$example = new OrmExample();
 					$example->addCriteria(Field_Active::$name, OrmTypeCriteria::$EQ, array(1));
-					$liste = Core::selectByExample($entity, $example);
+					$liste = OrmCore::selectByExample($entity, $example);
 				}
 				
 				foreach($liste as $singleEntity) {
-					Indexing::AddWords($singleEntity);
+					OrmIndexing::AddWords($singleEntity);
 				}
 			}
 		}
@@ -124,7 +124,7 @@ final class OrmIndexing
 
 				if ($attr == $entity->getName())
 				{
-					$myEntity = Core::selectById($entity, $entityId);
+					$myEntity = OrmCore::selectById($entity, $entityId);
 					
 					//$currentLangISO = ($mle == 'fr'?'fr_FR':'en_US'); //TODO : se démerder pour récupérer la langue liée au $returnId;
 					

@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains EntityAssociation Class which extends Entity class
+ * Contains OrmEntityAssociation Class which extends OrmEntity class
  *
  * @since 0.0.1
  * @author Bess
@@ -20,7 +20,7 @@ abstract class OrmEntityAssociation extends OrmEntity
 	private $nbField = 0;
 
     /**
-     * constructor protected to avoid a direct instanciation like "new EntityAssociation()"
+     * constructor protected to avoid a direct instanciation like "new OrmEntityAssociation()"
      * Each time a entity is constructed, we place a copy into the autoloader.
      * 
      * @param string The name of the module who calling this method (so not "Orm")
@@ -28,7 +28,7 @@ abstract class OrmEntityAssociation extends OrmEntity
      * @param string [optional] Prefix to use into database for table. If not setted, it will use the name of your module
      * @param string [optional] The name of table for this entity. If not setted, it will use the name of your entity
      *
-     * @return EntityAssociation the entity as a new instance
+     * @return OrmEntityAssociation the entity as a new instance
      * 
      * @see MyAutoload
      */
@@ -42,17 +42,16 @@ abstract class OrmEntityAssociation extends OrmEntity
     * 
     * Currently, the Orm System doen't allow more than two Field for an EntityAssociation
     * 
-    * @param Field the Field to add.
+    * @param OrmField the Field to add.
 	*
-	* @exception IllegalConfigurationException if we try to use more than two Field in the entity
-	* @exception IllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
+	* @exception OrmIllegalConfigurationException if we try to use more than two Fields in the entity
     */
 	protected function add(OrmField $newField)
 	{
 		$this->nbField ++;
 		
 		if($this->nbField > 2)
-			throw new IllegalConfigurationException ("It's impossible to use more than two Field in the EntityAssociation ". $this->getName());
+			throw new OrmIllegalConfigurationException ("It's impossible to use more than two Field in the EntityAssociation ". $this->getName());
 				
 		parent::add($newField);
 	}

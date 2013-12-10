@@ -21,12 +21,12 @@ interface OrmISortable
     * Function which compare two entities in parameters
     * 
     * 
-    * @param Entity the first entity with all values setted
-    * @param Entity the second entity with all values setted
+    * @param OrmEntity the first entity with all values setted
+    * @param OrmEntity the second entity with all values setted
 	*
     * @return Integer : 0 if equals, 1 if the first entity is superior, else -1
     * 
-    * @see Entity
+    * @see OrmEntity
     */
 	public static function compareTo(OrmEntity $entity1, OrmEntity $entity2);
 }

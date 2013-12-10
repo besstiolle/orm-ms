@@ -2,7 +2,7 @@
 
 if (!function_exists("cmsms")) exit;
 
-//Reinit the default level of Trace
+//Reinit the default level of OrmTrace
 $level = $this->GetPreference('loglevel', OrmTrace::$INFO);
 $this->SetPreference('loglevel', $level);
 

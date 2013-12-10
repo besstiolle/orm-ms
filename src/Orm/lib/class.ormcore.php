@@ -391,9 +391,9 @@ class OrmCore
 			throw new Exception("Database error durant l'insert!".$db->ErrorMsg());
 		}
 
-		if($entityParam->isIndexable()) {  
-			Indexing::AddWords($entityParam->getModuleName(), OrmCore::findById($entityParam,$arrayKEY[0]));
-		}
+	/*	if($entityParam->isIndexable()) {  
+			OrmIndexing::AddWords($entityParam->getModuleName(), OrmCore::findById($entityParam,$arrayKEY[0]));
+		}*/
 		
 		//empty cache
 		OrmCache::clearCache();
@@ -535,9 +535,9 @@ class OrmCore
 		//Execution
 		$result = $db->Execute($queryUpdate, $params);
 		if ($result === false){die("Database error durant l'update!");}
-		if($entityParam->isIndexable()) {  
-			Indexing::UpdateWords($entityParam->getModuleName(), $entityParam);
-		}
+		/*if($entityParam->isIndexable()) {  
+			OrmIndexing::UpdateWords($entityParam->getModuleName(), $entityParam);
+		}*/
 		
 		//empty cache
 		OrmCache::clearCache();
@@ -569,7 +569,7 @@ class OrmCore
     *       OrmCore::deleteByIds($customer, $myArray);
     * </code>
     *                                    
-    * @param Entity an instance of the entity    
+    * @param OrmEntity an instance of the entity    
     * @param array all the ids to delete ($customer_id in my example)
     */
 	public static final function deleteByIds(OrmEntity &$entityParam, $ids) {
@@ -611,14 +611,14 @@ class OrmCore
 		  // $modops = cmsms()->GetModuleOperations();
 		  // if(method_exists($modops,"GetSearchModule"))
 		  // {
-			// Indexing::setSearch($modops->GetSearchModule());
+			// OrmIndexing::setSearch($modops->GetSearchModule());
 		  // } else
 		  // {
 			// die("ko");
 		  // }
 		  foreach($ids as $sid)
 		  {
-			Indexing::DeleteWords($entityParam->getModuleName(), $entityParam, $sid);
+			OrmIndexing::DeleteWords($entityParam->getModuleName(), $entityParam, $sid);
 		  }
 		  
 		}
@@ -1086,7 +1086,7 @@ class OrmCore
      * @param mixed the PHP value
      * @param mixed the CAST value
      * 
-     * @see CAST
+     * @see OrmCAST
      */
 	private static final function FieldToDBValue($data, $type) {
 		if($data == null){
@@ -1114,7 +1114,7 @@ class OrmCore
      * @param mixed the SQL value 
      * @param mixed the CAST value
      * 
-     * @see CAST
+     * @see OrmCAST
      */
 	private static final function dbValueToField($data, $type) {
 		switch($type) {
@@ -1147,7 +1147,7 @@ class OrmCore
 		$listeEntitys = MyAutoload::getAllInstances($entity->getModuleName());
 
 		foreach($listeEntitys as $key=>$anEntity) {
-		  if($anEntity instanceOf EntityAssociation)
+		  if($anEntity instanceOf OrmEntityAssociation)
 			continue;
 			
 		  foreach($anEntity->getFields() as $field) {
@@ -1216,7 +1216,7 @@ class OrmCore
      * 
      */
 	public static final function makeDeepSearch(OrmEntity $previousEntity, $cle, $values) {    
-		TRACE::info("# : "."Start makeDeepSearch() ".$previousEntity->getName()."->".$cle);
+		OrmTRACE::info("# : "."Start makeDeepSearch() ".$previousEntity->getName()."->".$cle);
 
 		if($previousEntity == null)
 		{
@@ -1233,15 +1233,15 @@ class OrmCore
 		//Test de sortie : on a un seul résultat dans $newCle : le champs final
 		if(count($newCle) == 1)
 		{
-		  TRACE::info("# : "." count(\$newCle) == 1 , donc sortie ");
+		  OrmTRACE::info("# : "." count(\$newCle) == 1 , donc sortie ");
 		  $OrmExample = new OrmExample;
 		  $OrmExample->addCriteria($fieldname, OrmTypeCriteria::$IN, $values);
 		  $entitys = OrmCore::findByExample($previousEntity, $OrmExample);
-		  TRACE::info("# : ".count($entitys)." R&eacute;sultat(s) retourn&eacute;s");
+		  OrmTRACE::info("# : ".count($entitys)." R&eacute;sultat(s) retourn&eacute;s");
 		  return $entitys;
 		} else
 		{
-		  TRACE::info("# : "." poursuite ");
+		  OrmTRACE::info("# : "." poursuite ");
 		}
 
 		//Récupération de la clé distance pour une FK
@@ -1261,7 +1261,7 @@ class OrmCore
 		  $cle = $newCle[1];
 		} 
 		
-		TRACE::info("# : "." make new recherche : ".$nextEntity->getName() ." , ". $cle);
+		OrmTRACE::info("# : "." make new recherche : ".$nextEntity->getName() ." , ". $cle);
 
 		$entitys = OrmCore::makeDeepSearch($nextEntity, $cle, $values);
 
@@ -1270,7 +1270,7 @@ class OrmCore
 		  return array();
 		}
 
-		if($nextEntity instanceof EntityAssociation)
+		if($nextEntity instanceof OrmEntityAssociation)
 		{  
 		  $fields = $nextEntity->getFields();
 		  $nomFieldSuivit = explode('.',$cle,2);
@@ -1290,24 +1290,24 @@ class OrmCore
 		$ids = array();
 		foreach($entitys as $anEntity)
 		{
-		  TRACE::info("On a trouv&eacute;  : ".$anEntity->getName()."");
-		  if($anEntity instanceof EntityAssociation)
+		  OrmTRACE::info("On a trouv&eacute;  : ".$anEntity->getName()."");
+		  if($anEntity instanceof OrmEntityAssociation)
 		  {
 			$value = $anEntity->get($nomFieldRetour->getName());
 			$ids[] = $value;
-			TRACE::info(" valeur assoc : ".$value." pour le champs ".$nomFieldRetour->getName());
+			OrmTRACE::info(" valeur assoc : ".$value." pour le champs ".$nomFieldRetour->getName());
 		  } else
 		  {
 			$value = $anEntity->get($nextEntity->getPk()->getName());
 			$ids[] = $value;
-			TRACE::info(" valeur id : ".$value);
+			OrmTRACE::info(" valeur id : ".$value);
 		  }
 		  
 		}
 
 
 		$OrmExample = new OrmExample;
-		if($nextEntity instanceof EntityAssociation)
+		if($nextEntity instanceof OrmEntityAssociation)
 		{
 		  $OrmExample->addCriteria($previousEntity->getPk()->getName(), OrmTypeCriteria::$IN, $ids);
 		} else

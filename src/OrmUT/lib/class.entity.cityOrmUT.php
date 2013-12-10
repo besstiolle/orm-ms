@@ -3,7 +3,7 @@ class CityOrmUT extends OrmEntity
 {
 	public function __construct()
 	{
-		parent::__construct('ormut','city');
+		parent::__construct('ormut','CityOrmUT');
 		
 		$this->add(new OrmField('city_id'		
 			, OrmCAST::$INTEGER

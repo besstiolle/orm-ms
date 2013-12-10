@@ -17,7 +17,7 @@ class CitySkeleton extends OrmEntity
 		// A primary key, very useful for most of your definitions
 		$this->add(new OrmField('city_id'	
 			// This parameter is simply a integer. You can choose between a lot of possibility. 
-			//  Take a look inside the class CAST for all the possibilities.
+			//  Take a look inside the class OrmCAST for all the possibilities.
 			, OrmCAST::$INTEGER 
 			, null	
 			, null 		// is required ! 
@@ -35,7 +35,7 @@ class CitySkeleton extends OrmEntity
 			// We'll storage the id of the country so you will be able to
 			//  get the country of this city like this : 
 			//  # $countryId = $myCity->get('country');
-			//  # $country = CORE::findById(new Country(), $countryId);
+			//  # $country = OrmCORE::findById(new Country(), $countryId);
 			//  And play with it.
 			//  # echo $country->get('labelCountry');
 			, OrmCAST::$INTEGER 

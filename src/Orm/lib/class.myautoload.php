@@ -62,14 +62,14 @@ final class MyAutoload
 		$instanceName = strtolower($instanceName);
 		myAutoload::isValideNamespace($namespace);
 		
-		Trace::debug("Asking an instance of ".$instanceName. " for namespace ".$namespace);
+		OrmTrace::debug("Asking an instance of ".$instanceName. " for namespace ".$namespace);
 		if(myAutoload::hasInstance($namespace, $instanceName))
 		{
-			Trace::debug("Instance ".$instanceName." returned.");
+			OrmTrace::debug("Instance ".$instanceName." returned.");
 			return clone self::$instances[$namespace][$instanceName];
 		}
 		
-		Trace::error("No instance $instanceName found in memory for namespace ".$namespace);
+		OrmTrace::error("No instance $instanceName found in memory for namespace ".$namespace);
 		throw new Exception("No instance $instanceName found in memory for namespace ".$namespace);
 	}
 	
@@ -117,8 +117,8 @@ final class MyAutoload
 	{
 		if(!isset(self::$instances[$namespace]))
 		{
-			Trace::error("The namespace '$namespace' doesn't existe into the Orm System");
-			throw new IllegalArgumentException("The namespace '$namespace' doesn't existe into the Orm System");
+			OrmTrace::error("The namespace '$namespace' doesn't existe into the Orm System");
+			throw new OrmIllegalArgumentException("The namespace '$namespace' doesn't existe into the Orm System");
 		}
 	}
 }

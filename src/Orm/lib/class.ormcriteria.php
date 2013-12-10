@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains Criteria class
+ * Contains OrmCriteria class
  * 
  * @since 0.0.1
  * @author Bess
@@ -10,7 +10,7 @@
  
 
 /**
- * Backbone for Criteria into the Orm system
+ * Backbone for OrmCriteria into the Orm system
  *
  * @since 0.0.1
  * @author Bess
@@ -42,13 +42,13 @@
     * Public Constructor
     * 
     * @param string Name of the field 
-    * @param TypeCriteria Type of Criteria
+    * @param OrmTypeCriteria Type of Criteria
     * @param array all the parameters used for the parameter $typeCriteria
     * @param boolean [Optional] if we must ignore the case (aze equals AZE) or not. Default value is "false"
     *
-	* @return Criteria a Criteria
+	* @return OrmCriteria a Criteria
 	*
-	* @see TypeCriteria
+	* @see OrmTypeCriteria
     */
 	public function __construct($fieldname, $typeCriteria, $paramsCriteria, $ignoreCase = false)
 	{
