@@ -6,7 +6,7 @@ if (!function_exists("cmsms")) exit;
 $city = new CitySkeleton();
 
 // In the same way i can interrogate the table of CitySkeleton : 
-$count = Core::countAll(new CitySkeleton());
+$count = OrmCore::countAll(new CitySkeleton());
 
 $link = $this->CreateLink($id, 'editCity', $returnid, 'add');
 
@@ -20,14 +20,14 @@ if($count == 0){
 	echo "<tr><td colspan='4'><center>no record in database</center></td></tr>";
 } else {
 	//I can also retrieve all the CitySkeleton
-	$all = Core::findAll(new CitySkeleton());
+	$all = OrmCore::findAll(new CitySkeleton());
 	
 	//And iterate over each one
 	foreach($all as $city){
 	
 		//We'll only have the id of the country, so we need to retrieve the Entity Country selected
 		$country_id = $city->get('country');
-		$country = Core::findById(new CountrySkeleton(), $country_id);
+		$country = OrmCore::findById(new CountrySkeleton(), $country_id);
 		
 		// We can easily get all the values with the $object->get('fieldname') syntax
 		echo "<tr>

@@ -1,7 +1,7 @@
 
 <h2>Test #6 : Also, does values are correctly saved ?</h2>
 <?php
-	$country3 = Core::findById(new Country(),3);
+	$country3 = OrmCore::findById(new CountryOrmUT(),3);
 		
 	$expected = 'England'; 
 	$result = $country3->get('label');

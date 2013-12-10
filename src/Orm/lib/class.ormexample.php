@@ -9,13 +9,13 @@
  
  
 /**
- * Represents a group of differents Criteria (Criterias) to process a search "By Example" on a Entity in Database
+ * Represents a group of differents OrmCriteria (Criterias) to process a search "By Example" on a OrmEntity in Database
  *
  * @since 0.0.1
  * @author Bess
  * @package Orm
  **/
-final class Example 
+final class OrmExample 
 {
 	private $Criterias = array();
 	
@@ -45,7 +45,7 @@ final class Example
 			throw new Exception("the parameter \$paramsCriteria for the Criteria of the Field [".$fieldname."] must be an array");
 		}
 		
-		$this->Criterias[] = new Criteria($fieldname, $typeCriteria, $paramsCriteria, $ignoreCase);
+		$this->Criterias[] = new OrmCriteria($fieldname, $typeCriteria, $paramsCriteria, $ignoreCase);
 	}
 
     /**

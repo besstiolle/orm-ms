@@ -5,7 +5,7 @@ if (!function_exists("cmsms")) exit;
 $book = null;
 if(!empty($params['book_id'])){
 	//Let's retrieve our book !
-	$book = Core::findById(new BookSkeleton(), $params['book_id']);
+	$book = OrmCore::findById(new BookSkeleton(), $params['book_id']);
 } 
 
 if($book == null){

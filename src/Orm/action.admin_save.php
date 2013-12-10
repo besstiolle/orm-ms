@@ -3,9 +3,9 @@
 if (!function_exists("cmsms")) exit;
 
 if (isset($params['delete'])){
-	unlink(TRACE::getLogFile());
-	Trace::info("Reinitiate the log file");
-} else if (isset($params['level']) && $params['level'] >= TRACE::$DEBUG && $params['level'] <= TRACE::$ERROR){
+	unlink(OrmTRACE::getLogFile());
+	OrmTrace::info("Reinitiate the log file");
+} else if (isset($params['level']) && $params['level'] >= OrmTRACE::$DEBUG && $params['level'] <= OrmTRACE::$ERROR){
 	$this->SetPreference('loglevel', $params['level']);
 }
 

@@ -4,7 +4,7 @@ if (!function_exists("cmsms")) exit;
 
 if(!empty($params['city_id'])){
 	//Let's retrieve our city !
-	$city = Core::findById(new CitySkeleton(), $params['city_id']);
+	$city = OrmCore::findById(new CitySkeleton(), $params['city_id']);
 	$action = "Edition";
 	if($city == null){
 		// We create a new one
@@ -26,7 +26,7 @@ if(!empty($params['error'])) {
 }
 
 //We need to propose all countries
-$countries = Core::findAll(new CountrySkeleton());
+$countries = OrmCore::findAll(new CountrySkeleton());
 $items = array();
 $items['  = Choose one Country =  '] = '';
 foreach($countries as $country){ 

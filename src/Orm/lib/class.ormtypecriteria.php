@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains the TypeCriteria class
+ * Contains the OrmTypeCriteria class
  * 
  * @since 0.0.1
  * @author Bess
@@ -9,14 +9,14 @@
  
 
 /**
- * Enum for the different types of TypeCriteria
+ * Enum for the different types of OrmTypeCriteria
  * 
  * 
  * @since 0.0.1
  * @author Bess
  * @package Orm
  **/
-class TypeCriteria
+class OrmTypeCriteria
 {
     /**
     * Is equals to

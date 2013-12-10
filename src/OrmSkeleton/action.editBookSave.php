@@ -4,7 +4,7 @@ if (!function_exists("cmsms")) exit;
 
 if(!empty($params['book_id'])){
 	//Let's retrieve our book !
-	$book = Core::findById(new BookSkeleton(), $params['book_id']);
+	$book = OrmCore::findById(new BookSkeleton(), $params['book_id']);
 } else {
 	$book = new BookSkeleton();
 }	
@@ -22,13 +22,13 @@ try{
 	// We simply save the entity
 	$book->save();
 	// Please note that this code could also work.
-	//Core::insertEntity($book);
+	//OrmCore::insertEntity($book);
 	
 	//Go back to the default admin page
 	$this->Redirect($id, 'defaultadmin', $returnid, $params);
 	
 // The illegaArgument will happen each time you don't controle enough the data before inserting them
-} catch (IllegalArgumentException $e){
+} catch (OrmIllegalArgumentException $e){
 	// Ho ho ho... there is shitty information ...
 	// Let's go inform the user
 	$params['error'] = $e->getMessage();

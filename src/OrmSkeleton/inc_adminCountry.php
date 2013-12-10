@@ -6,7 +6,7 @@ if (!function_exists("cmsms")) exit;
 $country = new CountrySkeleton();
 
 // In the same way i can interrogate the table of CountrySkeleton : 
-$count = Core::countAll(new CountrySkeleton());
+$count = OrmCore::countAll(new CountrySkeleton());
 
 $link = $this->CreateLink($id, 'editCountry', $returnid, 'add');
 
@@ -20,7 +20,7 @@ if($count == 0){
 	echo "<tr><td colspan='4'><center>no record in database</center></td></tr>";
 } else {
 	//I can also retrieve all the CountrySkeleton
-	$all = Core::findAll(new CountrySkeleton());
+	$all = OrmCore::findAll(new CountrySkeleton());
 	
 	//And iterate over each one
 	foreach($all as $country){
@@ -29,7 +29,7 @@ if($count == 0){
 		$arrayCitiesId = $country->get('cities');
 		
 		//Let's transform this information to a better way
-		$arrayCities = Core::findByIds(new CitySkeleton(), $arrayCitiesId);
+		$arrayCities = OrmCore::findByIds(new CitySkeleton(), $arrayCitiesId);
 		
 		if(count($arrayCities) == 0){
 			$citiesLabel = "= No city =";
@@ -43,7 +43,7 @@ if($count == 0){
 			}
 		}
 		
-		if(Core::verifIntegrity($country, $country->get('country_id')) == ""){
+		if(OrmCore::verifIntegrity($country, $country->get('country_id')) == ""){
 			$linkDelete = $this->CreateLink($id, 'editCountryDelete', $returnid, $img_delete,array('country_id'=>$country->get('country_id')));
 		} else {
 			$linkDelete = '<span style="color:#CCC">still used</span>';

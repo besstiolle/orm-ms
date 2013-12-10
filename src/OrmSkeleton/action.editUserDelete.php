@@ -5,7 +5,7 @@ if (!function_exists("cmsms")) exit;
 $user = null;
 if(!empty($params['user_id'])){
 	//Let's retrieve our user !
-	$user = Core::findById(new UserSkeleton(), $params['user_id']);
+	$user = OrmCore::findById(new UserSkeleton(), $params['user_id']);
 } 
 
 if($user == null){

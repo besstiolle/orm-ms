@@ -8,36 +8,36 @@
  *
  * You should also take a look inside the class class.entity.citySkeleton.php
  */ 
-class CountrySkeleton extends Entity
+class CountrySkeleton extends OrmEntity
 {
 	public function __construct()
 	{
 		parent::__construct('ormskeleton','countrySkeleton');
 		
 		// A primary key, very useful for most of your definitions
-		$this->add(new Field('country_id'	
+		$this->add(new OrmField('country_id'	
 			// This parameter is simply a integer. You can choose between a lot of possibility. 
 			//  Take a look inside the class CAST for all the possibilities.
-			, CAST::$INTEGER 
+			, OrmCAST::$INTEGER 
 			, null	
 			, null 		// is required ! 
-			, KEY::$PK	// is a primary key (auto-incremented)
+			, OrmKEY::$PK	// is a primary key (auto-incremented)
 		));
 		
-		$this->add(new Field('labelCountry'		
-			, CAST::$STRING
+		$this->add(new OrmField('labelCountry'		
+			, OrmCAST::$STRING
 			, 50	
 		));
 		
 		// A foreign key, will make the link to the cities of this country
-		$this->add(new Field('cities'	
+		$this->add(new OrmField('cities'	
 			// it won't be  a real field into your database, it's a virtual fields that will allow you to
 			//  get all the cities of this country like this : 
 			//  array $cities = $myCountry->get('cities');
-			, CAST::$NONE 
+			, OrmCAST::$NONE 
 			, null	
 			, TRUE 		// it's not required. A country can have zero city.
-			, KEY::$AK	// it's a associate key as soon it's a virtual link to a bunch of Cities
+			, OrmKEY::$AK	// it's a associate key as soon it's a virtual link to a bunch of Cities
 			// You could see this code like "a path to go to the informations in the other Entity
 			// It's simply "nameOfTheOtherEntity.nameOfMyFKCorrespondence
 			, "citySkeleton.country" 
