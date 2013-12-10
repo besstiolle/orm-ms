@@ -1,6 +1,6 @@
 <?php
 	/**
-	* Classe of cmsmadesimple's API. Used to make a link between the API of CmsMadeSimple and other modules'
+	* Class of cmsmadesimple's API. Used to make a link between the API of CmsMadeSimple and other modules'
 	*
 	* @since 0.0.1
 	* @author Bess
@@ -11,7 +11,7 @@
 	include_once(cms_join_path(dirname(__FILE__),"lib","class.ormtrace.php"));
 
 	/**
-	* The Class Orm define the module Orm and allow having all the orm functionnalities into another module
+	* The Class Orm define the module Orm and allow having all the orm functionalities into another module
 	*
 	* @since 0.0.1
 	* @author Bess
@@ -33,7 +33,7 @@ class Orm extends CMSModule {
 	}
 
 	function GetVersion() {
-		return '0.0.2';
+		return '0.1.0';
 	}
   
 	function GetDependencies()

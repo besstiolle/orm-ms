@@ -16,11 +16,11 @@ class OrmUT extends Orm {
 	}
 
 	function GetVersion() {
-		return '0.0.2';
+		return '0.1.0';
 	}
 
 	function GetDependencies() {
-		return array('Orm'=>'0.0.2');
+		return array('Orm'=>'0.1.0');
 	}
 
 	function GetHelp() {
