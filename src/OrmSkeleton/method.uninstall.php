@@ -5,7 +5,7 @@ if (!function_exists("cmsms")) exit;
 //Drop all the tables automatically
 $entities = MyAutoload::getAllInstances($this->GetName(), $this->getName());
 foreach($entities as $anEntity) {
-	Core::dropTable($anEntity);
+	OrmCore::dropTable($anEntity);
 }
 
 // put mention into the admin log

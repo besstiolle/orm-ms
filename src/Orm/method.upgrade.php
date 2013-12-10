@@ -3,7 +3,7 @@
 if (!function_exists("cmsms")) exit;
 
 //Reinit the default level of Trace
-$level = $this->GetPreference('loglevel', Trace::$INFO);
+$level = $this->GetPreference('loglevel', OrmTrace::$INFO);
 $this->SetPreference('loglevel', $level);
 
 // put mention into the admin log
