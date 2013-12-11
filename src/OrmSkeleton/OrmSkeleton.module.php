@@ -1,5 +1,14 @@
 <?php
 
+/* Force the loading of Orm Framework BEFORE this module */
+$config = cmsms()->GetConfig();
+$Orm = $config['root_path'].'/modules/Orm/Orm.module.php';
+if( !is_readable( $Orm ) ) {
+  echo '<h1><font color="red">ERROR: The Orm Framework could not be found [<a href="https://github.com/besstiolle/orm-ms/wiki">help</a>].</font></h1>';
+  return;
+}
+require_once($Orm);
+
 class OrmSkeleton extends Orm
 {   
 	function __construct() {
@@ -16,11 +25,11 @@ class OrmSkeleton extends Orm
 	}
 
 	function GetVersion() {
-		return '0.1.0';
+		return '0.1.1';
 	}
 
 	function GetDependencies() {
-		return array('Orm'=>'0.1.0');
+		return array('Orm'=>'0.1.1');
 	}
 
 	function GetHelp() {
