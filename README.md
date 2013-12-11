@@ -25,7 +25,8 @@ In another vein it's important to remember that this framework is very light, **
 
 And because an example is worth a thousand speeches, here an example with an install file in a random CmsMadeSimple Module
 
-Before : 
+Create your tables was something like this :
+
 ```php
 $db =& $this->GetDb();
 
@@ -41,16 +42,9 @@ $taboptarray = array('mysql' => 'TYPE=MyISAM');
 $sqlarray = $dict->CreateTableSQL(cms_db_prefix().'module_quotegroups', $flds, $taboptarray);
 $dict->ExecuteSQLArray($sqlarray);
 $db->CreateSequence( cms_db_prefix()."module_quotegroups_seq" );
-
-
-$new_css_id = $db->GenID(cms_db_prefix() . "css_seq");
-$css_name = "Module: Quotes Made Simple";
-$css_text = file_get_contents('stylesheet.css');
-$media_type = '';
-$query = "INSERT INTO " . cms_db_prefix() . "css (css_id, css_name, css_text, media_type, create_date, modified_date) VALUES (?, ?, ?, ?, ?, ?)";
-$result = $db->Execute($query, array($new_css_id, $css_name, $css_text, $media_type, $db->DBTimeStamp(time()), $db->DBTimeStamp(time())));
 ```
-After :
+
+Now you can simply code this :
 
 ```php
 //Instanciate a new Css entity
@@ -58,6 +52,22 @@ $css = new Css();
 
 //Create its table
 OrmCore::createTable($css);
+```
+
+In the same way you can reduce the code to insert a line.
+
+```php
+$new_css_id = $db->GenID(cms_db_prefix() . "css_seq");
+$css_name = "Module: Quotes Made Simple";
+$css_text = file_get_contents('stylesheet.css');
+$media_type = '';
+$query = "INSERT INTO " . cms_db_prefix() . "css (css_id, css_name, css_text, media_type, create_date, modified_date) VALUES (?, ?, ?, ?, ?, ?)";
+$result = $db->Execute($query, array($new_css_id, $css_name, $css_text, $media_type, $db->DBTimeStamp(time()), $db->DBTimeStamp(time())));
+```
+With the Orm framework you will write a readable code : 
+```php
+//Instanciate a new Css entity
+$css = new Css();
 
 //Populate values
 $css->set('css_name','Module: Quotes Made Simple');
@@ -69,6 +79,7 @@ $css->set('modified_date',date());
 //Save the entity
 $css->save();
 ```
+
 
 So have you other questions ? 
 
