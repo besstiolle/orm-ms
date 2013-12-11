@@ -57,7 +57,7 @@ After :
 $css = new Css();
 
 //Create its table
-Core::createTable($css);
+OrmCore::createTable($css);
 
 //Populate values
 $css->set('css_name','Module: Quotes Made Simple');
