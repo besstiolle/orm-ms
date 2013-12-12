@@ -1,0 +1,111 @@
+
+<h2>Test #10 : Test the Cast Mapping ?</h2>
+<?php
+	
+	//First, drop the table, recreate it
+	OrmCore::dropTable(new CastOrmUT());
+	OrmCore::createTable(new CastOrmUT());
+	
+	list($currentUS, $currentTS) = explode(" ", microtime());
+	$currentTIME = date("H:i:s", $currentTS );
+	$currentDT = $currentTS;
+	$currentDATE = strtotime(date("Y-m-d", $currentTS ));
+	
+	//Test insert
+	$cast = new CastOrmUT();
+	$cast->set("aDate",$currentDATE);
+	$cast->set("aDateNull",null);
+	$cast->set("aTime",$currentTIME);
+	$cast->set("aTimeNull",null);
+	$cast->set("aTS",$currentTS);
+	$cast->set("aTSNull",null);
+	$cast->set("aDateTime",$currentDT);
+	$cast->set("aDateTimeNull",null);
+	try{
+		$cast->save();
+		echo "<p class='$cssSuccess'>saving entity with success</p>";
+	} catch (Exception $o){
+		echo "<p class='$cssSuccess'>Exsception during \$cast->save()</p>";
+	}
+	
+	// DATE null ?
+	try{
+		$cast->set("aDate",null);
+		$cast->set("aTime",$currentTIME);
+		$cast->set("aTS",$currentTS);
+		$cast->set("aDateTime",$currentDT);
+		$cast->save();
+		echo "<p class='$cssError'>we expected OrmIllegalArgumentException, that's not okay</p>";
+	} catch (OrmIllegalArgumentException $o){
+		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
+	}
+		
+	// TIME null ?
+	try{
+		$cast->set("aDate",$currentDATE);
+		$cast->set("aTime",null);
+		$cast->set("aTS",$currentTS);
+		$cast->set("aDateTime",$currentDT);
+		$cast->save();
+		echo "<p class='$cssError'>we expected OrmIllegalArgumentException, that's not okay</p>";
+	} catch (OrmIllegalArgumentException $o){
+		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
+	}
+	
+	// TIMESTAMP null ?
+	try{
+		$cast->set("aDate",$currentDATE);
+		$cast->set("aTime",$currentTIME);
+		$cast->set("aTS",null);
+		$cast->set("aDateTime",$currentDT);
+		$cast->save();
+		echo "<p class='$cssError'>we expected OrmIllegalArgumentException, that's not okay</p>";
+	} catch (OrmIllegalArgumentException $o){
+		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
+	}
+	
+	// DATETIME null ?
+	try{
+		$cast->set("aDate",$currentDATE);
+		$cast->set("aTime",$currentTIME);
+		$cast->set("aTS",$currentTS);
+		$cast->set("aDateTime",null);
+		$cast->save();
+		echo "<p class='$cssError'>we expected OrmIllegalArgumentException, that's not okay</p>";
+	} catch (OrmIllegalArgumentException $o){
+		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
+	}
+	
+	//
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	
+	assertIsEquals($cast->get("aDate"),$currentDATE);
+	assertIsNull($cast->get("aDateNull"));
+	assertIsEquals($cast->get("aTime"),$currentTIME);
+	assertIsNull($cast->get("aTimeNull"));
+	assertIsEquals($cast->get("aTS"),$currentTS);
+	assertIsNull($cast->get("aTSNull"));
+	assertIsEquals($cast->get("aDateTime"),$currentDT);
+	assertIsNull($cast->get("aDateTimeNull"));
+	
+	function assertIsEquals($result,$expected){
+		if($expected == $result){
+			$class = 'success';
+		} else {
+			$class = 'error';
+		}
+		echo "<p class='$class'>we expected value be equals to {$expected}, we have got {$result}</p>";
+	}
+	
+	function assertIsNull($result){
+		if(null == $result){
+			$class = 'success';
+		} else {
+			$class = 'error';
+		}
+		echo "<p class='$class'>we expected value being null</p>";
+	}
+
+	
+?>

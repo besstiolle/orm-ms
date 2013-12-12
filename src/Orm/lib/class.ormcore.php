@@ -1086,13 +1086,12 @@ class OrmCore {
 		  case OrmCAST::$INTEGER : return $data;
 		  case OrmCAST::$NUMERIC : return $data;
 		  case OrmCAST::$BUFFER : return $data;
-		  case OrmCAST::$TS : return $data;
 		  case OrmCAST::$UUID : return $data;
 		  
 		  case OrmCAST::$DATE : return str_replace("'", "", cmsms()->GetDb()->DBDate($data));       
-
 		  case OrmCAST::$TIME : return str_replace("'", "", cmsms()->GetDb()->DBTimeStamp($data));   	  
-		  case OrmCAST::$DATETIME : return $data;
+		  case OrmCAST::$DATETIME : return date("Y-m-d H:i:s",$data); 
+		  case OrmCAST::$TS : return $data;
 		}
 	}
   
@@ -1110,13 +1109,13 @@ class OrmCore {
 		  case OrmCAST::$DOUBLE : return $data;
 		  case OrmCAST::$INTEGER : return $data;		  
 		  case OrmCAST::$NUMERIC : return $data;		  
-		  case OrmCAST::$BUFFER : return $data;		  		  
-		  case OrmCAST::$TS : return $data;
+		  case OrmCAST::$BUFFER : return $data;		  		
 		  case OrmCAST::$UUID : return $data;
 		  
 		  case OrmCAST::$DATE : return cmsms()->GetDb()->UnixDate($data);
-		  case OrmCAST::$TIME : return $data;//return cmsms()->GetDb()->UnixTimeStamp($data);
-		  case OrmCAST::$DATETIME : return $data;
+		  case OrmCAST::$TIME : return $data;
+		  case OrmCAST::$DATETIME : return strtotime($data);  
+		  case OrmCAST::$TS : return $data;
 
 		}
 	}
