@@ -35,7 +35,8 @@ class OrmCAST
 	public static $TS = 6;
 	public static $DATETIME = 7;
 	public static $UUID = 8;
-	
+	public static $DOUBLE = 9;
+		  
 	public static $NONE = 99;
 }
 
