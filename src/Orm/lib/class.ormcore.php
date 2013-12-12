@@ -68,6 +68,11 @@ class OrmCore {
 					{$hql.= " (".$field->getSize().") ";} 
 					break;
 
+				case OrmCAST::$DOUBLE : 
+					$hql .= 'I'; 
+					if($field->getSize() != "" ) {$hql.= " (".$field->getSize().") ";} 
+					break;
+
 				case OrmCAST::$BUFFER : $hql .= 'X'; break;
 
 				case OrmCAST::$DATE : $hql .= 'D'; break;
@@ -1077,6 +1082,7 @@ class OrmCore {
 		
 		switch($type) {
 		  case OrmCAST::$STRING : return $data;
+		  case OrmCAST::$DOUBLE : return $data;
 		  case OrmCAST::$INTEGER : return $data;
 		  case OrmCAST::$NUMERIC : return $data;
 		  case OrmCAST::$BUFFER : return $data;
@@ -1101,6 +1107,7 @@ class OrmCore {
 	private static final function dbValueToField($data, $type) {
 		switch($type) {
 		  case OrmCAST::$STRING : return $data;		  
+		  case OrmCAST::$DOUBLE : return $data;
 		  case OrmCAST::$INTEGER : return $data;		  
 		  case OrmCAST::$NUMERIC : return $data;		  
 		  case OrmCAST::$BUFFER : return $data;		  		  
