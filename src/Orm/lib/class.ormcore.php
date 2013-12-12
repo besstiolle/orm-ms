@@ -819,6 +819,10 @@ class OrmCore {
 			$hql .= ' WHERE ';
 		  }
 
+		  if($listeField[$criteria->fieldname] == null)
+		  {
+			throw new Exception("Field '".$criteria->fieldname."' not defined in entity '".get_class($entityParam)."' while you're searching on it");
+		  }
 		  $filterType =  $listeField[$criteria->fieldname]->getType();
 		  
 				//1 parameter
