@@ -15,8 +15,7 @@
  * @author Bess
  * @package Orm
 */
-class OrmCore
-{  
+class OrmCore {  
     /**
     * Protected constructor
     *     
@@ -92,8 +91,7 @@ class OrmCore
 				
 			}
 
-			if($field->isPrimaryKEY())
-			{
+			if($field->isPrimaryKEY()) {
 				if($entity->isAutoincrement()) {
 					$hql .= ' KEY AUTO';
 				} else {
@@ -156,26 +154,12 @@ class OrmCore
     */
 	public static final function createTable(OrmEntity &$entityParam) {
 		$db = cmsms()->GetDb();
-		$taboptarray = array( 'mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
-		$idxoptarrayUnique = array('UNIQUE');
 		$dict = NewDataDictionary( $db );
+		$idxoptarrayUnique = array('UNIQUE');
+		
 		$hql = OrmCore::getFieldsToHql($entityParam);
-		
-		//Calling the adodb functionalities
-		$sqlarray = $dict->CreateTableSQL($entityParam->getDbname(), 
-												$hql,
-												$taboptarray);
-												
-		$result = $dict->ExecuteSQLArray($sqlarray);
-
-		if ($result === false) {
-			OrmTrace::error($hql);
-			OrmTrace::error("Database error during the creation of table ".$entityParam->getDbname()." for the entity " . $entityParam->getName().$db->ErrorMsg());
-			throw new Exception("Database error during the creation of table ".$entityParam->getDbname()." for the entity " . $entityParam->getName().$db->ErrorMsg());
-		}
-		   
-		OrmTrace::debug("createTable : ".print_r($sqlarray, true));
-		
+		$result = OrmDB::createTable($entityParam->getDbname(), $hql);
+				
 		//If necessary, it will create a sequence on the table.
 		if($entityParam->getSeqname() != null){
 			$db->CreateSequence($entityParam->getSeqname());
@@ -251,12 +235,13 @@ class OrmCore
     * @param OrmEntity an instance of the entity
     * @param string the SQL query
     */
-	public static final function alterTable(OrmEntity &$entityParam, $sql) {
-		$db = cmsms()->GetDb();
-			
+	public static final function alterTable(OrmEntity &$entityParam, $sql) {	
 		$queryAlter = "ALTER TABLE ".$entityParam->getDbname()." ".$sql;    
-		$result = $db->Execute($queryAlter);
-		if ($result === false){die("Database error durant l'alter de la table $entityParam->getDbname()!");}
+		
+		//Execution
+		$result = OrmDb::execute($queryAlter,
+									null,
+									"Database error during OrmCore::alterTable(OrmEntity &{$entityParam->getName()}, {$sql})");
 	}
     
     /**
@@ -283,7 +268,6 @@ class OrmCore
      */
 	public static final function insertEntity(OrmEntity &$entityParam) {
 
-		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
 		$uniques = $entityParam->getUniqueKeys();
@@ -312,10 +296,13 @@ class OrmCore
 			if($field->isPrimaryKEY()) {
 				if(!empty($values[$field->getName()])) {
 					throw new OrmIllegalArgumentException('Primary Key '.$field->getName().' can\'t be setted during insert operation for OrmEntity'.$entityParam->getName());
-				} else {
-					$newId = $db->GenID($entityParam->getSeqname());
+				} else if(!$entityParam->isAutoincrement()){
+					$newId = OrmDB::genID($entityParam->getSeqname());
 					$values[$field->getName()] = $newId;
 					$entityParam->set($field->getName(), $newId);
+				} else{
+					$values[$field->getName()] = 0;
+					$entityParam->set($field->getName(), 0);
 				}
 			}
 			
@@ -364,32 +351,22 @@ class OrmCore
 			}
 			$query .= ' AND ' . $entityParam->getPk()->getName() . ' != ? ';
 			$arrayFind[] = $values[$entityParam->getPk()->getName()];			
-				
-			$result = $db->getOne($query, $arrayFind);
-			
-			if ($result === false) {
-				OrmTrace::error(print_r($params, true));
-				OrmTrace::error($query);
-				OrmTrace::error("Database error during unicity control!".$db->ErrorMsg());
-				throw new Exception("Database error during unicity control!".$db->ErrorMsg());
-			}
-			
+
+			//Execution
+			$result = OrmDb::getOne($query,
+									$arrayFind,
+									"Database error during unicity control in OrmCore::insertEntity(OrmEntity &{$entityParam->getName()})");
+		
 			if($result != 0){
 				throw new OrmIllegalArgumentException('an OrmEntity '.$entityParam->getName().' with the same fields already exists in database');
 			}
 		}
-		  		  
+		
 		//Execution
-		$db->debug = true;
-
-		OrmTrace::debug("insertEntity : ".sprintf($queryInsert, $str1, $str2));
-		$result = $db->Execute(sprintf($queryInsert, $str1, $str2), $params);
-		if ($result === false) {
-			OrmTrace::error(print_r($params, true));
-			OrmTrace::error(sprintf($queryInsert, $str1, $str2));
-			OrmTrace::error("Database error durant l'insert!".$db->ErrorMsg());
-			throw new Exception("Database error durant l'insert!".$db->ErrorMsg());
-		}
+		$result = OrmDb::execute(sprintf($queryInsert, $str1, $str2),
+									$params,
+									"Database error during OrmCore::insertEntity(OrmEntity &{$entityParam->getName()})");
+		
 
 	/*	if($entityParam->isIndexable()) {  
 			OrmIndexing::AddWords($entityParam->getModuleName(), OrmCore::findById($entityParam,$arrayKEY[0]));
@@ -429,7 +406,6 @@ class OrmCore
      */	
 	public static final function updateEntity(OrmEntity &$entityParam) {
 
-		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
 		$uniques = $entityParam->getUniqueKeys();
@@ -511,16 +487,12 @@ class OrmCore
 			}
 			$query .= ' AND ' . $entityParam->getPk()->getName() . ' != ? ';
 			$arrayFind[] = $values[$entityParam->getPk()->getName()];			
-				
-			$result = $db->getOne($query, $arrayFind);
 			
-			if ($result === false) {
-				OrmTrace::error(print_r($params, true));
-				OrmTrace::error($query);
-				OrmTrace::error("Database error during unicity control!".$db->ErrorMsg());
-				throw new Exception("Database error during unicity control!".$db->ErrorMsg());
-			}
-			
+			//Execution
+			$result = OrmDb::getOne($query,
+									$arrayFind,
+									"Database error during unicity control in OrmCore::insertEntity(OrmEntity &{$entityParam->getName()})");
+		
 			if($result != 0){
 				throw new OrmIllegalArgumentException('an Entity '.$entityParam->getName().' with the same fields already exists in database');
 			}
@@ -531,10 +503,12 @@ class OrmCore
 		}
 
 		$queryUpdate = 'UPDATE '.$entityParam->getDbname().' SET '.$str.$where;
-
+	
 		//Execution
-		$result = $db->Execute($queryUpdate, $params);
-		if ($result === false){die("Database error durant l'update!");}
+		$result = OrmDb::execute($queryUpdate,
+									$params,
+									"Database error during OrmCore::updateEntity(OrmEntity &{$entityParam->getName()})");
+		
 		/*if($entityParam->isIndexable()) {  
 			OrmIndexing::UpdateWords($entityParam->getModuleName(), $entityParam);
 		}*/
@@ -574,7 +548,6 @@ class OrmCore
     */
 	public static final function deleteByIds(OrmEntity &$entityParam, $ids) {
 
-		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
 
 		foreach($listeField as $field)
@@ -603,8 +576,11 @@ class OrmCore
 		$queryDelete = 'DELETE FROM '.$entityParam->getDbname().' WHERE '.$where;
 
 		//Execution
-		$result = $db->Execute($queryDelete, $params);
-		if ($result === false){die("Database error durant la suppression!");}
+		$result = OrmDb::execute($queryDelete,
+									$params,
+									"Database error during OrmCore::deleteEntity(OrmEntity &{$entityParam->getName()})");
+									
+		
 
 		if($entityParam->isIndexable())
 		{  
@@ -636,16 +612,14 @@ class OrmCore
     */
 	public static final function countAll(OrmEntity &$entityParam) {
 
-		$db = cmsms()->GetDb();
-
 		$querySelect = 'Select count(*) FROM '.$entityParam->getDbname();
-
-		OrmTrace::debug("countAll : ".$querySelect);
-		  
-		$compteur= $db->getOne($querySelect);
-		if ($compteur === false){die("Database error durant la requete count(*)!");}
-
-		return $compteur;
+		
+		//Execution
+		$result = OrmDb::getOne($querySelect,
+									null,
+									"Database error during OrmCore::countAll(OrmEntity &{$entityParam->getName()})");
+		
+		return $result;
 	}
   
     /**
@@ -656,7 +630,6 @@ class OrmCore
     * @return array<OrmEntity> list of Entities found
     */
 	public static final function findAll(OrmEntity &$entityParam) {
-		$db = cmsms()->GetDb();
 
 		$querySelect = 'Select * FROM '.$entityParam->getDbname();
 
@@ -664,8 +637,10 @@ class OrmCore
 		if(OrmCache::isCache($querySelect)) {
 			$entities = OrmCache::getCache($querySelect);
 		} else {
-			$result = $db->Execute($querySelect);
-			if ($result === false){die("Database error during OrmCore::findAll(OrmEntity &$entityParam)");}
+			//Execution
+			$result = OrmDb::execute($querySelect,
+									null,
+									"Database error during OrmCore::findAll(OrmEntity &{$entityParam->getName()})");
 
 			$entities = OrmCore::_processArrayEntity($entityParam, $result);
 			
@@ -686,9 +661,7 @@ class OrmCore
      * @return array<OrmEntity> list of Entities populate with all the informations on AK's Field
 	 **/
 	private static final function _processArrayEntity(OrmEntity &$entityParam, $resultQuery) {
-	
-		$db = cmsms()->GetDb();
-		
+
 		$entitys = array();
 		while ($row = $resultQuery->FetchRow()) {
 		  $anEntity = OrmCore::rowToEntity($entityParam, $row);
@@ -709,8 +682,12 @@ class OrmCore
 			$entityAssoc = new $entityAssocName();
 			
 			$queryAdd = 'SELECT * FROM '.$entityAssoc->getDbname().' WHERE '.$fieldAssociateName.' in ('.implode(',',array_keys($entitys)).')';
-			$result = $db->Execute($queryAdd);
-			if ($result === false){die("Database error during request to get associative entity $entityAssocName!");}
+			
+			//Execution
+			$result = OrmDb::execute($queryAdd,
+									null,
+									"Database error during request to get associative entity $entityAssocName");
+			
 			while ($rowAssociate = $result->FetchRow()) {
 				$arrayIdEntitiesDest = $entitys[$rowAssociate[$fieldAssociateName]]->get($field->getName());
 				$arrayIdEntitiesDest[] = $rowAssociate[$entityAssoc->getPk()->getName()];
@@ -751,7 +728,6 @@ class OrmCore
 		if(count($ids) == 0)
 		  return array();
 			
-		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
 		$where = "";
 			
@@ -776,9 +752,12 @@ class OrmCore
 		if(OrmCache::isCache($querySelect, $params)) {
 		  $entities = OrmCache::getCache($querySelect,$params);
 		} else {
-			$result = $db->Execute($querySelect, $params);
-			if ($result === false){die("Database error durant la requete par Ids!");}
-
+			
+			//Execution
+			$result = OrmDb::execute($querySelect,
+									$params,
+									"Database error during OrmCore::findByIds(OrmEntity &{$entityParam->getName()}, ".print_r($ids, true).")");
+		
 			$entities = OrmCore::_processArrayEntity($entityParam, $result);
 			
 			//We push the result into the cache before return it
@@ -824,8 +803,6 @@ class OrmCore
      * @see OrmTypeCriteria
      */
 	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example) {
-
-		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
 
 		$criterias = $example->getCriterias();
@@ -912,8 +889,10 @@ class OrmCore
 		if(OrmCache::isCache($queryExample, $params)) {
 		  $entities = OrmCache::getCache($queryExample,$params);
 		} else {
-			$result = $db->Execute($queryExample, $params);
-			if ($result === false){die($db->ErrorMsg().OrmTrace::error("Database error durant la requete par Example!"));}
+			//Execution
+			$result = OrmDb::execute($queryExample,
+									$params,
+									"Database error during OrmCore::findByExample(OrmEntity &{$entityParam->getName()}, , OrmExample \$example)");
 
 			OrmTrace::info("findByExample : ".$result->RecordCount()." resultat(s)");
 			
@@ -963,8 +942,6 @@ class OrmCore
      * @see OrmTypeCriteria
      */
 	public static final function deleteByExample(OrmEntity &$entityParam, OrmExample $OrmExample) {
-
-		$db = cmsms()->GetDb();
 		$listeField = $entityParam->getFields();
 
 		$criterias = $OrmExample->getCriterias();
@@ -1037,9 +1014,10 @@ class OrmCore
 		}
 		$queryExample = $delete.$hql;
 										
-
-		$result = $db->Execute($queryExample, $params);
-		if ($result === false){die("Database error durant la requete par OrmExample!");}
+		//Execution
+		$result = OrmDb::execute($queryExample,
+									$params,
+									"Database error during OrmCore::deleteByExample(OrmEntity &{$entityParam->getName()}, , OrmExample \$example)");
 	}
       
     /**
@@ -1324,9 +1302,11 @@ class OrmCore
 	 * @since 0.0.2
 	 */
     public static final function generateUUID(){
-		 $db = cmsms()->GetDb();
 
-		$result = $db->Execute('SELECT UUID() AS uuid;');
+		//Execution
+		$result = OrmDb::execute('SELECT UUID() AS uuid;',
+									null,
+									"Database error during OrmCore::generateUUID()");
 
 		$row=$result->FetchRow();
 
