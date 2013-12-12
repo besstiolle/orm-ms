@@ -99,9 +99,6 @@ class Orm extends CMSModule {
 	  return false;
 	}
 	
-	function SetParameters() {  
-	}
-
 	function InstallPostMessage() {
 		return $this->Lang('postinstall');
 	}

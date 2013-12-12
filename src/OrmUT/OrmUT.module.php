@@ -90,10 +90,6 @@ class OrmUT extends Orm {
 		return false;
 	}
 
-	function SetParameters() {
-		$this->RegisterModulePlugin();
-	}
-
 	function InstallPostMessage() {
 		return $this->Lang('postinstall');
 	}
