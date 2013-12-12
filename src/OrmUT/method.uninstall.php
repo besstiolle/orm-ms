@@ -4,8 +4,7 @@ if (!function_exists("cmsms")) exit;
 
 //Drop all the tables
 $entities = MyAutoload::getAllInstances($this->GetName(), $this->getName());
-foreach($entities as $anEntity)
-{
+foreach($entities as $anEntity) {
 	OrmCore::dropTable($anEntity);
 }
 
