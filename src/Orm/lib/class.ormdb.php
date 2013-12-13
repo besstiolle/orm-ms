@@ -18,6 +18,7 @@
 class OrmDB {  
 
 	private static $db;
+	private static $dict;
 	
 	private static $taboptarray = array( 'mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
 	private static $idxoptarrayUnique = array('UNIQUE');
@@ -32,6 +33,7 @@ class OrmDB {
 			return;
 		}
 		OrmDB::$db = cmsms()->GetDb();
+		OrmDB::$dict = NewDataDictionary( OrmDB::$db );
 	}
       
     /**
@@ -129,16 +131,109 @@ class OrmDB {
 		
 		OrmTrace::debug("createTable({$tableName}, {$hql})");
 		
-		$dict = NewDataDictionary( OrmDb::$db );
-		$sqlarray = $dict->CreateTableSQL($tableName, 
+		$sqlarray = OrmDB::$dict->CreateTableSQL($tableName, 
 												$hql,
 												OrmDb::$taboptarray);
 												
-		$result = $dict->ExecuteSQLArray($sqlarray);
+		$result = OrmDB::$dict->ExecuteSQLArray($sqlarray);
 		if ($result === false){
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
 			OrmTrace::error(" > The CreateTable was made on : {$tableName} with {$hql} parameters");
+
+			throw new Exception($errorMsg);
+		}
+		
+		return $result;
+	}
+	/**
+    * will execute the Adodb "DropTableSQL" function and add logs of everything
+    *         
+    * @param string the table used for sequence 
+    * @param string the hql information about the fields
+    * @return the adodb result
+    */
+	public static final function dropTable($tableName) {
+		//Be sure we initiate the db connector;
+		OrmDB::init();
+		
+		OrmTrace::debug("dropTable({$tableName})");
+		
+		$sqlarray = OrmDB::$dict->DropTableSQL($tableName);
+		$result = OrmDB::$dict->executeSQLArray($sqlarray);
+		
+		if ($result === false){
+			OrmTrace::error($errorMsg);
+			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
+			OrmTrace::error(" > The DropTable was made on : {$tableName}");
+
+			throw new Exception($errorMsg);
+		}
+		
+		return $result;
+	}
+	
+	public static final function executeSQLArray($sqlarray){
+		//Be sure we initiate the db connector;
+		OrmDB::init();
+		
+		OrmTrace::debug("executeSQLArray({$tableName})");
+		
+		$result = OrmDB::$dict->ExecuteSQLArray($sqlarray);
+		
+		if ($result === false){
+			OrmTrace::error($errorMsg);
+			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
+			OrmTrace::error(" > The exception was thrown on : executeSQLArray({$sqlarray})");
+
+			throw new Exception($errorMsg);
+		}
+		
+		return $result;
+
+	}
+	
+	public static final function createSequence($seqName){
+		//Be sure we initiate the db connector;
+		OrmDB::init();
+		
+		OrmTrace::debug("createSequence({$seqName})");
+		
+		OrmDB::$db->CreateSequence($seqName);
+	}
+	
+	public static final function dropSequence($seqName){
+		//Be sure we initiate the db connector;
+		OrmDB::init();
+		
+		OrmTrace::debug("dropSequence({$seqName})");
+		
+		OrmDB::$db->DropSequence($seqName);
+		
+	}
+	
+	public static final function createIndex($tableName, $listFields){
+		//Be sure we initiate the db connector;
+		OrmDB::init();
+		
+		OrmTrace::debug("createIndex({$tableName}, {$listFields})");
+				
+		//Case : unique index on many fields
+		if(is_array($listFields)) {
+			$idxflds = implode(',', $listFields);
+			$md5 = md5(serialize($listFields));
+		} else {
+			$idxflds = $listFields;
+			$md5 = md5($listFields);
+		}
+		
+		$sqlarray = OrmDB::$dict->CreateIndexSQL($md5, $tableName, $idxflds, OrmDB::$idxoptarrayUnique);
+		$result = OrmDB::$dict->executeSQLArray($sqlarray);
+		
+		if ($result === false){
+			OrmTrace::error($errorMsg);
+			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
+			OrmTrace::error(" > The createIndex was made on : {$tableName} with the fields : {$listFields}");
 
 			throw new Exception($errorMsg);
 		}

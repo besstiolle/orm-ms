@@ -50,28 +50,15 @@ class OrmCore {
 			}
 
 			$hql .= ' '.$field->getName().' ';
-
+			$size = $field->getSize() != "" ? " (".$field->getSize().") " : "";
 			switch($field->getType()) {
-				case OrmCAST::$STRING : 
-					$hql .= 'C'; 
-					if($field->getSize() != "" ) {$hql.= " (".$field->getSize().") ";} 
-					break;
+				case OrmCAST::$STRING : $hql .= 'C'.$size; break;
 
-				case OrmCAST::$INTEGER : 
-					$hql .= 'I'; 
-					if($field->getSize() != "" ) {$hql.= " (".$field->getSize().") ";} 
-					break;
+				case OrmCAST::$INTEGER : $hql .= 'I'.$size; break;
 
-				case OrmCAST::$NUMERIC : 
-					$hql .= 'N'; 
-					if($field->getSize() != "" )
-					{$hql.= " (".$field->getSize().") ";} 
-					break;
+				case OrmCAST::$NUMERIC : $hql .= 'N'.$size; break;
 
-				case OrmCAST::$DOUBLE : 
-					$hql .= 'I'; 
-					if($field->getSize() != "" ) {$hql.= " (".$field->getSize().") ";} 
-					break;
+				case OrmCAST::$DOUBLE : $hql .= 'I'.$size; break;
 
 				case OrmCAST::$BUFFER : $hql .= 'X'; break;
 
@@ -158,16 +145,13 @@ class OrmCore {
     * @param OrmEntity an instance of the entity
     */
 	public static final function createTable(OrmEntity &$entityParam) {
-		$db = cmsms()->GetDb();
-		$dict = NewDataDictionary( $db );
-		$idxoptarrayUnique = array('UNIQUE');
-		
+	
 		$hql = OrmCore::getFieldsToHql($entityParam);
 		$result = OrmDB::createTable($entityParam->getDbname(), $hql);
 				
 		//If necessary, it will create a sequence on the table.
 		if($entityParam->getSeqname() != null){
-			$db->CreateSequence($entityParam->getSeqname());
+			OrmDB::createSequence($entityParam->getSeqname());
 		}
 		
 		//We manage the "unique" keys
@@ -175,24 +159,7 @@ class OrmCore {
 
 		//For each Field contained in the entity
 		foreach($listesUniqueKeys as $listField) {
-			//Case : unique index on many fields
-			if(is_array($listField)) {
-				$idxflds = implode(',', $listField);
-				$md5 = md5(serialize($listField));
-			} else {
-				$idxflds = $listField;
-				$md5 = md5($listField);
-			}
-			
-			$sqlarray = $dict->CreateIndexSQL($md5, $entityParam->getDbname(), $idxflds, $idxoptarrayUnique);
-			$result = $dict->ExecuteSQLArray($sqlarray);
-
-			if ($result === false) {
-				OrmTrace::error($hql);
-				OrmTrace::error("Database error during the creation of the unique index ".$md5."(".$idxflds.") for the entity " . $entityParam->getName().$db->ErrorMsg());
-				throw new Exception("Database error during the creation of the unique index ".$md5."(".$idxflds.") for the entity " . $entityParam->getName().$db->ErrorMsg());
-			}
-			
+			$result = OrmDB::createIndex($entityParam->getDbname(), $listField);
 		}
 
 		//We initiate the table.
@@ -207,15 +174,12 @@ class OrmCore {
     */
 	public static final function dropTable(OrmEntity &$entityParam) {
 
-		$db = cmsms()->GetDb();
-
-		$dict = NewDataDictionary( $db );
-
-		$sqlarray = $dict->DropTableSQL($entityParam->getDbname());
-		$dict->ExecuteSQLArray($sqlarray);
+		OrmDB::dropTable($entityParam->getDbname());
 
 		//If necessary, it will delete a sequence on the table.
-		if($entityParam->getSeqname() != null){$db->DropSequence($entityParam->getSeqname());}
+		if($entityParam->getSeqname() != null){
+			OrmDB::dropSequence($entityParam->getSeqname());
+		}
 	}  
   
     /**
@@ -1204,7 +1168,7 @@ class OrmCore {
      * 
      */
 	public static final function makeDeepSearch(OrmEntity $previousEntity, $cle, $values) {    
-		OrmTRACE::info("# : "."Start makeDeepSearch() ".$previousEntity->getName()."->".$cle);
+		OrmTRACE::debug("# : "."Start makeDeepSearch() ".$previousEntity->getName()."->".$cle);
 
 		if($previousEntity == null)
 		{
@@ -1221,15 +1185,15 @@ class OrmCore {
 		//Test de sortie : on a un seul résultat dans $newCle : le champs final
 		if(count($newCle) == 1)
 		{
-		  OrmTRACE::info("# : "." count(\$newCle) == 1 , donc sortie ");
+		  OrmTRACE::debug("# : "." count(\$newCle) == 1 , donc sortie ");
 		  $OrmExample = new OrmExample;
 		  $OrmExample->addCriteria($fieldname, OrmTypeCriteria::$IN, $values);
 		  $entitys = OrmCore::findByExample($previousEntity, $OrmExample);
-		  OrmTRACE::info("# : ".count($entitys)." R&eacute;sultat(s) retourn&eacute;s");
+		  OrmTRACE::debug("# : ".count($entitys)." R&eacute;sultat(s) retourn&eacute;s");
 		  return $entitys;
 		} else
 		{
-		  OrmTRACE::info("# : "." poursuite ");
+		  OrmTRACE::debug("# : "." poursuite ");
 		}
 
 		//Récupération de la clé distance pour une FK
