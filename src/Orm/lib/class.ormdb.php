@@ -106,7 +106,7 @@ class OrmDB {
 		OrmDB::init();
 		
 		OrmTrace::debug("gen Id({$seqname})");
-		$result = OrmDB::$db->GenID($seqname, $parameters);
+		$result = OrmDB::$db->GenID($seqname);
 		if ($result === false){
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
