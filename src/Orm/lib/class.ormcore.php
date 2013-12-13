@@ -778,7 +778,7 @@ class OrmCore {
      * @see OrmExample
      * @see OrmTypeCriteria
      */
-	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example) {
+	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example, OrmOrderBy $orderBy = null) {
 		$listeField = $entityParam->getFields();
 
 		$criterias = $example->getCriterias();
@@ -863,6 +863,14 @@ class OrmCore {
 						 
 		  throw new Exception("The OrmCriteria $criteria->typeCriteria is not manage");
 		}
+		
+		if($orderBy != null) {
+			$hql .= $orderBy->getOrderBy();
+		}
+		else if($entityParam->getDefaultOrderBy() != null) {
+			$hql .= $entityParam->getDefaultOrderBy()->getOrderBy();
+		}		
+		
 		$queryExample = $select.$hql;
 		
 		//If it's already in the cache, we return the result
