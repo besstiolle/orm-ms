@@ -43,6 +43,8 @@ class OrmDB {
     * @param array the list of parameters or null
     * @param string the message of error to display to the user
     * @return the adodb result
+	*
+	* @exception Exception if the query failed
     */
 	public static final function execute($query, $parameters = null, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
@@ -72,6 +74,8 @@ class OrmDB {
     * @param array the list of parameters or null
     * @param string the message of error to display to the user
     * @return the adodb result
+	*
+	* @exception Exception if the query failed
     */
 	public static final function getOne($query, $parameters = null, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
@@ -100,6 +104,8 @@ class OrmDB {
     * @param string the table used for sequence 
     * @param string the message of error to display to the user
     * @return the adodb result
+	*
+	* @exception Exception if the query failed
     */
 	public static final function genID($seqname, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
@@ -124,6 +130,8 @@ class OrmDB {
     * @param string the table used for sequence 
     * @param string the hql information about the fields
     * @return the adodb result
+	*
+	* @exception Exception if the query failed
     */
 	public static final function createTable($tableName, $hql) {
 		//Be sure we initiate the db connector;
@@ -152,6 +160,8 @@ class OrmDB {
     * @param string the table used for sequence 
     * @param string the hql information about the fields
     * @return the adodb result
+	*
+	* @exception Exception if the query failed
     */
 	public static final function dropTable($tableName) {
 		//Be sure we initiate the db connector;
@@ -173,26 +183,11 @@ class OrmDB {
 		return $result;
 	}
 	
-	public static final function executeSQLArray($sqlarray){
-		//Be sure we initiate the db connector;
-		OrmDB::init();
-		
-		OrmTrace::debug("executeSQLArray({$tableName})");
-		
-		$result = OrmDB::$dict->ExecuteSQLArray($sqlarray);
-		
-		if ($result === false){
-			OrmTrace::error($errorMsg);
-			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
-			OrmTrace::error(" > The exception was thrown on : executeSQLArray({$sqlarray})");
-
-			throw new Exception($errorMsg);
-		}
-		
-		return $result;
-
-	}
-	
+	/**
+    * will execute the Adodb "CreateSequence" function and add logs of everything
+    *         
+    * @param string the table used for sequence 
+    */
 	public static final function createSequence($seqName){
 		//Be sure we initiate the db connector;
 		OrmDB::init();
@@ -202,6 +197,11 @@ class OrmDB {
 		OrmDB::$db->CreateSequence($seqName);
 	}
 	
+	/**
+    * will execute the Adodb "DropSequence" function and add logs of everything
+    *         
+    * @param string the table used for sequence 
+    */
 	public static final function dropSequence($seqName){
 		//Be sure we initiate the db connector;
 		OrmDB::init();
@@ -212,11 +212,21 @@ class OrmDB {
 		
 	}
 	
-	public static final function createIndex($tableName, $listFields){
+	/**
+    * will execute the Adodb "CreateIndexSQL" function with or without UNIQUE parameter and add logs of everything
+    *         
+    * @param string the table used for sequence 
+    * @param mixed the list of the FieldName (array) or a single fieldName (String)
+    * @param boolean true if the index must be UNIQUE
+    * @return the adodb result
+	*
+	* @exception Exception if the query failed
+    */
+	public static final function createIndex($tableName, $listFields, $isUnique = false){
 		//Be sure we initiate the db connector;
 		OrmDB::init();
 		
-		OrmTrace::debug("createIndex({$tableName}, {$listFields})");
+		OrmTrace::debug("createIndex({$tableName}, {".implode(',',$listFields)."}, {$isUnique})");
 				
 		//Case : unique index on many fields
 		if(is_array($listFields)) {
@@ -226,8 +236,13 @@ class OrmDB {
 			$idxflds = $listFields;
 			$md5 = md5($listFields);
 		}
+		if($isUnique){
+			$sqlarray = OrmDB::$dict->CreateIndexSQL($md5, $tableName, $idxflds, OrmDB::$idxoptarrayUnique);
+		} else {
+			$sqlarray = OrmDB::$dict->CreateIndexSQL($md5, $tableName, $idxflds);
+			//die(implode(",",$sqlarray));
+		}
 		
-		$sqlarray = OrmDB::$dict->CreateIndexSQL($md5, $tableName, $idxflds, OrmDB::$idxoptarrayUnique);
 		$result = OrmDB::$dict->executeSQLArray($sqlarray);
 		
 		if ($result === false){

@@ -154,12 +154,12 @@ class OrmCore {
 			OrmDB::createSequence($entityParam->getSeqname());
 		}
 		
-		//We manage the "unique" keys
-		$listesUniqueKeys = $entityParam->getUniqueKeys();
+		//We manage the ("unique") indexes
+		$indexes = $entityParam->getIndexes();
 
 		//For each Field contained in the entity
-		foreach($listesUniqueKeys as $listField) {
-			$result = OrmDB::createIndex($entityParam->getDbname(), $listField);
+		foreach($indexes as $index) {
+			$result = OrmDB::createIndex($entityParam->getDbname(), $index['fields'], $index['unique']);
 		}
 
 		//We initiate the table.
@@ -239,7 +239,7 @@ class OrmCore {
 
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
-		$uniques = $entityParam->getUniqueKeys();
+		$indexes = $entityParam->getIndexes();
 
 		$queryInsert = 'INSERT INTO '.$entityParam->getDbname().' (%s) values (%s)';
 
@@ -303,16 +303,17 @@ class OrmCore {
 			}
 		}
 		
-		//control unicity on unique Field
-		foreach($uniques as $couple){
-			if(!is_array($couple)){
-				$couple = array($couple);
+		//control uniqueness on unique Field
+		foreach($indexes as $index){
+			if(!$index['unique']){
+				continue;
 			}
+			
 			$query = 'SELECT COUNT(*) FROM '.$entityParam->getDbname().' WHERE 1 ';
 			$arrayFind = array();
 			$msgError = '{';
 			$isFirst = true;
-			foreach($couple as $elt){
+			foreach($index['fields'] as $elt){
 				if(!$isFirst){
 					$msgError .=',';
 				}
@@ -384,7 +385,7 @@ class OrmCore {
 
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
-		$uniques = $entityParam->getUniqueKeys();
+		$indexes = $entityParam->getIndexes();
 
 		$str = "";
 		$where = '';
@@ -446,31 +447,39 @@ class OrmCore {
 
 		}
 		
-		//control unicity on unique Field
-		foreach($uniques as $couple){
-			if(!is_array($couple)){
-				$couple = array($couple);
+		//control uniqueness on unique Field
+		foreach($indexes as $index){
+			if(!$index['unique']){
+				continue;
 			}
+			
 			$query = 'SELECT COUNT(*) FROM '.$entityParam->getDbname().' WHERE 1 ';
 			$arrayFind = array();
-			foreach($couple as $elt){
+			$msgError = '{';
+			$isFirst = true;
+			foreach($index['fields'] as $elt){
+				if(!$isFirst){
+					$msgError .=',';
+				}
 				if(empty($values[$elt])){
 					$query .= ' AND ' . $elt . ' IS NULL ';
 				} else {
 					$query .= ' AND ' . $elt . ' = ? ';
 					$arrayFind[] = $values[$elt];
 				}
+				$msgError .= " {$elt} = {$values[$elt]} ";
 			}
 			$query .= ' AND ' . $entityParam->getPk()->getName() . ' != ? ';
 			$arrayFind[] = $values[$entityParam->getPk()->getName()];			
+			$msgError .= '}';
 			
 			//Execution
 			$result = OrmDb::getOne($query,
 									$arrayFind,
-									"Database error during unicity control in OrmCore::insertEntity(OrmEntity &{$entityParam->getName()})");
+									"Database error during unicity control in OrmCore::updateEntity(OrmEntity &{$entityParam->getName()})");
 		
 			if($result != 0){
-				throw new OrmIllegalArgumentException('an Entity '.$entityParam->getName().' with the same fields already exists in database');
+				throw new OrmIllegalArgumentException("an Entity {$entityParam->getName()} with the same fields ({$msgError}) already exists in database");
 			}
 		}
 

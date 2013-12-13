@@ -36,14 +36,14 @@ class BookSkeleton extends OrmEntity
 		// 1] we want to use the Mysql system auto-increment instead using a table xxx_seq like CmsMadeSimple does
 		$this->garnishAutoincrement();
 		
-		// 2] we want to be sure that the title is Unique.
-		$this->garnishUniqueKeys(array('title'));
-		
-		// 3] We will propose a default value for the description OrmField
+		// 2] We will propose a default value for the description OrmField
 		$this->garnishDefaultValue('description',"It's a great Book");
 		
-		// 4] We add an index to column title to accelerate processing
-		//ALTER TABLE `cms_module_ormskeleton_bookskeleton` ADD INDEX ( `title` ) ;
+		// 3] we want to be sure that the title is Unique.
+		//    we also want indexing the uuid
+		$this->addIndexes('title', true);
+		$this->addIndexes('uuid');
+
 	}	
 }
 ?>

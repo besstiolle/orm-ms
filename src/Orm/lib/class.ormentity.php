@@ -57,23 +57,23 @@ abstract class OrmEntity
 	private $autoincrement = false;
 	
 	/**
-	 * Array, contains all the uniqueKeys for one or more columns.
+	 * Array, contains all the indexes of the Entity.
 	 **/	 
-	private $uniqueKeys = array();
+	private $indexes = array();
 	
 	/**
 	 * String : constant, suffix for the sequence name into the database
 	 * */
 	public static $_CONST_SEQ = '_seq';
 	/**
-	 * String : constant, suffix used to nammed the table into database for a module
+	 * String : constant, suffix used to named the table into database for a module
 	 * */
 	public static $_CONST_MOD = 'module';
 	
 	
 	
     /**
-     * constructor protected to avoid a direct instanciation like "new OrmEntity()"
+     * constructor protected to avoid a direct instantiation like "new OrmEntity()"
      * Each time a entity is constructed, we place a copy into the autoloader.
      * 
      * @param string The name of the module who calling this method (so not "Orm")
@@ -407,41 +407,39 @@ abstract class OrmEntity
 	 * Return 
 	 * @return array : the list of couple of unique index
 	 **/
-	public function getUniqueKeys() {
-		return $this->uniqueKeys;
+	public function getIndexes() {
+		return $this->indexes;
 	}
 	
 	/**
 	 * This function will let you define some optional configuration for your Entity
-	 *    => the field have one or many Unique Key on one or many columns.
+	 *    => the field have one or many (Unique?) Indexe on one or many columns.
 	 *
-	 *  ex : myEntity->garnishUniqueKeys(array('field1', array('field2', 'field3'))) will create 2 unique index
+	 *  example : 
+	 *  <code>
+	 *     myEntity->addIndexes('field1',true);
+	 *     myEntity->addIndexes(array('field2', 'field3'));
+	 *  <code>
+	 *  will create 1 unique index on field1 and 1 index on field2,field3
 	 *
-	 * @param array a list of one or many name of field 
+	 * @param mixed One (string) or many (array) name of field to be indexing
+	 * @param boolean if the index must be UNIQUE (default = false) 
 	 *
 	 **/
-	public function garnishUniqueKeys($uniqueKeys){
+	public function addIndexes($fieldNames, $isUnique=false){
 		
-		if(!is_array($uniqueKeys)){
-			throw new OrmIllegalArgumentException("garnishUniqueKeys() only accept an array as parameter");
+		if(!is_array($fieldNames)){
+			$fieldNames = array($fieldNames);
 		}
 		
 		//Test the existence of each member
-		foreach($uniqueKeys as $member){
-			if(is_array($member)){
-				foreach($member as $elt){
-					if(!$this->isFieldByNameExists($elt)){
-						throw new OrmIllegalArgumentException("garnishUniqueKeys() only accept valid Field but ".$elt." is not a existing Field in the Entity ".$this->getName());
-					}
-				}
-			} else {
-				if(!$this->isFieldByNameExists($member)){
-					throw new OrmIllegalArgumentException("garnishUniqueKeys() only accept valid Field but ".$member." is not a existing Field in the Entity ".$this->getName());
-				}
+		foreach($fieldNames as $fieldName){
+			if(!$this->isFieldByNameExists($fieldName)){
+				throw new OrmIllegalArgumentException("addIndexes(\$fieldNames, \$isUnique=false) : {$fieldNames} is not a existing Field of the Entity {$this->getName()}");
 			}
 		}
 	
-		$this->uniqueKeys = $uniqueKeys;
+		$this->indexes[] = array('fields' => $fieldNames, 'unique' => $isUnique);
 	}
 	
 	
@@ -460,7 +458,7 @@ abstract class OrmEntity
 			throw new OrmIllegalArgumentException("garnishDefault() only accept valid Field but ".$fieldName." is not a existing Field in the Entity ".$this->getName());
 		}
 		
-		//forbid a default value on a nullable field Because it's make no sence
+		//forbid a default value on a nullable field Because it's make no sense
 		if($this->getFieldByName($fieldName)->isNullable()){
 			throw new OrmIllegalArgumentException("the Field ".$fieldName." in the Entity ".$this->getName()." can't accept a default value because it's setted Nullable");
 		}
