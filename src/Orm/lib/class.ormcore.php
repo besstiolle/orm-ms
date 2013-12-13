@@ -310,24 +310,31 @@ class OrmCore {
 			}
 			$query = 'SELECT COUNT(*) FROM '.$entityParam->getDbname().' WHERE 1 ';
 			$arrayFind = array();
+			$msgError = '{';
+			$isFirst = true;
 			foreach($couple as $elt){
+				if(!$isFirst){
+					$msgError .=',';
+				}
 				if(empty($values[$elt])){
 					$query .= ' AND ' . $elt . ' IS NULL ';
 				} else {
 					$query .= ' AND ' . $elt . ' = ? ';
 					$arrayFind[] = $values[$elt];
 				}
+				$msgError .= " {$elt} = {$values[$elt]} ";
 			}
 			$query .= ' AND ' . $entityParam->getPk()->getName() . ' != ? ';
 			$arrayFind[] = $values[$entityParam->getPk()->getName()];			
-
+			$msgError .= '}';
+			
 			//Execution
 			$result = OrmDb::getOne($query,
 									$arrayFind,
 									"Database error during unicity control in OrmCore::insertEntity(OrmEntity &{$entityParam->getName()})");
 		
 			if($result != 0){
-				throw new OrmIllegalArgumentException('an OrmEntity '.$entityParam->getName().' with the same fields already exists in database');
+				throw new OrmIllegalArgumentException("an Entity {$entityParam->getName()} with the same fields ({$msgError}) already exists in database");
 			}
 		}
 		
