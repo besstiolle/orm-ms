@@ -142,7 +142,7 @@ abstract class OrmEntity
     */
 	public function getPk() {
 		if($this->pk == null)
-			throw new OrmIllegalArgumentException("the entity ".$this->getName()." doesn't have any Primary-Key");
+			throw new OrmIllegalArgumentException("the entity {$this->getName()} doesn't have any Primary-Key");
 		
 		return $this->fields[$this->pk];
 	}
@@ -160,16 +160,23 @@ abstract class OrmEntity
     /**
     * return a Field by name
     * 
-    * @param string the name
+    * @param string the field name
     * @return OrmField the Field
     * 
     * @exception OrmIllegalArgumentException if no Field exist for the name
     */
-	public function getFieldByName($name) {
-		if(isset($this->fields[$name]))
-			return $this->fields[$name];
+	public function getFieldByName($fieldName) {
 		
-		throw new OrmIllegalArgumentException("The field $name doesn't exist into the entity ".$this->getName());
+		if(empty($fieldName)){
+			throw new OrmIllegalArgumentException("The function getFieldByName(\$fieldName) doesn't accept a null parameter (entity : {$this->getName()})");
+		}
+	
+		if(!array_KEY_exists($fieldName,$this->fields)){
+			throw new OrmIllegalArgumentException("Function getFieldByName(\$fieldName) : The field {$fieldName} doesn't exist into the entity {$this->getName()}");
+		}
+		
+		return $this->fields[$fieldName];
+		
 	}
 	
     /**
@@ -233,13 +240,16 @@ abstract class OrmEntity
     * @exception OrmIllegalArgumentException if no Field exists for the name
     */
 	public function get($fieldName) {
-
-		$fieldnameSid = $fieldName;
-		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldnameSid,$this->fields)) {
-			throw new OrmIllegalArgumentException("fonction Get : Field $fieldName not found for entity ".$this->getName());
+		
+		if(empty($fieldName)){
+			throw new OrmIllegalArgumentException("The function get(\$fieldName) doesn't accept a null parameter (entity : {$this->getName()})");
+		}
+	
+		if(!array_KEY_exists($fieldName,$this->fields)){
+			throw new OrmIllegalArgumentException("Function get(\$fieldName) : The field {$fieldName} doesn't exist into the entity {$this->getName()}");
 		}
 		
-		if(!isset($this->values[$fieldName])) {
+		if(!array_KEY_exists($fieldName,$this->values)){
 			return null;
 		}
 		
@@ -255,10 +265,13 @@ abstract class OrmEntity
     * @exception OrmIllegalArgumentException if no Field exists for the name
     */
 	public function set($fieldName,$value) {
-		$fieldnameSid = explode("_sid", $fieldName);
-		$fieldnameSid = $fieldnameSid[0];
-		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldnameSid,$this->fields)) {
-			throw new OrmIllegalArgumentException("function Set : Field $fieldName not found into the entity".$this->getName());
+		
+		if(empty($fieldName)){
+			throw new OrmIllegalArgumentException("The function set(\$fieldName) doesn't accept a null parameter (entity : {$this->getName()})");
+		}
+	
+		if(!array_KEY_exists($fieldName,$this->fields)){
+			throw new OrmIllegalArgumentException("Function set(\$fieldName) : The field {$fieldName} doesn't exist into the entity {$this->getName()}");
 		}
 		
 		$this->values[$fieldName] = $value;
