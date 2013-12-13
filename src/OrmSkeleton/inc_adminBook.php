@@ -19,8 +19,11 @@ echo "<table class='pagetable' cellspacing='0'><tr>
 if($count == 0){
 	echo "<tr><td colspan='5'><center>no record in database</center></td></tr>";
 } else {
-	//I can also retrieve all the BookSkeleton
-	$all = OrmCore::findAll(new BookSkeleton());
+	//I can also retrieve all the BookSkeleton, ordered by uuid, then title desc
+	$orderBy = new OrmOrderBy();
+	$orderBy->addAsc('description');
+	$orderBy->addDesc('title');
+	$all = OrmCore::findAll(new BookSkeleton(), $orderBy);
 	
 	//And iterate over each one
 	foreach($all as $book){

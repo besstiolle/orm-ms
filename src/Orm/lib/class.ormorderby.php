@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains the class with all the different type for the field into database
+ * Contains the class which will manage the Sql sorting of the Entity
  *
  * @since 0.2.0
  * @author Heriquet
@@ -9,9 +9,8 @@
 
 
 /**
- * Class Defines the type of the field, in entity but also in database
+ * Contains the class which will manage the Sql sorting of the Entity
  * 
- *  OrmCAST::$ASC 
  *  OrmCAST::$DESC 
  *
  * @since 0.2.0
@@ -22,8 +21,7 @@ class OrmOrderBy
 {
 	private $orders = array();
 
-	public static $ASC = 'ASC';
-	public static $DESC = 'DESC';
+	private static $DESC = 'DESC';
 	
 	function __construct() {}
 	

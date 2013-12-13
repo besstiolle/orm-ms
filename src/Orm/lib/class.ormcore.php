@@ -588,7 +588,7 @@ class OrmCore {
     */
 	public static final function countAll(OrmEntity &$entityParam) {
 
-		$querySelect = 'Select count(*) FROM '.$entityParam->getDbname();
+		$querySelect = 'SELECT count(*) FROM '.$entityParam->getDbname();
 		
 		//Execution
 		$result = OrmDb::getOne($querySelect,
@@ -605,10 +605,18 @@ class OrmCore {
 	*
     * @return array<OrmEntity> list of Entities found
     */
-	public static final function findAll(OrmEntity &$entityParam) {
+	public static final function findAll(OrmEntity &$entityParam, OrmOrderBy &$orderBy=null) {
 
-		$querySelect = 'Select * FROM '.$entityParam->getDbname();
+		$querySelect = 'SELECT * FROM '.$entityParam->getDbname();
 
+		// Order By 
+		if($orderBy != null) {
+			$querySelect .= $orderBy->getOrderBy();
+		}
+		else if($entityParam->getDefaultOrderBy() != null) {
+			$querySelect .= $entityParam->getDefaultOrderBy()->getOrderBy();
+		}
+		
 		//If it's already in the cache, we return the result
 		if(OrmCache::isCache($querySelect)) {
 			$entities = OrmCache::getCache($querySelect);
@@ -636,7 +644,7 @@ class OrmCore {
 	 *
      * @return array<OrmEntity> list of Entities populate with all the informations on AK's Field
 	 **/
-	private static final function _processArrayEntity(OrmEntity &$entityParam, $resultQuery) {
+	private static final function _processArrayEntity(OrmEntity &$entityParam, $resultQuery, OrmOrderBy &$orderBy=null) {
 
 		$entitys = array();
 		while ($row = $resultQuery->FetchRow()) {
@@ -657,7 +665,15 @@ class OrmCore {
 			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
 			$entityAssoc = new $entityAssocName();
 			
-			$queryAdd = 'SELECT * FROM '.$entityAssoc->getDbname().' WHERE '.$fieldAssociateName.' in ('.implode(',',array_keys($entitys)).')';
+			$queryAdd = 'SELECT * FROM '.$entityAssoc->getDbname().' WHERE '.$fieldAssociateName.' IN ('.implode(',',array_keys($entitys)).')';
+		
+			// Order By 
+			if($orderBy != null) {
+				$queryAdd .= $orderBy->getOrderBy();
+			}
+			else if($entityParam->getDefaultOrderBy() != null) {
+				$queryAdd .= $entityParam->getDefaultOrderBy()->getOrderBy();
+			}
 			
 			//Execution
 			$result = OrmDb::execute($queryAdd,
@@ -700,7 +716,7 @@ class OrmCore {
 	*
 	* @return array<OrmEntity> list of Entities found
 	*/
-	public static final function findByIds(OrmEntity &$entityParam, $ids) {
+	public static final function findByIds(OrmEntity &$entityParam, $ids, OrmOrderBy &$orderBy=null) {
 		if(count($ids) == 0)
 		  return array();
 			
@@ -722,8 +738,16 @@ class OrmCore {
 		  }
 		}
 
-		$querySelect = 'Select * FROM '.$entityParam->getDbname().' WHERE '.$where;
-
+		$querySelect = 'SELECT * FROM '.$entityParam->getDbname().' WHERE '.$where;
+		
+		// Order By 
+		if($orderBy != null) {
+			$querySelect .= $orderBy->getOrderBy();
+		}
+		else if($entityParam->getDefaultOrderBy() != null) {
+			$querySelect .= $entityParam->getDefaultOrderBy()->getOrderBy();
+		}
+		
 		//If it's already in the cache, we return the result
 		if(OrmCache::isCache($querySelect, $params)) {
 		  $entities = OrmCache::getCache($querySelect,$params);
@@ -778,11 +802,11 @@ class OrmCore {
      * @see OrmExample
      * @see OrmTypeCriteria
      */
-	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example, OrmOrderBy $orderBy = null) {
+	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example, OrmOrderBy &$orderBy = null) {
 		$listeField = $entityParam->getFields();
 
 		$criterias = $example->getCriterias();
-		$select = "select * from ".$entityParam->getDbname();
+		$select = "SELECT * FROM ".$entityParam->getDbname();
 		$hql = "";
 		$params = array();
 		
@@ -864,6 +888,7 @@ class OrmCore {
 		  throw new Exception("The OrmCriteria $criteria->typeCriteria is not manage");
 		}
 		
+		// Order By 
 		if($orderBy != null) {
 			$hql .= $orderBy->getOrderBy();
 		}
