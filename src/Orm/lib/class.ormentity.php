@@ -62,6 +62,11 @@ abstract class OrmEntity
 	private $indexes = array();
 	
 	/**
+	 * OrmOrderBy : if true the framework will try to use the inner autoincrement of Mysql instead generate a new table xxx_seq like usual
+	 */
+	private $defaultOrderBy;
+	
+	/**
 	 * String : constant, suffix for the sequence name into the database
 	 * */
 	public static $_CONST_SEQ = '_seq';
@@ -466,6 +471,34 @@ abstract class OrmEntity
 		$this->getFieldByName($fieldName)->setDefaultValue($defaultValue);
 		
 	}
+	
+	/**
+	 * This function will let you define some optional configuration for your Entity
+	 *    => the default sort order is ...
+	 *
+	 *  ex : myEntity->garnishDefaultOrderBy(new OrmOrderBy()->addAsc('field1')->addDesc('field2'))
+	 *
+	 * @param OrmorderBy the default sort order.
+	 *
+	 **/
+	public function garnishDefaultOrderBy(OrmOrderBy $defaultOrderBy){
+		foreach($defaultOrderBy as $fieldName => $value) {
+			if(!$this->isFieldByNameExists($fieldName)){
+				throw new OrmIllegalArgumentException("garnishDefaultOrderBy() only accept valid Field but ".$fieldName." is not a existing Field in the Entity ".$this->getName());
+			}
+		}
+		$this->defaultOrderBy = $defaultOrderBy;
+	}
+	
+	/**
+	 * Return 
+	 * @return OrmOrderBy : default OrmOrderBy
+	 **/
+	public function getDefaultOrderBy() {
+		return $this->defaultOrderBy;
+	}
+	
+	
 }
 
 ?>
