@@ -56,6 +56,9 @@
 	 * Contains all the result for the past requetes
 	 **/
 	private static $cache;
+	
+	public static $NONE;
+	public static $BASIC;
 		
 	/**
 	 * Private constructor
