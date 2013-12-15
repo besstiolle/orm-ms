@@ -614,7 +614,7 @@ class OrmCore {
 	*
     * @return array<OrmEntity> list of Entities found
     */
-	public static final function findAll(OrmEntity &$entityParam, OrmOrderBy &$orderBy=null) {
+	public static final function findAll(OrmEntity &$entityParam, OrmOrderBy &$orderBy=null, OrmLimit &$limit = null) {
 
 		$querySelect = 'SELECT * FROM '.$entityParam->getDbname();
 
@@ -624,6 +624,10 @@ class OrmCore {
 		}
 		else if($entityParam->getDefaultOrderBy() != null) {
 			$querySelect .= $entityParam->getDefaultOrderBy()->getOrderBy();
+		}
+				
+		if($limit != null) {
+			$querySelect .= $limit->getLimit();
 		}
 		
 		//If it's already in the cache, we return the result
@@ -811,7 +815,7 @@ class OrmCore {
      * @see OrmExample
      * @see OrmTypeCriteria
      */
-	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example, OrmOrderBy &$orderBy = null) {
+	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example, OrmOrderBy &$orderBy = null, OrmLimit &$limit = null) {
 		$listeField = $entityParam->getFields();
 
 		$criterias = $example->getCriterias();
@@ -904,6 +908,10 @@ class OrmCore {
 		else if($entityParam->getDefaultOrderBy() != null) {
 			$hql .= $entityParam->getDefaultOrderBy()->getOrderBy();
 		}		
+		
+		if($limit != null) {
+			$hql .= $limit->getLimit();
+		}
 		
 		$queryExample = $select.$hql;
 		

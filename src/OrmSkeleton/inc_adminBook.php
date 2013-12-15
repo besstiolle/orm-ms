@@ -23,7 +23,16 @@ if($count == 0){
 	$orderBy = new OrmOrderBy();
 	$orderBy->addAsc('description');
 	$orderBy->addDesc('title');
-	$all = OrmCore::findAll(new BookSkeleton(), $orderBy);
+	
+	// Add "limit"
+	// Solution 1:
+	/*
+	$limit = new OrmLimit();
+	$limit->setRowCount(2);
+	$all = OrmCore::findAll(new BookSkeleton(), $orderBy, $limit); 
+	*/
+	// Solution 2
+	$all = OrmCore::findAll(new BookSkeleton(), $orderBy, new OrmLimit(0, 2));
 	
 	//And iterate over each one
 	foreach($all as $book){
@@ -41,6 +50,6 @@ if($count == 0){
 	}
 }
 echo "</table>";
-echo "<p>There are " . $count . " BookSkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
+echo "<p>There are " . $count . " BookSkeleton(s) into the database. (Only 2 displayed as we set a 2 limit.) Would you like to <b>$link</b> another one ?</p>";
 
 ?>
