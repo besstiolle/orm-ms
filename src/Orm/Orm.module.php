@@ -25,7 +25,7 @@ class Orm extends CMSModule {
 	}
 
 	function GetVersion() {
-		return '0.1.1';
+		return '0.2.0';
 	}
   
 	function GetDependencies()
