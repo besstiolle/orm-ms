@@ -21,9 +21,27 @@ class OrmOrderBy
 {
 	private $orders = array();
 
-	private static $DESC = 'DESC';
+	public static $ASC = 'ASC';
+	public static $DESC = 'DESC';
 	
-	function __construct() {}
+	/**
+    * public constructor
+    * 	
+    * @param array $orders an hash with order by definitions
+	*/
+	function __construct($orders=array()) {
+		foreach($orders as $field => $order) {
+			if($order == OrmOrderBy::$ASC) {
+				$this->addAsc($field);
+			}
+			else if($order == OrmOrderBy::$DESC) {
+				$this->addDesc($field);			
+			}
+			else {
+				throw new OrmIllegalArgumentException("Invalid order for ORDER BY: {$order}.");
+			}
+		}
+	}
 	
    /**
     * return ORDER BY clause
@@ -34,7 +52,7 @@ class OrmOrderBy
 		$orderby = ' ORDER BY ';
 		
 		if(count($this->orders) == 0) {
-			return ''; // EPE: or exception? but not really needed
+			return '';
 		}
 		
 		$i=1;
