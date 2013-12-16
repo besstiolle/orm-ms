@@ -7,9 +7,6 @@
 	* @package Orm
 	**/
 
-	//Unique import, to use the OrmTrace into the class Orm
-	include_once(cms_join_path(dirname(__FILE__),"lib","class.ormtrace.php"));
-
 	/**
 	* The Class Orm define the module Orm and allow having all the orm functionalities into another module
 	*
@@ -18,11 +15,6 @@
 	* @package cmsms
 	*/
 class Orm extends CMSModule {
-
-	function __construct() {
-		parent::__construct();
-		OrmTrace::$level = $this->GetPreference('loglevel', OrmTrace::$INFO);
-	}
 
 	function GetName() {
 		return 'Orm';
@@ -158,14 +150,10 @@ class Orm extends CMSModule {
 	}
 	
 	public function autoload_classes($classname){
-		OrmTrace::debug("&nbsp;&nbsp;&nbsp; Need $classname");
 		$Orm = new Orm();
 		$path = $Orm->GetMyModulePath();
 		$fn = cms_join_path($path,"lib","class.".strtolower($classname).".php");
-
-
-		OrmTrace::debug("import class du framework via ".$this->getName().": $fn");
-
+		
 		if(file_exists($fn)){
 			require_once($fn);
 			OrmTrace::debug("importing $fn with success");

@@ -34,9 +34,6 @@ final class OrmTrace
 	public static $WARN = 2;
 	public static $ERROR = 3;
 	
-	//Current level (by default)
-	public static $level = 2;
-	
 	protected static $logFile;
 	protected static $logUrl;
 	
@@ -113,12 +110,13 @@ final class OrmTrace
 	 * @param string the message to display
 	 */
 	private static final function innerWriter($level, $cssClass, $msg){
-		
-		if(self::$level > $level) {return;}
+		$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
+
+		if($orm->GetPreference('loglevel') > $level) {return;}
 				
 		//in file log
 		file_put_contents(self::getLogFile() , date('Y-m-d H:i:s', time())." - [$cssClass] - $msg \n", FILE_APPEND );
-		
+
 		//In php log
 		error_log($msg);
 	}

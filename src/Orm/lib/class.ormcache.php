@@ -50,15 +50,15 @@
  * @author Bess
  * @package Orm
  **/
-/*final*/ class OrmCache
+class OrmCache
 {	
 	/**
 	 * Contains all the result for the past requetes
 	 **/
 	private static $cache;
-	
-	public static $NONE;
-	public static $BASIC;
+		
+	public static $NONE = 0;
+	public static $CALL = 1;
 		
 	/**
 	 * Private constructor
@@ -115,7 +115,7 @@
 	}
 
 	/**
-	 * Empty the cache. Very important if between 2 quering, the system may insert/delete/update some data in the database
+	 * Empty the cache. Very important if between 2 querying, the system may insert/delete/update some data in the database
 	 *  In the Orm system, we always drop the cache in the insert/delete/update function.
 	 */	
 	public static final function clearCache()
