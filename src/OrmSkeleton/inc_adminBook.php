@@ -20,9 +20,13 @@ if($count == 0){
 	echo "<tr><td colspan='5'><center>no record in database</center></td></tr>";
 } else {
 	//I can also retrieve all the BookSkeleton, ordered by uuid, then title desc
+	
+	// ORDER BY can be set like following, or directly inside a constructor
+	/*
 	$orderBy = new OrmOrderBy();
 	$orderBy->addAsc('description');
 	$orderBy->addDesc('title');
+	*/
 	
 	// Add "limit"
 	// Solution 1:
@@ -32,7 +36,9 @@ if($count == 0){
 	$all = OrmCore::findAll(new BookSkeleton(), $orderBy, $limit); 
 	*/
 	// Solution 2
-	$all = OrmCore::findAll(new BookSkeleton(), $orderBy, new OrmLimit(0, 2));
+	$all = OrmCore::findAll(new BookSkeleton(),  
+							new OrmOrderBy(array('description' => OrmOrderBy::$ASC, 'title' => OrmOrderBy::$DESC)),
+							new OrmLimit(0, 2));
 	
 	//And iterate over each one
 	foreach($all as $book){
