@@ -112,7 +112,7 @@ final class OrmTrace
 	private static final function innerWriter($level, $cssClass, $msg){
 		$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
 
-		if($orm->GetPreference('loglevel') > $level) {return;}
+		if($orm->GetPreference('loglevel', OrmTrace::$INFO) > $level) {return;}
 				
 		//in file log
 		file_put_contents(self::getLogFile() , date('Y-m-d H:i:s', time())." - [$cssClass] - $msg \n", FILE_APPEND );

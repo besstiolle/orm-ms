@@ -350,7 +350,7 @@ class OrmCore {
 		}*/
 		
 		//empty cache
-		OrmCache::clearCache();
+		OrmCache::getInstance()->clearCache();
 		
 		return $entityParam;
 
@@ -499,7 +499,7 @@ class OrmCore {
 		}*/
 		
 		//empty cache
-		OrmCache::clearCache();
+		OrmCache::getInstance()->clearCache();
 		
 		return $entityParam;
 	}
@@ -585,7 +585,7 @@ class OrmCore {
 		}
 		
 		//empty cache
-		OrmCache::clearCache();
+		OrmCache::getInstance()->clearCache();
 	}
    
     /**
@@ -631,8 +631,8 @@ class OrmCore {
 		}
 		
 		//If it's already in the cache, we return the result
-		if(OrmCache::isCache($querySelect)) {
-			$entities = OrmCache::getCache($querySelect);
+		if(OrmCache::getInstance()->isCache($querySelect)) {
+			$entities = OrmCache::getInstance()->getCache($querySelect);
 		} else {
 			//Execution
 			$result = OrmDb::execute($querySelect,
@@ -642,7 +642,7 @@ class OrmCore {
 			$entities = OrmCore::_processArrayEntity($entityParam, $result);
 			
 			//We push the result into the cache before return it
-			OrmCache::setCache($querySelect, null, $entities);
+			OrmCache::getInstance()->setCache($querySelect, null, $entities);
 		}
 		
 		return array_values($entities);
@@ -762,8 +762,8 @@ class OrmCore {
 		}
 		
 		//If it's already in the cache, we return the result
-		if(OrmCache::isCache($querySelect, $params)) {
-		  $entities = OrmCache::getCache($querySelect,$params);
+		if(OrmCache::getInstance()->isCache($querySelect, $params)) {
+		  $entities = OrmCache::getInstance()->getCache($querySelect,$params);
 		} else {
 			
 			//Execution
@@ -774,7 +774,7 @@ class OrmCore {
 			$entities = OrmCore::_processArrayEntity($entityParam, $result);
 			
 			//We push the result into the cache before return it
-			OrmCache::setCache($querySelect, null, $entities);
+			OrmCache::getInstance()->setCache($querySelect, null, $entities);
 		}
 
 		return array_values($entities);
@@ -916,8 +916,8 @@ class OrmCore {
 		$queryExample = $select.$hql;
 		
 		//If it's already in the cache, we return the result
-		if(OrmCache::isCache($queryExample, $params)) {
-		  $entities = OrmCache::getCache($queryExample,$params);
+		if(OrmCache::getInstance()->isCache($queryExample, $params)) {
+		  $entities = OrmCache::getInstance()->getCache($queryExample,$params);
 		} else {
 			//Execution
 			$result = OrmDb::execute($queryExample,
@@ -929,7 +929,7 @@ class OrmCore {
 			$entities = OrmCore::_processArrayEntity($entityParam, $result);
 			
 			//We push the result into the cache before return it
-			OrmCache::setCache($queryExample, null, $entities);
+			OrmCache::getInstance()->setCache($queryExample, null, $entities);
 		}
 
 		return array_values($entities);

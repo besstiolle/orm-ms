@@ -6,7 +6,7 @@ $currentLevelLog = $this->GetPreference('loglevel', OrmTRACE::$INFO);
 $currentTypeCache = $this->GetPreference('cacheType', OrmCache::$NONE);
 
 $itemsLog = array("DEBUG"=>OrmTRACE::$DEBUG, "INFO"=>OrmTRACE::$INFO,"WARN"=>OrmTRACE::$WARN,"ERROR"=>OrmTRACE::$ERROR);
-$itemsCache = array("NONE"=>OrmCache::$NONE, "CALL"=>OrmCache::$CALL);
+$itemsCache = array("NONE"=>OrmCache::$NONE, "SCRIPT"=>OrmCache::$SCRIPT);
 
 $smarty = cmsms()->GetSmarty();
 $smarty->assign("id",$id);

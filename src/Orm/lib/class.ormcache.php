@@ -1,8 +1,8 @@
 <?php
 /**
- * Contains the class wich provide a mini caching system of Orm to avoid multiples sql requests
+ * Contains the class wich provide an global interface for all the caching systems
  *
- * @since 0.0.1
+ * @since 0.2.0
  * @author Bess
  * @package Orm
  **/
@@ -10,13 +10,13 @@
 
 /**
  *
- *  Static classe used to provide a very simple caching system. You can push the result of a request into it and asking later
- *	to collect the result.
+ *  Static classe used to provide list of signature for all the caching systems
  *
  *  Example : 
  *  <code>
  *  	//Call to cmsms to get the database connector
  *  	$db = cmsms()->GetDb();
+ *      $cacheInstance = OrmCache::getInstance();
  *  	
  *  	//Defines a new Customer entity
  *  	$entity = MyAutoload::getInstance('myModule', 'customer');
@@ -25,9 +25,8 @@
  *  	$querySelect = 'Select * FROM '.$entity->getDbname();
  *  	
  *  	//If the caching system already know the answer : we return the result immediately
- *  	if(OrmCache::isCache($querySelect))
- *  	{
- *  		return OrmCache::getCache($querySelect);
+ *  	if($cacheInstance->isCache($querySelect)) {
+ *  		return $cacheInstance->getCache($querySelect);
  *  	}
  *  	
  *  	//So we need to execute the query
@@ -35,35 +34,56 @@
  *  	if ($result === false){die("Database error!");}
  *  	
  *  	$entitys = array();
- *  	while ($row = $result->FetchRow())
- *  	{
+ *  	while ($row = $result->FetchRow()) {
  *  		$entitys[] = OrmCore::rowToEntity($entity, $row);
  *  	}
  *  	
  *  	//Don't forget to push the result into the caching system for the next call
- *  	OrmCache::setCache($querySelect, null, $entitys);
+ *  	$cacheInstance->setCache($querySelect, null, $entitys);
  
  *  	return $entitys;
  *	</code>
  *
- * @since 0.0.1
+ * @since 0.2.0
  * @author Bess
  * @package Orm
  **/
-class OrmCache
-{	
-	/**
-	 * Contains all the result for the past requetes
-	 **/
-	private static $cache;
-		
+abstract class OrmCache {	
+
 	public static $NONE = 0;
-	public static $CALL = 1;
+	public static $SCRIPT = 1;
 		
 	/**
 	 * Private constructor
 	 */
 	protected function __construct() {}
+	
+	/**
+	 * Will return a implementation of the cache.
+	 *
+	 * @param mixed not requiered : the type of cache. By default it will take the type of cache defined as default into CmsMadeSimple
+	 *
+	 * @return an instance of Cache.
+	 **/
+	public function getInstance($typeCache = null){
+		
+		if($typeCache == null){
+			$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
+			$typeCache = $orm->GetPreference('cacheType', OrmCache::$NONE);
+		}
+		
+		switch($typeCache){
+			case OrmCache::$NONE:
+				return OrmCacheNone::getInstance();
+				break;
+			case OrmCache::$SCRIPT:
+				return OrmCacheScript::getInstance();
+				break;
+			default:
+				OrmTrace::error("Type of Cache #{$typeCache} is not a valid Type of Cache");
+				exit -1;
+		}
+	}
 			
 	/**
 	 *	Set the cache for a sql request, its parameters and of course the result
@@ -72,16 +92,7 @@ class OrmCache
 	 * @param array the parameters into a array. May be null
 	 * @param object the result
 	 */
-	public static final function setCache($sql, $params = null, $value)
-	{		
-		if(!isset(self::$cache))
-		{
-			self::$cache = array();
-		}
-		
-		self::$cache[OrmCache::hash($sql,$params)] = $value;
-		
-	}
+	public abstract function setCache($sql, $params = null, $value);
 	
 	/**
 	 * Querying the cache for a sql request and its parameters
@@ -91,15 +102,7 @@ class OrmCache
 	 *
 	 * @return object the result
 	 */
-	public static final function getCache($sql, $params = null)
-	{
-		if(OrmCache::isCache($sql, $params))
-		{
-			return self::$cache[OrmCache::hash($sql,$params)];
-		}
-		
-		return null;
-	}
+	public abstract function getCache($sql, $params = null);
 
 	/**
 	 * Return true if a cache exist for a sql request and its parameters
@@ -109,19 +112,13 @@ class OrmCache
 	 *
 	 * @return boolean true if the cache exists
 	 */	
-	public static final function isCache($sql, $params = null)
-	{
-		return isset(self::$cache) && array_KEY_exists(OrmCache::hash($sql,$params),self::$cache);
-	}
+	public abstract function isCache($sql, $params = null);
 
 	/**
 	 * Empty the cache. Very important if between 2 querying, the system may insert/delete/update some data in the database
 	 *  In the Orm system, we always drop the cache in the insert/delete/update function.
 	 */	
-	public static final function clearCache()
-	{
-		self::$cache=null;
-	}
+	public abstract function clearCache();
 
 	/**
 	 * Return a unique hash for a sql request and its parameters
@@ -132,12 +129,12 @@ class OrmCache
 	 *
 	 * @return string the hash
 	 */	
-	public static final function hash($sql, $params = null)
-	{
-		if($params == null)
-		{return md5($sql);}
+	public function hash($sql, $params = null) {
+		if($params == null){
+			$params = "";
+		}
 		
-		$p = print_r($params, true);
+		$p = serialize($params);
 
 		return md5($sql.$p);
 	}
