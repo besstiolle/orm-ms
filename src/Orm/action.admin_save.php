@@ -8,14 +8,18 @@ if (isset($params['deleteLog'])){
 	}
 	OrmTrace::info("Reinitiate the log file");
 } elseif (isset($params['deleteCache'])){
-	OrmCache::clearCache();
+
+	$cache = OrmCache::getInstance();
+	$cache::clearCache();
 	OrmTrace::info("Reinitiate the cache content");
 } else if (isset($params['level']) || isset($params['cache']) ){
 	$this->SetPreference('loglevel', $params['level']);
 	$this->SetPreference('cacheType', $params['cache']);
 	
 	//We reload the cache anyway
-	OrmCache::clearCache();
+	$cache = OrmCache::getInstance();
+	$cache::clearCache();
+	
 	OrmTrace::info("Reinitiate the cache content");
 }
 
