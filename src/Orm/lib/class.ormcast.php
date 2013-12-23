@@ -22,7 +22,7 @@
  *  OrmCAST::$TIME a field time
  *  OrmCAST::$TS a field timestamp
  *  OrmCAST::$DATETIME a field dateTime
- *  OrmCAST::$DATETIME a field UUID
+ *  OrmCAST::$UUID a field UUID
  *
  *  OrmCAST::$NONE a Transiant field : won't be persist into database
  *
