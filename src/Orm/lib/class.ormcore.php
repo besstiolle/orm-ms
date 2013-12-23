@@ -74,7 +74,7 @@ class OrmCore {
 			}
 			
 			//Manage the default value
-			if($field->getDefaultValue() != null){
+			if(!is_null($field->getDefaultValue())){
 				if($field->getType() == OrmCAST::$STRING || $field->getType() == OrmCAST::$BUFFER) {
 					$hql .= "  DEFAULT '".str_replace("'", "''",$field->getDefaultValue())."' ";
 				} else {
