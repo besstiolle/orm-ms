@@ -113,9 +113,12 @@ final class OrmTrace
 		$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
 
 		if($orm->GetPreference('loglevel', OrmTrace::$INFO) > $level) {return;}
+		
+		$content = date('Y-m-d H:i:s', time())." - [$cssClass] - $msg \n";
+		$content = utf8_encode($content);
 				
 		//in file log
-		file_put_contents(self::getLogFile() , date('Y-m-d H:i:s', time())." - [$cssClass] - $msg \n", FILE_APPEND );
+		file_put_contents(self::getLogFile() ,$content, FILE_APPEND );
 
 		//In php log
 		error_log($msg);
