@@ -74,7 +74,7 @@ class OrmCore {
 			}
 			
 			//Manage the default value
-			if(!is_null($field->getDefaultValue())){
+			if($field->getDefaultValue() != null){
 				if($field->getType() == OrmCAST::$STRING || $field->getType() == OrmCAST::$BUFFER) {
 					$hql .= "  DEFAULT '".str_replace("'", "''",$field->getDefaultValue())."' ";
 				} else {
@@ -264,7 +264,9 @@ class OrmCore {
 			
 			if($field->isPrimaryKEY()) {
 				if(!empty($values[$field->getName()])) {
-					throw new OrmIllegalArgumentException('Primary Key '.$field->getName().' can\'t be setted during insert operation for OrmEntity'.$entityParam->getName());
+					if($entityParam->isAutoincrement()){
+						throw new OrmIllegalArgumentException('Primary Key '.$field->getName().' can\'t be setted during insert operation for OrmEntity'.$entityParam->getName());
+					}
 				} else if(!$entityParam->isAutoincrement()){
 					$newId = OrmDB::genID($entityParam->getSeqname());
 					$values[$field->getName()] = $newId;
@@ -278,7 +280,7 @@ class OrmCore {
 			//Empty Field that shouldn't be !
 			if(!$field->isNullable() && !isset($values[$field->getName()])) {
 				//Exception : if the field have a default value we set it manually
-				if($field->getDefaultValue() != null){
+				if(!is_null($field->getDefaultValue())){
 					$values[$field->getName()] = $field->getDefaultValue();
 				} else {
 					throw new OrmIllegalArgumentException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' can\'t be null');
