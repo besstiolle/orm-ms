@@ -202,7 +202,7 @@ class Orm extends CMSModule {
 	}*/
 	/*
 	function SearchReindex(&$module = null) {
-		//On évite de s'auto-indexer.
+		//On Ã©vite de s'auto-indexer.
 		if($this->getName() == 'Mmmfs')
 			return;		
 			
@@ -211,10 +211,10 @@ class Orm extends CMSModule {
 	}*/
 
 	/**
-	 * Appelée par Search pour afficher un résultat
+	 * AppelÃ©e par Search pour afficher un rÃ©sultat
 	 *//*
 	function SearchResult($returnid, $entityId, $attr = '') {	
-		//On ne retourne rien de Mmmfs de toute manière
+		//On ne retourne rien de Mmmfs de toute maniÃ¨re
 		if($this->getName() == 'Mmmfs')
 			return;	
 		

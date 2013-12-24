@@ -42,7 +42,7 @@ final class OrmIndexing
 	}
 
    /**
-    * vide l'indexage d'un élement en particulier
+    * vide l'indexage d'un Ã©lement en particulier
     * 
     * @param string le nom du module.
     */
@@ -126,7 +126,7 @@ final class OrmIndexing
 				{
 					$myEntity = OrmCore::selectById($entity, $entityId);
 					
-					//$currentLangISO = ($mle == 'fr'?'fr_FR':'en_US'); //TODO : se démerder pour récupérer la langue liée au $returnId;
+					//$currentLangISO = ($mle == 'fr'?'fr_FR':'en_US'); //TODO : se dÃ©merder pour rÃ©cupÃ©rer la langue liÃ©e au $returnId;
 					
 					$prettyUrl = '';
 					$link = $module->CreateLink($id, 'fiche', $returnid, 
