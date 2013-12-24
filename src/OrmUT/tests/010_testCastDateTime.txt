@@ -1,10 +1,10 @@
 
-<h2>Test #10 : Test the Cast Mapping ?</h2>
+<h2>Test #10 : Test the Cast Mapping with date, time & datetime ?</h2>
 <?php
 	
 	//First, drop the table, recreate it
-	OrmCore::dropTable(new CastOrmUT());
-	OrmCore::createTable(new CastOrmUT());
+	OrmCore::dropTable(new CastOrmUTDateTime());
+	OrmCore::createTable(new CastOrmUTDateTime());
 	
 	list($currentUS, $currentTS) = explode(" ", microtime());
 	$currentTIME = date("H:i:s", $currentTS );
@@ -12,7 +12,7 @@
 	$currentDATE = strtotime(date("Y-m-d", $currentTS ));
 	
 	//Test insert
-	$cast = new CastOrmUT();
+	$cast = new CastOrmUTDateTime();
 	$cast->set("aDate",$currentDATE);
 	$cast->set("aDateNull",null);
 	$cast->set("aTime",$currentTIME);
@@ -80,32 +80,17 @@
 	$elements = OrmCore::findAll($cast);
 	$cast = $elements[0];
 	
-	assertIsEquals($cast->get("aDate"),$currentDATE);
-	assertIsNull($cast->get("aDateNull"));
-	assertIsEquals($cast->get("aTime"),$currentTIME);
-	assertIsNull($cast->get("aTimeNull"));
-	assertIsEquals($cast->get("aTS"),$currentTS);
-	assertIsNull($cast->get("aTSNull"));
-	assertIsEquals($cast->get("aDateTime"),$currentDT);
-	assertIsNull($cast->get("aDateTimeNull"));
+	UtilsTest::assertIsEquals($cast->get("aDate"),$currentDATE);
+	UtilsTest::assertIsNull($cast->get("aDateNull"));
+	UtilsTest::assertIsEquals($cast->get("aTime"),$currentTIME);
+	UtilsTest::assertIsNull($cast->get("aTimeNull"));
+	UtilsTest::assertIsEquals($cast->get("aTS"),$currentTS);
+	UtilsTest::assertIsNull($cast->get("aTSNull"));
+	UtilsTest::assertIsEquals($cast->get("aDateTime"),$currentDT);
+	UtilsTest::assertIsNull($cast->get("aDateTimeNull"));
 	
-	function assertIsEquals($result,$expected){
-		if($expected == $result){
-			$class = 'success';
-		} else {
-			$class = 'error';
-		}
-		echo "<p class='$class'>we expected value be equals to {$expected}, we have got {$result}</p>";
-	}
-	
-	function assertIsNull($result){
-		if(null == $result){
-			$class = 'success';
-		} else {
-			$class = 'error';
-		}
-		echo "<p class='$class'>we expected value being null</p>";
-	}
 
 	
+	//Finally, drop the table
+	OrmCore::dropTable(new CastOrmUTDateTime());
 ?>

@@ -1,9 +1,9 @@
 <?php
-class CastOrmUT extends OrmEntity
+class CastOrmUTDateTime extends OrmEntity
 {
 	public function __construct()
 	{
-		parent::__construct('ormut','CastOrmUT');
+		parent::__construct('ormut','CastOrmUTDateTime');
 		
 		$this->add(new OrmField('id'		
 			, OrmCAST::$INTEGER

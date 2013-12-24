@@ -81,8 +81,13 @@ class OrmField
 			throw new OrmIllegalConfigurationException('$FK key or $AK key for the field '.$fieldname.' need a keyName');
 		}
 		
-		if(($cast == OrmCAST::$DATE || $cast == OrmCAST::$BUFFER || $cast == OrmCAST::$TIME) && !empty($size)) {
-			throw new OrmIllegalConfigurationException('The OrmCAST::DATE or the OrmCAST::BUFFER or the OrmCAST::TIME of field '.$fieldname.' must not have size value');
+		if(($cast == OrmCAST::$DATE || $cast == OrmCAST::$BUFFER || $cast == OrmCAST::$TIME
+				|| $cast == OrmCAST::$DATETIME || $cast == OrmCAST::$TS || $cast == OrmCAST::$UUID 
+				|| $cast == OrmCAST::$NONE) && !empty($size)) {
+			throw new OrmIllegalConfigurationException('The field '.$fieldname.' must not have size value because of its own OrmCAST');
+		}
+		if(($cast == OrmCAST::$STRING) && empty($size)) {
+			throw new OrmIllegalConfigurationException('The field '.$fieldname.' must have size value because of its own OrmCAST');
 		}
 		
 
