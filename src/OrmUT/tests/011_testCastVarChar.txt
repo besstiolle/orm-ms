@@ -5,8 +5,8 @@
 	//First, drop the table, recreate it
 	OrmCore::dropTable(new CastOrmUTString());
 	OrmCore::createTable(new CastOrmUTString());
-	$chaine = utf8_encode("STRING_a€é$    ");
-	$buffer = utf8_encode("BUFFER_a€é$<br/>retour\r\nretour     ");
+	$chaine = utf8_encode("STRING_aâ‚¬Ã©$    ");
+	$buffer = utf8_encode("BUFFER_aâ‚¬Ã©$<br/>retour\r\nretour     ");
 	
 	//Test insert
 	$cast = new CastOrmUTString();
@@ -79,7 +79,7 @@
 		$cast->save();
 		echo "<p class='$cssSuccess'>saving entity with success</p>";
 	} catch (Exception $o){
-		echo "<p class='$cssError'>Exception during \$cast->save()</p>";
+		echo "<p class='$cssSuccess'>Exception during \$cast->save()</p>";
 	}
 	
 	//
