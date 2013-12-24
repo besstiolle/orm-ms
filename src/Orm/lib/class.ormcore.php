@@ -58,7 +58,7 @@ class OrmCore {
 
 				case OrmCAST::$NUMERIC : $hql .= 'N'.$size; break;
 
-				case OrmCAST::$DOUBLE : $hql .= 'I'.$size; break;
+				case OrmCAST::$DOUBLE : $hql .= 'F'.$size; break;
 
 				case OrmCAST::$BUFFER : $hql .= 'X'; break;
 
