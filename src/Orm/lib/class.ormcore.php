@@ -1099,7 +1099,7 @@ class OrmCore {
      * @see OrmCAST
      */
 	private static final function FieldToDBValue($data, $type) {
-		if($data == null){
+		if(is_null($data)){
 			return null;
 		}
 		
