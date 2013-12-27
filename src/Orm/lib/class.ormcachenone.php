@@ -28,7 +28,7 @@ class OrmCacheNone extends OrmCache{
 	 */
 	protected function __construct() {}
 	
-	public function getInstance(){
+	public static function getMyOwnInstance(){
 		if(self::$instance == null){
 			self::$instance = new OrmCacheNone();
 		}

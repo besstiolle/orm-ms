@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains the class wich provide an global interface for all the caching systems
+ * Contains the class which provide an global interface for all the caching systems
  *
  * @since 0.2.0
  * @author Bess
@@ -10,7 +10,7 @@
 
 /**
  *
- *  Static classe used to provide list of signature for all the caching systems
+ *  Static classes used to provide list of signature for all the caching systems
  *
  *  Example : 
  *  <code>
@@ -61,11 +61,11 @@ abstract class OrmCache {
 	/**
 	 * Will return a implementation of the cache.
 	 *
-	 * @param mixed not requiered : the type of cache. By default it will take the type of cache defined as default into CmsMadeSimple
+	 * @param mixed not required : the type of cache. By default it will take the type of cache defined as default into CmsMadeSimple
 	 *
 	 * @return an instance of Cache.
 	 **/
-	public function getInstance($typeCache = null){
+	public static function getInstance($typeCache = null){
 		
 		if($typeCache == null){
 			$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
@@ -74,10 +74,10 @@ abstract class OrmCache {
 		
 		switch($typeCache){
 			case OrmCache::$NONE:
-				return OrmCacheNone::getInstance();
+				return OrmCacheNone::getMyOwnInstance();
 				break;
 			case OrmCache::$SCRIPT:
-				return OrmCacheScript::getInstance();
+				return OrmCacheScript::getMyOwnInstance();
 				break;
 			default:
 				OrmTrace::error("Type of Cache #{$typeCache} is not a valid Type of Cache");

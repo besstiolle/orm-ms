@@ -63,7 +63,7 @@ class OrmCacheScript extends OrmCache {
 		self::$cache = array();
 	}
 	
-	public function getInstance(){
+	public static function getMyOwnInstance(){
 		if(self::$instance == null){
 			self::$instance = new OrmCacheScript();
 		}
