@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains the class OrmDB
+ * Contains the class OrmDb
  * 
  * @since 0.0.1
  * @author Bess
@@ -15,7 +15,7 @@
  * @author Bess
  * @package Orm
 */
-class OrmDB {  
+class OrmDb {  
 
 	private static $db;
 	private static $dict;
@@ -29,11 +29,11 @@ class OrmDB {
 	protected function __construct() {}
 	
 	protected static final function init(){
-		if(OrmDB::$db != null){
+		if(OrmDb::$db != null){
 			return;
 		}
-		OrmDB::$db = cmsms()->GetDb();
-		OrmDB::$dict = NewDataDictionary( OrmDB::$db );
+		OrmDb::$db = cmsms()->GetDb();
+		OrmDb::$dict = NewDataDictionary( OrmDb::$db );
 	}
       
     /**
@@ -48,15 +48,15 @@ class OrmDB {
     */
 	public static final function execute($query, $parameters = null, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
-		OrmDB::init();
+		OrmDb::init();
 		OrmTrace::debug($query);
 		if($parameters != null){
 			OrmTrace::debug(" > Parameters : ".print_r($parameters, true));
 		}
-		$result = OrmDB::$db->Execute($query, $parameters);
+		$result = OrmDb::$db->Execute($query, $parameters);
 		if ($result === false){
 			OrmTrace::error($errorMsg);
-			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
+			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The Query was : ".$query);
 			if($parameters != null){
 				OrmTrace::error(" > The Parameters was : ".print_r($parameters, true));
@@ -79,15 +79,15 @@ class OrmDB {
     */
 	public static final function getOne($query, $parameters = null, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
-		OrmDB::init();
+		OrmDb::init();
 		OrmTrace::debug($query);
 		if($parameters != null){
 			OrmTrace::debug(" > Parameters : ".print_r($parameters, true));
 		}
-		$result = OrmDB::$db->GetOne($query, $parameters);
+		$result = OrmDb::$db->GetOne($query, $parameters);
 		if ($result === false){
 			OrmTrace::error($errorMsg);
-			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
+			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The Query was : ".$query);
 			if($parameters != null){
 				OrmTrace::error(" > The Parameters was : ".print_r($parameters, true));
@@ -109,13 +109,13 @@ class OrmDB {
     */
 	public static final function genID($seqname, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
-		OrmDB::init();
+		OrmDb::init();
 		
 		OrmTrace::debug("gen Id({$seqname})");
-		$result = OrmDB::$db->GenID($seqname);
+		$result = OrmDb::$db->GenID($seqname);
 		if ($result === false){
 			OrmTrace::error($errorMsg);
-			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
+			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The GenId was made on : ".$seqname);
 
 			throw new Exception($errorMsg);
@@ -135,18 +135,18 @@ class OrmDB {
     */
 	public static final function createTable($tableName, $hql) {
 		//Be sure we initiate the db connector;
-		OrmDB::init();
+		OrmDb::init();
 		
 		OrmTrace::debug("createTable({$tableName}, {$hql})");
 		
-		$sqlarray = OrmDB::$dict->CreateTableSQL($tableName, 
+		$sqlarray = OrmDb::$dict->CreateTableSQL($tableName, 
 												$hql,
 												OrmDb::$taboptarray);
 												
-		$result = OrmDB::$dict->ExecuteSQLArray($sqlarray);
+		$result = OrmDb::$dict->ExecuteSQLArray($sqlarray);
 		if ($result === false){
 			OrmTrace::error($errorMsg);
-			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
+			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The CreateTable was made on : {$tableName} with {$hql} parameters");
 
 			throw new Exception($errorMsg);
@@ -165,16 +165,16 @@ class OrmDB {
     */
 	public static final function dropTable($tableName) {
 		//Be sure we initiate the db connector;
-		OrmDB::init();
+		OrmDb::init();
 		
 		OrmTrace::debug("dropTable({$tableName})");
 		
-		$sqlarray = OrmDB::$dict->DropTableSQL($tableName);
-		$result = OrmDB::$dict->executeSQLArray($sqlarray);
+		$sqlarray = OrmDb::$dict->DropTableSQL($tableName);
+		$result = OrmDb::$dict->executeSQLArray($sqlarray);
 		
 		if ($result === false){
 			OrmTrace::error($errorMsg);
-			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
+			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The DropTable was made on : {$tableName}");
 
 			throw new Exception($errorMsg);
@@ -190,11 +190,11 @@ class OrmDB {
     */
 	public static final function createSequence($seqName){
 		//Be sure we initiate the db connector;
-		OrmDB::init();
+		OrmDb::init();
 		
 		OrmTrace::debug("createSequence({$seqName})");
 		
-		OrmDB::$db->CreateSequence($seqName);
+		OrmDb::$db->CreateSequence($seqName);
 	}
 	
 	/**
@@ -204,11 +204,11 @@ class OrmDB {
     */
 	public static final function dropSequence($seqName){
 		//Be sure we initiate the db connector;
-		OrmDB::init();
+		OrmDb::init();
 		
 		OrmTrace::debug("dropSequence({$seqName})");
 		
-		OrmDB::$db->DropSequence($seqName);
+		OrmDb::$db->DropSequence($seqName);
 		
 	}
 	
@@ -224,7 +224,7 @@ class OrmDB {
     */
 	public static final function createIndex($tableName, $listFields, $isUnique = false){
 		//Be sure we initiate the db connector;
-		OrmDB::init();
+		OrmDb::init();
 		
 		OrmTrace::debug("createIndex({$tableName}, {".implode(',',$listFields)."}, {$isUnique})");
 				
@@ -237,17 +237,17 @@ class OrmDB {
 			$md5 = md5($listFields);
 		}
 		if($isUnique){
-			$sqlarray = OrmDB::$dict->CreateIndexSQL($md5, $tableName, $idxflds, OrmDB::$idxoptarrayUnique);
+			$sqlarray = OrmDb::$dict->CreateIndexSQL($md5, $tableName, $idxflds, OrmDb::$idxoptarrayUnique);
 		} else {
-			$sqlarray = OrmDB::$dict->CreateIndexSQL($md5, $tableName, $idxflds);
+			$sqlarray = OrmDb::$dict->CreateIndexSQL($md5, $tableName, $idxflds);
 			//die(implode(",",$sqlarray));
 		}
 		
-		$result = OrmDB::$dict->executeSQLArray($sqlarray);
+		$result = OrmDb::$dict->executeSQLArray($sqlarray);
 		
 		if ($result === false){
 			OrmTrace::error($errorMsg);
-			OrmTrace::error(" > Mysql said : ".OrmDB::$db->ErrorMsg());
+			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The createIndex was made on : {$tableName} with the fields : {$listFields}");
 
 			throw new Exception($errorMsg);

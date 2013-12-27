@@ -147,11 +147,11 @@ class OrmCore {
 	public static final function createTable(OrmEntity &$entityParam) {
 	
 		$hql = OrmCore::getFieldsToHql($entityParam);
-		$result = OrmDB::createTable($entityParam->getDbname(), $hql);
+		$result = OrmDb::createTable($entityParam->getDbname(), $hql);
 				
 		//If necessary, it will create a sequence on the table.
 		if($entityParam->getSeqname() != null){
-			OrmDB::createSequence($entityParam->getSeqname());
+			OrmDb::createSequence($entityParam->getSeqname());
 		}
 		
 		//We manage the ("unique") indexes
@@ -159,7 +159,7 @@ class OrmCore {
 
 		//For each Field contained in the entity
 		foreach($indexes as $index) {
-			$result = OrmDB::createIndex($entityParam->getDbname(), $index['fields'], $index['unique']);
+			$result = OrmDb::createIndex($entityParam->getDbname(), $index['fields'], $index['unique']);
 		}
 
 		//We initiate the table.
@@ -174,11 +174,11 @@ class OrmCore {
     */
 	public static final function dropTable(OrmEntity &$entityParam) {
 
-		OrmDB::dropTable($entityParam->getDbname());
+		OrmDb::dropTable($entityParam->getDbname());
 
 		//If necessary, it will delete a sequence on the table.
 		if($entityParam->getSeqname() != null){
-			OrmDB::dropSequence($entityParam->getSeqname());
+			OrmDb::dropSequence($entityParam->getSeqname());
 		}
 	}  
   
@@ -273,7 +273,7 @@ class OrmCore {
 						throw new OrmIllegalArgumentException('Primary Key '.$field->getName().' can\'t be setted during insert operation for OrmEntity'.$entityParam->getName());
 					}
 				} else if(!$entityParam->isAutoincrement()){
-					$newId = OrmDB::genID($entityParam->getSeqname());
+					$newId = OrmDb::genID($entityParam->getSeqname());
 					$values[$field->getName()] = $newId;
 					$entityParam->set($field->getName(), $newId);
 				} else{
@@ -1194,150 +1194,6 @@ class OrmCore {
 
 		return;
 
-	}
-
-    /**
-     * Allow realise deep search on different type of OrmEntity linked together
-     * 
-     * Example : 
-     *   An Order has a link to a Customer (Order.customer_id)
-     *   A Customer has a link to an Address (Customer.addresse_id)
-     *   An Address has a link to a city (Address.city_id)
-	 *   A city has a ZipCode (maybe shared by different cities)
-     * 
-     *  If i want the Orders for Customers from the city with zipcode equals to "01234" or "4567" I could write some shitty code !
-     * 
-     * <code>
-     *  $cities = //Find my cities with ZipCode "01234" or "4567"
-     *  foreach($cities as $city)
-     *  {
-     *       $addresses = //Find the address for the city $city
-     *       foreach($addresses as $address)
-     *       {
-     *           $customers = //Find the Customers for the address $address
-     *           foreach($customers as $customer)
-     *           {
-     *               $commandes =  //Find Traitement de recherche d'une commande possèdant le numeroclient = $customer->get('numeroclient')   
-     *           }                   
-     *       }                  
-     *  }
-     * 
-     *  </code>
-     * 
-     *  I could also write a better code : 
-     * 
-     * <code>
-	 *   $order = MyAutoload::getInstance($this->GetName(), 'order');
-     *   $orders = OrmCore::makeDeepSearch(order, 'Order.customer_id.address_id.city_id.zipcode', array('01234', '4567'));
-     * </code>
-     * 
-     * @param OrmEntity The entity i want to have at the end
-     * @param string the path to fallow. Must be ended with the name of the Field to make the comparaison
-     * @param array the array of value to make the comparaison
-     * 
-     */
-	public static final function makeDeepSearch(OrmEntity $previousEntity, $cle, $values) {    
-		OrmTRACE::debug("# : "."Start makeDeepSearch() ".$previousEntity->getName()."->".$cle);
-
-		if($previousEntity == null)
-		{
-		  
-		  $newCle = explode('.',$cle,2);
-		  $previousEntity = $newCle[0];
-		  $cle = $newCle[1];
-		  $previousEntity = new $previousEntity();
-		}
-
-		$newCle = explode('.',$cle,2);
-		$fieldname = $newCle[0];
-
-		//Test de sortie : on a un seul résultat dans $newCle : le champs final
-		if(count($newCle) == 1)
-		{
-		  OrmTRACE::debug("# : "." count(\$newCle) == 1 , donc sortie ");
-		  $OrmExample = new OrmExample;
-		  $OrmExample->addCriteria($fieldname, OrmTypeCriteria::$IN, $values);
-		  $entitys = OrmCore::findByExample($previousEntity, $OrmExample);
-		  OrmTRACE::debug("# : ".count($entitys)." R&eacute;sultat(s) retourn&eacute;s");
-		  return $entitys;
-		} else
-		{
-		  OrmTRACE::debug("# : "." poursuite ");
-		}
-
-		//Récupération de la clé distance pour une FK
-		$field = $previousEntity->getFieldByName($fieldname);
-		if($field->isForeignKEY() || $field->isAssociateKey())
-		{
-		  $foreignKEY = explode('.',$field->getKEYName(),2);
-		  $nextEntity = new $foreignKEY[0]();
-		} 
-
-		if($field->isAssociateKey())
-		{
-		  $cle = explode('.',$newCle[1],2);
-		  $cle = $cle[1];
-		} else
-		{
-		  $cle = $newCle[1];
-		} 
-		
-		OrmTRACE::info("# : "." make new recherche : ".$nextEntity->getName() ." , ". $cle);
-
-		$entitys = OrmCore::makeDeepSearch($nextEntity, $cle, $values);
-
-		if(count($entitys) == 0)
-		{
-		  return array();
-		}
-
-		if($nextEntity instanceof OrmEntityAssociation)
-		{  
-		  $fields = $nextEntity->getFields();
-		  $nomFieldSuivit = explode('.',$cle,2);
-		  $nomFieldSuivit = $nomFieldSuivit[0];
-		  $nomFieldRetour = "N/A";
-		  foreach($fields as $afield)
-		  {
-			if($afield->getName() == $nomFieldSuivit)
-			{
-			  continue;
-			}
-			$nomFieldRetour = $afield;
-		  }
-		  
-		}
-
-		$ids = array();
-		foreach($entitys as $anEntity)
-		{
-		  OrmTRACE::info("On a trouv&eacute;  : ".$anEntity->getName()."");
-		  if($anEntity instanceof OrmEntityAssociation)
-		  {
-			$value = $anEntity->get($nomFieldRetour->getName());
-			$ids[] = $value;
-			OrmTRACE::info(" valeur assoc : ".$value." pour le champs ".$nomFieldRetour->getName());
-		  } else
-		  {
-			$value = $anEntity->get($nextEntity->getPk()->getName());
-			$ids[] = $value;
-			OrmTRACE::info(" valeur id : ".$value);
-		  }
-		  
-		}
-
-
-		$OrmExample = new OrmExample;
-		if($nextEntity instanceof OrmEntityAssociation)
-		{
-		  $OrmExample->addCriteria($previousEntity->getPk()->getName(), OrmTypeCriteria::$IN, $ids);
-		} else
-		{
-		  $OrmExample->addCriteria($fieldname, OrmTypeCriteria::$IN, $ids);
-		}
-		$entitys = OrmCore::findByExample($previousEntity, $OrmExample);
-
-		return $entitys;
 	}
   
 	/**

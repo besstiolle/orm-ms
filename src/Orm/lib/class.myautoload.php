@@ -60,10 +60,10 @@ final class MyAutoload
 	{
 		$namespace = strtolower($namespace);
 		$instanceName = strtolower($instanceName);
-		myAutoload::isValideNamespace($namespace);
+		MyAutoload::isValideNamespace($namespace);
 		
 		OrmTrace::debug("Asking an instance of ".$instanceName. " for namespace ".$namespace);
-		if(myAutoload::hasInstance($namespace, $instanceName))
+		if(MyAutoload::hasInstance($namespace, $instanceName))
 		{
 			OrmTrace::debug("Instance ".$instanceName." returned.");
 			return clone self::$instances[$namespace][$instanceName];
@@ -85,7 +85,7 @@ final class MyAutoload
 		$namespace = strtolower($namespace);
 		$instanceName = strtolower($instanceName);
 		
-		myAutoload::isValideNamespace($namespace);
+		MyAutoload::isValideNamespace($namespace);
 		
 		return isset(self::$instances[$namespace][$instanceName]);
 	}
@@ -101,7 +101,7 @@ final class MyAutoload
 	public final static function getAllInstances($namespace)
 	{
 		$namespace = strtolower($namespace);
-		myAutoload::isValideNamespace($namespace);
+		MyAutoload::isValideNamespace($namespace);
 		
 		return self::$instances[$namespace];
 	}

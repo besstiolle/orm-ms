@@ -108,7 +108,7 @@ abstract class OrmEntity
 		$this->dbname = cms_db_prefix().OrmEntity::$_CONST_MOD.'_'.$prefixe.'_'.$this->dbname;
 		
 		// We add an instance of our-serf into the autoload
-		myAutoload::addInstance($this->moduleName,$this);
+		MyAutoload::addInstance($this->moduleName,$this);
 	}
 	
     /**

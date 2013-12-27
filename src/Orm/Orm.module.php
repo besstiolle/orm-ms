@@ -152,7 +152,7 @@ class Orm extends CMSModule {
 	public function autoload_classes($classname){
 		$Orm = new Orm();
 		$path = $Orm->GetMyModulePath();
-		$fn = cms_join_path($path,"lib","class.".strtolower($classname).".php");
+		$fn = cms_join_path($path,"lib","class.".$classname.".php");
 		
 		if(file_exists($fn)){
 			require_once($fn);

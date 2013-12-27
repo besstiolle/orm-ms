@@ -3,14 +3,14 @@
 if (!function_exists("cmsms")) exit;
 
 if (isset($params['deleteLog'])){
-	if(file_exists(OrmTRACE::getLogFile())){
-		unlink(OrmTRACE::getLogFile());
+	if(file_exists(OrmTrace::getLogFile())){
+		unlink(OrmTrace::getLogFile());
 	}
 	OrmTrace::info("Reinitiate the log file");
 } elseif (isset($params['deleteCache'])){
 
 	$cache = OrmCache::getInstance();
-	$cache::clearCache();
+	$cache->clearCache();
 	OrmTrace::info("Reinitiate the cache content");
 } else if (isset($params['level']) || isset($params['cache']) ){
 	$this->SetPreference('loglevel', $params['level']);
@@ -18,7 +18,7 @@ if (isset($params['deleteLog'])){
 	
 	//We reload the cache anyway
 	$cache = OrmCache::getInstance();
-	$cache::clearCache();
+	$cache->clearCache();
 	
 	OrmTrace::info("Initiate the cache content");
 }
