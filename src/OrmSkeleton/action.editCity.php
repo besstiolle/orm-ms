@@ -19,6 +19,7 @@ if(!empty($params['city_id'])){
 
 $formStart = $this->CreateFormStart($id, 'editCitySave');
 $submit = $this->CreateInputSubmit($id, 'submit', 'submit');
+$return = $this->CreateLink($id, 'defaultadmin', $returnid, 'cancel',null,null,null,null,"class='pageback ui-state-default ui-corner-all'" );
 
 $error = '';
 if(!empty($params['error'])) {
@@ -47,5 +48,5 @@ $selectCountries = $this->CreateInputDropdown($id, 'country', $items, -1, $selec
 
 	<label for='labelCity'>label of the city : </label><input type='text' name='<?php echo $id; ?>labelCity' value='<?php echo $this->securize($city->get('labelCity')); ?>' /><br/>
 	<label for='country'>country : </label><?php echo $selectCountries; ?><br/>
-	<?php echo $submit; ?>
+	<?php echo $submit; echo $return; ?>
 </form>

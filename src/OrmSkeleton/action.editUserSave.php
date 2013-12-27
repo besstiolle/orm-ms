@@ -11,15 +11,22 @@ if(!empty($params['user_id'])){
 	$user->set('date_creation', date('Y-m-d H:i:s'));
 	$user->set('hour_last_modification', date('H:i:s'));
 }	
+
 if(!empty($params['login'])){
 	$user->set('login', $params['login']);
+} else {
+	$user->set('login', null);
 }
 if(!empty($params['name'])){
 	$user->set('name', $params['name']);
+} else {
+	$user->set('name', null);
 }
 if(!empty($params['description'])){
 	$user->set('description', $params['description']);
-}	
+} else {
+	$user->set('description', null);
+}
 
 try{
 	// We simply save the entity

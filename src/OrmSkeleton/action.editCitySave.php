@@ -7,12 +7,17 @@ if(!empty($params['city_id'])){
 	$city = OrmCore::findById(new CitySkeleton(), $params['city_id']);
 } else {
 	$city = new CitySkeleton();
-}	
+}
+	
 if(!empty($params['labelCity'])){
 	$city->set('labelCity', $params['labelCity']);
+} else {
+	$city->set('labelCity', null);
 }
 if(!empty($params['country'])){
 	$city->set('country', $params['country']);
+} else {
+	$city->set('country', null);
 }
 
 try{

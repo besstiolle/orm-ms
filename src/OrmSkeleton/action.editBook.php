@@ -19,6 +19,7 @@ if(!empty($params['book_id'])){
 
 $formStart = $this->CreateFormStart($id, 'editBookSave');
 $submit = $this->CreateInputSubmit($id, 'submit', 'submit');
+$return = $this->CreateLink($id, 'defaultadmin', $returnid, 'cancel',null,null,null,null,"class='pageback ui-state-default ui-corner-all'" );
 
 $error = '';
 if(!empty($params['error'])) {
@@ -34,5 +35,5 @@ if(!empty($params['error'])) {
 	<label for='title'>Title : </label><input type='text' name='<?php echo $id; ?>title' value='<?php echo $this->securize($book->get('title')); ?>' /><br/>
 	<label for='description'>Description : </label><input type='text' name='<?php echo $id; ?>description' value='<?php echo $this->securize($book->get('description')); ?>' /><br/>
 	<label for='uuid'>UUID : </label><input type='text' name='<?php echo $id; ?>uuid' value='<?php echo $this->securize($book->get('uuid')); ?>' /> example : <?php echo OrmCore::generateUUID(); ?><br/>
-	<?php echo $submit; ?>
+	<?php echo $submit; echo $return; ?>
 </form>

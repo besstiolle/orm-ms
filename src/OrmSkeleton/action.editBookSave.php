@@ -8,14 +8,21 @@ if(!empty($params['book_id'])){
 } else {
 	$book = new BookSkeleton();
 }	
+
 if(!empty($params['title'])){
 	$book->set('title', $params['title']);
+} else {
+	$book->set('title', null);
 }
 if(!empty($params['description'])){
 	$book->set('description', $params['description']);
+} else {
+	$book->set('description', null);
 }	
 if(!empty($params['uuid'])){
 	$book->set('uuid', $params['uuid']);
+} else {
+	$book->set('uuid', null);
 }	
 
 try{

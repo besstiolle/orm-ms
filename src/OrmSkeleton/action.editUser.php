@@ -19,6 +19,7 @@ if(!empty($params['user_id'])){
 
 $formStart = $this->CreateFormStart($id, 'editUserSave');
 $submit = $this->CreateInputSubmit($id, 'submit', 'submit');
+$return = $this->CreateLink($id, 'defaultadmin', $returnid, 'cancel',null,null,null,null,"class='pageback ui-state-default ui-corner-all'" );
 
 $error = '';
 if(!empty($params['error'])) {
@@ -37,5 +38,5 @@ if(!empty($params['error'])) {
 	<label for='login'>Login : </label><input type='text' name='<?php echo $id; ?>login' value='<?php echo $this->securize($user->get('login')); ?>' /><br/>
 	<label for='name'>Name : </label><input type='text' name='<?php echo $id; ?>name' value='<?php echo $this->securize($user->get('name')); ?>' /><br/>
 	<label for='description'>Description : </label><textarea name='<?php echo $id; ?>description' ><?php echo $this->securize($user->get('description')); ?></textarea><br/>
-	<?php echo $submit; ?>
+	<?php echo $submit; echo $return; ?>
 </form>

@@ -19,6 +19,7 @@ if(!empty($params['country_id'])){
 
 $formStart = $this->CreateFormStart($id, 'editCountrySave');
 $submit = $this->CreateInputSubmit($id, 'submit', 'submit');
+$return = $this->CreateLink($id, 'defaultadmin', $returnid, 'cancel',null,null,null,null,"class='pageback ui-state-default ui-corner-all'" );
 
 $error = '';
 if(!empty($params['error'])) {
@@ -32,5 +33,5 @@ if(!empty($params['error'])) {
 <?php echo $formStart; ?>
 	<input type='hidden' name='<?php echo $id; ?>country_id' value='<?php echo $this->securize($country->get('country_id')); ?>' />
 	<label for='labelCountry'>Label of the Country : </label><input type='text' name='<?php echo $id; ?>labelCountry' value='<?php echo $this->securize($country->get('labelCountry')); ?>' /><br/>
-	<?php echo $submit; ?>
+	<?php echo $submit; echo $return; ?>
 </form>

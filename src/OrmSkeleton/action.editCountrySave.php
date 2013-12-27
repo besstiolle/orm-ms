@@ -11,6 +11,8 @@ if(!empty($params['country_id'])){
 
 if(!empty($params['labelCountry'])){
 	$country->set('labelCountry', $params['labelCountry']);
+} else {
+	$country->set('labelCountry', null);
 }
 
 //TODO cities
