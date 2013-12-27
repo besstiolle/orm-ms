@@ -2,11 +2,17 @@
 
 if (!function_exists("cmsms")) exit;
 
+//CONSTANTES
+$itemsLog = array("DEBUG"=>OrmTRACE::$DEBUG, "INFO"=>OrmTRACE::$INFO,"WARN"=>OrmTRACE::$WARN,"ERROR"=>OrmTRACE::$ERROR);
+$itemsCache = array("NONE"=>OrmCache::$NONE, "SCRIPT"=>OrmCache::$SCRIPT);
+
 $currentLevelLog = $this->GetPreference('loglevel', OrmTRACE::$INFO);
 $currentTypeCache = $this->GetPreference('cacheType', OrmCache::$NONE);
 
-$itemsLog = array("DEBUG"=>OrmTRACE::$DEBUG, "INFO"=>OrmTRACE::$INFO,"WARN"=>OrmTRACE::$WARN,"ERROR"=>OrmTRACE::$ERROR);
-$itemsCache = array("NONE"=>OrmCache::$NONE, "SCRIPT"=>OrmCache::$SCRIPT);
+//Initiate the file of log
+if(!file_exists(OrmTRACE::getLogFile())){
+	OrmTrace::info("Initiate the log file");;
+}
 
 $smarty = cmsms()->GetSmarty();
 $smarty->assign("id",$id);
