@@ -254,7 +254,12 @@ class OrmCore {
 			if($field->isAssociateKEY()) {
 				continue;
 			}
-
+						
+			//We don't insert the transient Fields 
+			if($field->getType() == OrmCAST::$NONE) {
+				continue;
+			}
+			
 			if(!empty($str1)) {
 				$str1 .= ',';
 				$str2 .= ',';
@@ -397,6 +402,11 @@ class OrmCore {
 		//All the required values must be present
 		foreach($listeField as $field) {
 		
+			//We don't update the transient Fields 
+			if($field->getType() == OrmCAST::$NONE) {
+				continue;
+			}
+
 			//if the field is empty and we have a default value we set it manually
 			if(empty($values[$field->getName()]) && $field->getDefaultValue() != null){
 				$values[$field->getName()] = $field->getDefaultValue();
@@ -1099,7 +1109,7 @@ class OrmCore {
      * @see OrmCAST
      */
 	private static final function FieldToDBValue($data, $type) {
-		if($data == null){
+		if(is_null($data)){
 			return null;
 		}
 		
