@@ -11,7 +11,7 @@
 	<br/>
 	{$submit}
 	<h3>Select the level of message into the console</h3>
-		{$selectLog}{$deleteLog}<label for='{$id}level' class='help' />Learn more about these options on <a href='#' target='_blank'>the wiki</a>.</label>
+		{$selectLog}{$deleteLog}<label for='{$id}level' class='help' />Learn more about these options on <a href='https://github.com/besstiolle/orm-ms/wiki/log-management' target='_blank'>the wiki</a>.</label>
 	<br/>
 	{$submit}
 </form>
