@@ -115,7 +115,7 @@ class OrmCacheScript extends OrmCache {
 	 *  In the Orm system, we always drop the cache in the insert/delete/update function.
 	 */	
 	public function clearCache() {
-		self::$cache=null;
+		self::$cache = array();
 	}
 
 }
