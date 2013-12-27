@@ -936,7 +936,7 @@ class OrmCore {
 									$params,
 									"Database error during OrmCore::findByExample(OrmEntity &{$entityParam->getName()}, , OrmExample \$example)");
 
-			OrmTrace::info("findByExample : ".$result->RecordCount()." resultat(s)");
+			OrmTrace::debug("findByExample : ".$result->RecordCount()." resultat(s)");
 			
 			$entities = OrmCore::_processArrayEntity($entityParam, $result);
 			
