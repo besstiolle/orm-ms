@@ -25,11 +25,11 @@ class OrmSkeleton extends Orm
 	}
 
 	function GetVersion() {
-		return '0.2.0';
+		return '0.2.1';
 	}
 
 	function GetDependencies() {
-		return array('Orm'=>'0.2.0');
+		return array('Orm'=>'0.2.1');
 	}
 
 	function GetHelp() {
