@@ -20,7 +20,7 @@ if (isset($params['deleteLog'])){
 	$cache = OrmCache::getInstance();
 	$cache::clearCache();
 	
-	OrmTrace::info("Reinitiate the cache content");
+	OrmTrace::info("Initiate the cache content");
 }
 
 $this->redirect($id,'defaultadmin');
