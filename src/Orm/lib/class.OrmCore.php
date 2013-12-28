@@ -858,11 +858,6 @@ class OrmCore {
 			|| $criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE) {  
 			$val = $criteria->paramsCriteria[0];
 			
-			if($criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE)
-			{
-			  $val.= '%';
-			}
-			
 			$params[] = OrmCore::FieldToDBValue($val, $filterType); 
 			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? ';
 			continue;
