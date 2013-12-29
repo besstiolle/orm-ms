@@ -413,7 +413,7 @@ class OrmCore {
 			} 
 		
 			//If it's not set
-			if(empty($values[$field->getName()])) {
+			if(is_null(($values[$field->getName()]))) {
 			
 				//If it's a primaryKey we throw a exception
 				if($field->isPrimaryKEY()) {
