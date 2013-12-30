@@ -2,7 +2,7 @@
 /**
  * Contains the class OrmDb
  * 
- * @since 0.0.1
+ * @since 0.1.2
  * @author Bess
  * @package Orm
  **/
@@ -44,7 +44,7 @@ class OrmDb {
     * @param string the message of error to display to the user
     * @return the adodb result
 	*
-	* @exception Exception if the query failed
+	* @exception OrmSqlException if the query failed
     */
 	public static final function execute($query, $parameters = null, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
@@ -61,7 +61,7 @@ class OrmDb {
 			if($parameters != null){
 				OrmTrace::error(" > The Parameters was : ".print_r($parameters, true));
 			}
-			throw new Exception($errorMsg);
+			throw new OrmSqlException($errorMsg);
 		}
 		
 		return $result;
@@ -75,7 +75,7 @@ class OrmDb {
     * @param string the message of error to display to the user
     * @return the adodb result
 	*
-	* @exception Exception if the query failed
+	* @exception OrmSqlException if the query failed
     */
 	public static final function getOne($query, $parameters = null, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
@@ -92,7 +92,7 @@ class OrmDb {
 			if($parameters != null){
 				OrmTrace::error(" > The Parameters was : ".print_r($parameters, true));
 			}
-			throw new Exception($errorMsg);
+			throw new OrmSqlException($errorMsg);
 		}
 		
 		return $result;
@@ -105,7 +105,7 @@ class OrmDb {
     * @param string the message of error to display to the user
     * @return the adodb result
 	*
-	* @exception Exception if the query failed
+	* @exception OrmSqlException if the query failed
     */
 	public static final function genID($seqname, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
@@ -118,7 +118,7 @@ class OrmDb {
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The GenId was made on : ".$seqname);
 
-			throw new Exception($errorMsg);
+			throw new OrmSqlException($errorMsg);
 		}
 		
 		return $result;
@@ -131,7 +131,7 @@ class OrmDb {
     * @param string the hql information about the fields
     * @return the adodb result
 	*
-	* @exception Exception if the query failed
+	* @exception OrmSqlException if the query failed
     */
 	public static final function createTable($tableName, $hql) {
 		//Be sure we initiate the db connector;
@@ -149,7 +149,7 @@ class OrmDb {
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The CreateTable was made on : {$tableName} with {$hql} parameters");
 
-			throw new Exception($errorMsg);
+			throw new OrmSqlException($errorMsg);
 		}
 		
 		return $result;
@@ -161,7 +161,7 @@ class OrmDb {
     * @param string the hql information about the fields
     * @return the adodb result
 	*
-	* @exception Exception if the query failed
+	* @exception OrmSqlException if the query failed
     */
 	public static final function dropTable($tableName) {
 		//Be sure we initiate the db connector;
@@ -177,7 +177,7 @@ class OrmDb {
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The DropTable was made on : {$tableName}");
 
-			throw new Exception($errorMsg);
+			throw new OrmSqlException($errorMsg);
 		}
 		
 		return $result;
@@ -220,7 +220,7 @@ class OrmDb {
     * @param boolean true if the index must be UNIQUE
     * @return the adodb result
 	*
-	* @exception Exception if the query failed
+	* @exception OrmSqlException if the query failed
     */
 	public static final function createIndex($tableName, $listFields, $isUnique = false){
 		//Be sure we initiate the db connector;
@@ -250,7 +250,7 @@ class OrmDb {
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The createIndex was made on : {$tableName} with the fields : {$listFields}");
 
-			throw new Exception($errorMsg);
+			throw new OrmSqlException($errorMsg);
 		}
 		
 		return $result;
