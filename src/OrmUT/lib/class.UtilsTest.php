@@ -23,6 +23,15 @@ class UtilsTest{
 		echo "<p class='$class'>we expected value being null</p>";
 	}
 	
+	public static function assertIsNotNull($result){
+		if(null != $result){
+			$class = UtilsTest::$cssSuccess;
+		} else {
+			$class = UtilsTest::$cssError;
+		}
+		echo "<p class='$class'>we expected value being not null</p>";
+	}
+	
 
 }
 
