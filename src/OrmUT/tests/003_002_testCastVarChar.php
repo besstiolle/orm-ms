@@ -1,5 +1,5 @@
 
-<p class='title'>Test #11 : Test the Cast Mapping with varchar ?</p>
+<p class='title'>003/002 : Test the Cast Mapping with varchar ?</p>
 <?php
 	
 	//First, drop the table, recreate it

@@ -61,6 +61,14 @@ function load(&$mod, $pattern){
 	}
 }
 
+function reinitAllTables($mod){
+	$entities = $mod->getAllInstances();
+	foreach($entities as $anEntity) {
+		OrmCore::dropTable($anEntity);
+		OrmCore::createTable($anEntity);
+	}
+}
+
 ?>
 
 <h2>Loading the classes</h2><?php load($this, "000_*.php"); ?>

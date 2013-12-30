@@ -1,5 +1,5 @@
 
-<p class='title'>Test #1 : does Entities from /lib are loaded ?</p>
+<p class='title'>000/001 : does Entities from /lib are loaded ?</p>
 
 <?php
 	$entities = $mod->getAllInstances();

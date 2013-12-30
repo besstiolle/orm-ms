@@ -1,5 +1,5 @@
 
-<p class='title'>Test #10 : Test the Cast Mapping with date, time & datetime ?</p>
+<p class='title'>003/001 : Test the Cast Mapping with date, time & datetime ?</p>
 <?php
 	
 	//First, drop the table, recreate it

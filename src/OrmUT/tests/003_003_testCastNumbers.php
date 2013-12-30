@@ -1,5 +1,5 @@
 
-<p class='title'>Test #12 : Test the Cast Mapping with numbers ?</p>
+<p class='title'>003/003 : Test the Cast Mapping with numbers ?</p>
 <?php
 	
 	//First, drop the table, recreate it

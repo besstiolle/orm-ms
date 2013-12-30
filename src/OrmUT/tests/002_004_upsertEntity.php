@@ -1,5 +1,5 @@
 
-<p class='title'>Test #9 : can I also save directly a Entity with OrmEntity->save() ?</p>
+<p class='title'>002/004 : can I also save directly a Entity with OrmEntity->save() ?</p>
 <?php
 	
 	$country4 = new CountryOrmUT();

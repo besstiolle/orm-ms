@@ -1,5 +1,5 @@
 
-<p class='title'>Test #3 : do we have all the tables created ?</p>
+<p class='title'>001/002 : do we have all the tables created ?</p>
 <?php
 	$requete = "SHOW TABLES FROM `".$config['db_name']."` LIKE '%_module_ormut_%'";
 	$result = $db->execute($requete);
