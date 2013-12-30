@@ -16,7 +16,7 @@
  * @author Bess
  * @package Orm
  **/
-/*final */class OrmCriteria
+class OrmCriteria
 {
 	/**
 	 * Name of the field 

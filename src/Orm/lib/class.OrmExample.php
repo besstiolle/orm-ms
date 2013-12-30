@@ -15,7 +15,7 @@
  * @author Bess
  * @package Orm
  **/
-final class OrmExample {
+class OrmExample {
 
 	private $Criterias = array();
 	
