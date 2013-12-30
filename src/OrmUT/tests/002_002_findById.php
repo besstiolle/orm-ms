@@ -1,5 +1,5 @@
 
-<h2>Test #6 : Also, does values are correctly saved ?</h2>
+<p class='title'>Test #6 : Also, does values are correctly saved ?</p>
 <?php
 	$country3 = OrmCore::findById(new CountryOrmUT(),3);
 		

@@ -1,5 +1,5 @@
 
-<h2>Test #7 : Can we made some update ?</h2>
+<p class='title'>Test #7 : Can we made some update ?</p>
 <?php
 	$country3->set('label', 'Belgium');
 	$country3->set('iso_code', 'be');

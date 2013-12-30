@@ -1,5 +1,5 @@
 
-<h2>Test #4 : do we have all the sequences created ?</h2>
+<p class='title'>Test #4 : do we have all the sequences created ?</p>
 <?php
 	$requete = "SHOW TABLES FROM `".$config['db_name']."` LIKE '%_module_ormut_%_seq'";
 	$result = $db->execute($requete);

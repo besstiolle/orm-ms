@@ -1,5 +1,5 @@
 
-<h2>Test #10 : Test the Cast Mapping with date, time & datetime ?</h2>
+<p class='title'>Test #10 : Test the Cast Mapping with date, time & datetime ?</p>
 <?php
 	
 	//First, drop the table, recreate it
@@ -25,7 +25,7 @@
 		$cast->save();
 		echo "<p class='$cssSuccess'>saving entity with success</p>";
 	} catch (Exception $o){
-		echo "<p class='$cssSuccess'>Exsception during \$cast->save()</p>";
+		echo "<p class='$cssError'>Exsception during \$cast->save()</p>";
 	}
 	
 	// DATE null ?

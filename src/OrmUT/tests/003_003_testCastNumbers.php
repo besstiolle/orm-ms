@@ -1,5 +1,5 @@
 
-<h2>Test #12 : Test the Cast Mapping with numbers ?</h2>
+<p class='title'>Test #12 : Test the Cast Mapping with numbers ?</p>
 <?php
 	
 	//First, drop the table, recreate it

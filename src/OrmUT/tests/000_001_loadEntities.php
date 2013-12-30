@@ -1,8 +1,8 @@
 
-<h2>Test #1 : does Entities from /lib are loaded ?</h2>
+<p class='title'>Test #1 : does Entities from /lib are loaded ?</p>
 
 <?php
-	$entities = $this->getAllInstances();
+	$entities = $mod->getAllInstances();
 	
 	$expected = 7;
 	$result = count($entities);

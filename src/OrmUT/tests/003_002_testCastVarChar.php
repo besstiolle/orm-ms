@@ -1,5 +1,5 @@
 
-<h2>Test #11 : Test the Cast Mapping with varchar ?</h2>
+<p class='title'>Test #11 : Test the Cast Mapping with varchar ?</p>
 <?php
 	
 	//First, drop the table, recreate it
@@ -79,7 +79,7 @@
 		$cast->save();
 		echo "<p class='$cssSuccess'>saving entity with success</p>";
 	} catch (Exception $o){
-		echo "<p class='$cssSuccess'>Exception during \$cast->save()</p>";
+		echo "<p class='$cssError'>Exception during \$cast->save()</p>";
 	}
 	
 	//

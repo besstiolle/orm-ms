@@ -1,5 +1,5 @@
 
-<h2>Test #5 : can we save some entities ?</h2>
+<p class='title'>Test #5 : can we save some entities ?</p>
 <?php
 	$country1 = new CountryOrmUT();
 	$country1->set('label', 'France');
