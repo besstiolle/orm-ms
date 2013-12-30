@@ -28,10 +28,10 @@ class OrmCore {
     * @param OrmEntity the entity
     * @return the adodb informations
     */
-	private static final function getFieldsToHql(OrmEntity &$entity) {    
+	private static final function _getFieldsToHql(OrmEntity &$entityParam) {    
 		$hql = '';
 
-		$listeField = $entity->getFields();
+		$listeField = $entityParam->getFields();
 
 		//For each Field contained in the entity
 		foreach($listeField as $field) {
@@ -84,7 +84,7 @@ class OrmCore {
 			}
 
 			if($field->isPrimaryKEY()) {
-				if($entity->isAutoincrement()) {
+				if($entityParam->isAutoincrement()) {
 					$hql .= ' KEY AUTO';
 				} else {
 					$hql .= ' KEY ';
@@ -146,7 +146,7 @@ class OrmCore {
     */
 	public static final function createTable(OrmEntity &$entityParam) {
 	
-		$hql = OrmCore::getFieldsToHql($entityParam);
+		$hql = OrmCore::_getFieldsToHql($entityParam);
 		$result = OrmDb::createTable($entityParam->getDbname(), $hql);
 				
 		//If necessary, it will create a sequence on the table.
@@ -304,7 +304,7 @@ class OrmCore {
 			$val = null;
 			if(isset($values[$field->getName()]))
 			{
-				$params[] = OrmCore::FieldToDBValue($values[$field->getName()], $field->getType());
+				$params[] = OrmCore::_fieldToDBValue($values[$field->getName()], $field->getType());
 			} else {
 				$params[] = null;
 			}
@@ -455,7 +455,7 @@ class OrmCore {
 
 			$str .= ' '.$field->getName().' = ? ';
 
-			$params[] = OrmCore::FieldToDBValue($values[$field->getName()], $field->getType());
+			$params[] = OrmCore::_fieldToDBValue($values[$field->getName()], $field->getType());
 
 		}
 		
@@ -566,7 +566,7 @@ class OrmCore {
 		  }
 		  
 		  $where .= $name.' = ?';
-		  $params[] = OrmCore::FieldToDBValue($sid, $type);  
+		  $params[] = OrmCore::_fieldToDBValue($sid, $type);  
 		}
 
 
@@ -786,7 +786,7 @@ class OrmCore {
 				|| $criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE) {  
 				$val = $criteria->paramsCriteria[0];
 				
-				$params[] = OrmCore::FieldToDBValue($val, $filterType); 
+				$params[] = OrmCore::_fieldToDBValue($val, $filterType); 
 				$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? ';
 				continue;
 			}
@@ -799,8 +799,8 @@ class OrmCore {
 
 			//2 parameters
 			if($criteria->typeCriteria == OrmTypeCriteria::$BETWEEN) {  
-				$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[0], $filterType); 
-				$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[1], $filterType); 
+				$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[0], $filterType); 
+				$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[1], $filterType); 
 				$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
 				continue;
 			}
@@ -814,7 +814,7 @@ class OrmCore {
 						$hql .= ' OR ';
 					}
 
-					$params[] = OrmCore::FieldToDBValue($param, $filterType); 
+					$params[] = OrmCore::_fieldToDBValue($param, $filterType); 
 					$hql .= $criteria->fieldname.OrmTypeCriteria::$EQ.' ? ';
 
 					$second = true;
@@ -934,7 +934,7 @@ class OrmCore {
 			|| $criteria->typeCriteria == OrmTypeCriteria::$BEFORE || $criteria->typeCriteria == OrmTypeCriteria::$AFTER
 			|| $criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE)
 		  {  
-			$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[0], $filterType); 
+			$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[0], $filterType); 
 			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? ';
 			continue;
 		  }
@@ -949,8 +949,8 @@ class OrmCore {
 				// 2 paramètres  
 		  if($criteria->typeCriteria == OrmTypeCriteria::$BETWEEN)
 		  {  
-			$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[0], $filterType); 
-			$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[1], $filterType); 
+			$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[0], $filterType); 
+			$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[1], $filterType); 
 			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
 			continue;
 		  }
@@ -966,7 +966,7 @@ class OrmCore {
 						{
 							$hql .= ' OR ';
 						}
-						$params[] = OrmCore::FieldToDBValue($param, $filterType); 
+						$params[] = OrmCore::_fieldToDBValue($param, $filterType); 
 						$hql .= $criteria->fieldname.OrmTypeCriteria::$EQ.' ? ';
 						
 						$second = true;
@@ -1017,7 +1017,7 @@ class OrmCore {
 		{
 		  if(!$field->isAssociateKEY())
 		  {
-			$newEntity->set($field->getName(),OrmCore::dbValueToField($row[$field->getName()], $field->getType()));
+			$newEntity->set($field->getName(),OrmCore::_dbValueToField($row[$field->getName()], $field->getType()));
 		  } 
 		}
 		return $newEntity;  
@@ -1031,7 +1031,7 @@ class OrmCore {
      * 
      * @see OrmCAST
      */
-	private static final function FieldToDBValue($data, $type) {
+	private static final function _fieldToDBValue($data, $type) {
 		if(is_null($data)){
 			return null;
 		}
@@ -1059,7 +1059,7 @@ class OrmCore {
      * 
      * @see OrmCAST
      */
-	private static final function dbValueToField($data, $type) {
+	private static final function _dbValueToField($data, $type) {
 		switch($type) {
 		  case OrmCAST::$STRING : return $data;		  
 		  case OrmCAST::$DOUBLE : return $data;
@@ -1087,8 +1087,8 @@ class OrmCore {
 	 *
 	 * @return a message if a link is still present. nothing if the integrity is ok
      */
-	public static final function verifIntegrity(OrmEntity &$entity, $sid) {
-		$listeEntitys = MyAutoload::getAllInstances($entity->getModuleName());
+	public static final function verifIntegrity(OrmEntity &$entityParam, $sid) {
+		$listeEntitys = MyAutoload::getAllInstances($entityParam->getModuleName());
 
 		foreach($listeEntitys as $key=>$anEntity) {
 		  if($anEntity instanceOf OrmEntityAssociation)
@@ -1102,7 +1102,7 @@ class OrmCore {
 			if($field->getKEYName() != null) {
 			  $vals = explode('.',$field->getKEYName(),2);
 			  
-			  if(strtolower ($vals[0]) == strtolower ($entity->getName()))  {
+			  if(strtolower ($vals[0]) == strtolower ($entityParam->getName()))  {
 				$OrmExample = new OrmExample();
 				$OrmExample->addCriteria($field->getName(), OrmTypeCriteria::$EQ, array($sid));
 				$entitys = OrmCore::findByExample($anEntity, $OrmExample);
