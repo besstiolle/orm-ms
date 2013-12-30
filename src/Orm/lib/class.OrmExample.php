@@ -9,22 +9,21 @@
  
  
 /**
- * Represents a group of differents OrmCriteria (Criterias) to process a search "By Example" on a OrmEntity in Database
+ * Represents a group of different OrmCriteria (Criterias) to process a search "By Example" on a OrmEntity in Database
  *
  * @since 0.0.1
  * @author Bess
  * @package Orm
  **/
-final class OrmExample 
-{
+final class OrmExample {
+
 	private $Criterias = array();
 	
     /**
     * Public Constructor
     * 
     */
-	public function __construct()
-	{
+	public function __construct() {
 	}
 	
     
@@ -34,14 +33,12 @@ final class OrmExample
     * @param string Name of the field 
     * @param OrmTypeCriteria Type of Criteria
     * @param array all the parameters used for the parameter $typeCriteria
-    * @param boolean [Optionnal] if we must ignore the case (aze equals AZE) or not. Default value is "false"
+    * @param boolean [Optional] if we must ignore the case (aze equals AZE) or not. Default value is "false"
     * 
     * @see OrmTypeCriteria
     */
-	public function addCriteria($fieldname, $typeCriteria, $paramsCriteria, $ignoreCase = false)
-	{
-		if(!is_array($paramsCriteria))
-		{
+	public function addCriteria($fieldname, $typeCriteria, $paramsCriteria, $ignoreCase = false) {
+		if(!is_array($paramsCriteria)) {
 			throw new Exception("the parameter \$paramsCriteria for the Criteria of the Field [".$fieldname."] must be an array");
 		}
 		

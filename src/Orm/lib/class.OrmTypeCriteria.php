@@ -16,8 +16,7 @@
  * @author Bess
  * @package Orm
  **/
-class OrmTypeCriteria
-{
+class OrmTypeCriteria {
     /**
     * Is equals to
     * 

@@ -627,37 +627,7 @@ class OrmCore {
     * @return array<OrmEntity> list of Entities found
     */
 	public static final function findAll(OrmEntity &$entityParam, OrmOrderBy &$orderBy=null, OrmLimit &$limit = null) {
-
-		$querySelect = 'SELECT * FROM '.$entityParam->getDbname();
-
-		// Order By 
-		if($orderBy != null) {
-			$querySelect .= $orderBy->getOrderBy();
-		}
-		else if($entityParam->getDefaultOrderBy() != null) {
-			$querySelect .= $entityParam->getDefaultOrderBy()->getOrderBy();
-		}
-				
-		if($limit != null) {
-			$querySelect .= $limit->getLimit();
-		}
-		
-		//If it's already in the cache, we return the result
-		if(OrmCache::getInstance()->isCache($querySelect)) {
-			$entities = OrmCache::getInstance()->getCache($querySelect);
-		} else {
-			//Execution
-			$result = OrmDb::execute($querySelect,
-									null,
-									"Database error during OrmCore::findAll(OrmEntity &{$entityParam->getName()})");
-
-			$entities = OrmCore::_processArrayEntity($entityParam, $result);
-			
-			//We push the result into the cache before return it
-			OrmCache::getInstance()->setCache($querySelect, null, $entities);
-		}
-		
-		return array_values($entities);
+		return OrmCore::findByExample($entityParam, new OrmExample(), $orderBy, $limit);
 	}
 	
 	/**
@@ -720,7 +690,7 @@ class OrmCore {
 	* Return a OrmEntity from its Id
 	* 
 	* @param OrmEntity an instance of the entity  
-	* @param int the Id to find
+	* @param mixed the Id to find
 	* @return OrmEntity the OrmEntity found or NULL
 	*/
 	public static final function findById(OrmEntity &$entityParam, $id) {
@@ -743,53 +713,12 @@ class OrmCore {
 	*/
 	public static final function findByIds(OrmEntity &$entityParam, $ids, OrmOrderBy &$orderBy=null) {
 		if(count($ids) == 0)
-		  return array();
-			
-		$listeField = $entityParam->getFields();
-		$where = "";
-			
-		foreach($listeField as $field) {
-		  if(!$field->isPrimaryKEY()) { 
-			continue;
-		  }
-		  
-		  foreach($ids as $id) {
-			if(!empty($where)) {
-			  $where .= ' OR ';
-			}
-				  
-			$where .= $field->getName().' = ?';
-			$params[] = OrmCore::FieldToDBValue($id, $field->getType());
-		  }
-		}
+			return array();
 
-		$querySelect = 'SELECT * FROM '.$entityParam->getDbname().' WHERE '.$where;
-		
-		// Order By 
-		if($orderBy != null) {
-			$querySelect .= $orderBy->getOrderBy();
-		}
-		else if($entityParam->getDefaultOrderBy() != null) {
-			$querySelect .= $entityParam->getDefaultOrderBy()->getOrderBy();
-		}
-		
-		//If it's already in the cache, we return the result
-		if(OrmCache::getInstance()->isCache($querySelect, $params)) {
-		  $entities = OrmCache::getInstance()->getCache($querySelect,$params);
-		} else {
-			
-			//Execution
-			$result = OrmDb::execute($querySelect,
-									$params,
-									"Database error during OrmCore::findByIds(OrmEntity &{$entityParam->getName()}, ".print_r($ids, true).")");
-		
-			$entities = OrmCore::_processArrayEntity($entityParam, $result);
-			
-			//We push the result into the cache before return it
-			OrmCache::getInstance()->setCache($querySelect, null, $entities);
-		}
-
-		return array_values($entities);
+		$fieldname = $entityParam->getPk()->getName();
+		$example = new OrmExample();
+		$example->addCriteria($fieldname, OrmTypeCriteria::$EQ, $ids);
+		return OrmCore::findByExample($entityParam, $example, $orderBy, $limit);
 	}
   
     /**
@@ -836,78 +765,77 @@ class OrmCore {
 		$params = array();
 		
 		foreach($criterias as $criteria) {
-		  if(!empty($hql)) {
-			$hql .= ' AND ';
-		  }
-		  
-		  if(empty($hql)) {
-			$hql .= ' WHERE ';
-		  }
+			if(!empty($hql)) {
+				$hql .= ' AND ';
+			}
 
-		  if($listeField[$criteria->fieldname] == null)
-		  {
-			throw new Exception("Field '".$criteria->fieldname."' not defined in entity '".$entityParam->getName()."' while you're searching on it");
-		  }
-		  $filterType =  $listeField[$criteria->fieldname]->getType();
-		  
-				//1 parameter
-		  if($criteria->typeCriteria == OrmTypeCriteria::$EQ || $criteria->typeCriteria == OrmTypeCriteria::$NEQ 
-			|| $criteria->typeCriteria == OrmTypeCriteria::$GT || $criteria->typeCriteria == OrmTypeCriteria::$GTE 
-			|| $criteria->typeCriteria == OrmTypeCriteria::$LT || $criteria->typeCriteria == OrmTypeCriteria::$LTE 
-			|| $criteria->typeCriteria == OrmTypeCriteria::$BEFORE || $criteria->typeCriteria == OrmTypeCriteria::$AFTER
-			|| $criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE) {  
-			$val = $criteria->paramsCriteria[0];
-			
-			$params[] = OrmCore::FieldToDBValue($val, $filterType); 
-			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? ';
-			continue;
-		  }
-		  
-				//0 parameter
-		  if($criteria->typeCriteria == OrmTypeCriteria::$NULL || $criteria->typeCriteria == OrmTypeCriteria::$NNULL) {  
-			$hql .= $criteria->fieldname.$criteria->typeCriteria;
-			continue;
-		  }
-		  
-				//2 parameters
-		  if($criteria->typeCriteria == OrmTypeCriteria::$BETWEEN) {  
-			$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[0], $filterType); 
-			$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[1], $filterType); 
-			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
-			continue;
-		  }
+			if(empty($hql)) {
+				$hql .= ' WHERE ';
+			}
+
+			if($listeField[$criteria->fieldname] == null) {
+				throw new Exception("Field '".$criteria->fieldname."' not defined in entity '".$entityParam->getName()."' while you're searching on it");
+			}
+			$filterType =  $listeField[$criteria->fieldname]->getType();
+
+			//1 parameter
+			if($criteria->typeCriteria == OrmTypeCriteria::$EQ || $criteria->typeCriteria == OrmTypeCriteria::$NEQ 
+				|| $criteria->typeCriteria == OrmTypeCriteria::$GT || $criteria->typeCriteria == OrmTypeCriteria::$GTE 
+				|| $criteria->typeCriteria == OrmTypeCriteria::$LT || $criteria->typeCriteria == OrmTypeCriteria::$LTE 
+				|| $criteria->typeCriteria == OrmTypeCriteria::$BEFORE || $criteria->typeCriteria == OrmTypeCriteria::$AFTER
+				|| $criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE) {  
+				$val = $criteria->paramsCriteria[0];
+				
+				$params[] = OrmCore::FieldToDBValue($val, $filterType); 
+				$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? ';
+				continue;
+			}
+
+			//0 parameter
+			if($criteria->typeCriteria == OrmTypeCriteria::$NULL || $criteria->typeCriteria == OrmTypeCriteria::$NNULL) {  
+				$hql .= $criteria->fieldname.$criteria->typeCriteria;
+				continue;
+			}
+
+			//2 parameters
+			if($criteria->typeCriteria == OrmTypeCriteria::$BETWEEN) {  
+				$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[0], $filterType); 
+				$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[1], $filterType); 
+				$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
+				continue;
+			}
 		  
 			// N parameters
-		  if($criteria->typeCriteria == OrmTypeCriteria::$IN || $criteria->typeCriteria == OrmTypeCriteria::$NIN) {
-			$hql .= ' ( ';
-			$second = false; 
-			foreach($criteria->paramsCriteria as $param) {
-			  if($second) {
-				$hql .= ' OR ';
-			  }
-			  
-			  $params[] = OrmCore::FieldToDBValue($param, $filterType); 
-			  $hql .= $criteria->fieldname.OrmTypeCriteria::$EQ.' ? ';
-			  
-			  $second = true;
+			if($criteria->typeCriteria == OrmTypeCriteria::$IN || $criteria->typeCriteria == OrmTypeCriteria::$NIN) {
+				$hql .= ' ( ';
+				$second = false; 
+				foreach($criteria->paramsCriteria as $param) {
+					if($second) {
+						$hql .= ' OR ';
+					}
+
+					$params[] = OrmCore::FieldToDBValue($param, $filterType); 
+					$hql .= $criteria->fieldname.OrmTypeCriteria::$EQ.' ? ';
+
+					$second = true;
+				}
+				$hql .= ' )';
+				continue;
 			}
-			$hql .= ' )';
-			continue;
-		  }
-		  
-		  //Other cases
-		  if($criteria->typeCriteria == OrmTypeCriteria::$EMPTY) {
-			$hql .= ' ( '.$criteria->fieldname .' is null || ' . $criteria->fieldname . "= '')";
-			continue;
-		  }
-		  if($criteria->typeCriteria == OrmTypeCriteria::$NEMPTY) {
-			$hql .= ' ( '.$criteria->fieldname .' is not null && ' . $criteria->fieldname . "!= '')";
-			continue;
-		  }
-						 
-		  throw new Exception("The OrmCriteria $criteria->typeCriteria is not manage");
-		}
 		
+			//Other cases
+			if($criteria->typeCriteria == OrmTypeCriteria::$EMPTY) {
+				$hql .= ' ( '.$criteria->fieldname .' is null || ' . $criteria->fieldname . "= '')";
+				continue;
+			}
+			if($criteria->typeCriteria == OrmTypeCriteria::$NEMPTY) {
+				$hql .= ' ( '.$criteria->fieldname .' is not null && ' . $criteria->fieldname . "!= '')";
+				continue;
+			}
+							 
+			throw new Exception("The OrmCriteria $criteria->typeCriteria is not manage");
+		}
+			
 		// Order By 
 		if($orderBy != null) {
 			$hql .= $orderBy->getOrderBy();
@@ -919,12 +847,12 @@ class OrmCore {
 		if($limit != null) {
 			$hql .= $limit->getLimit();
 		}
-		
+	
 		$queryExample = $select.$hql;
 		
 		//If it's already in the cache, we return the result
 		if(OrmCache::getInstance()->isCache($queryExample, $params)) {
-		  $entities = OrmCache::getInstance()->getCache($queryExample,$params);
+			$entities = OrmCache::getInstance()->getCache($queryExample,$params);
 		} else {
 			//Execution
 			$result = OrmDb::execute($queryExample,
