@@ -26,7 +26,7 @@ final class MyAutoload
 	protected function __construct(){}	
 	
 	/**
-	 * Function called by the entities themself during their _construct() function
+	 * Function called by the entities them-self during their _construct() function
 	 * it will stock an instance of the entity (if not already existing) in his memory
      * 
 	 * @param namespace namespace of the entity's module
