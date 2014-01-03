@@ -724,7 +724,7 @@ class OrmCore {
 		$fieldname = $entityParam->getPk()->getName();
 		$example = new OrmExample();
 		$example->addCriteria($fieldname, OrmTypeCriteria::$EQ, $ids);
-		return OrmCore::findByExample($entityParam, $example, $orderBy, $limit);
+		return OrmCore::findByExample($entityParam, $example, $orderBy);
 	}
   
     /**
@@ -762,7 +762,7 @@ class OrmCore {
      * @see OrmExample
      * @see OrmTypeCriteria
      */
-	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example, OrmOrderBy &$orderBy = null, OrmLimit &$limit = null) {
+	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example, OrmOrderBy $orderBy = null, OrmLimit $limit = null) {
 		$listeField = $entityParam->getFields();
 
 		$criterias = $example->getCriterias();
