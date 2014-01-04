@@ -807,7 +807,7 @@ class OrmCore {
 			// N parameters
 		  if($criteria->typeCriteria == OrmTypeCriteria::$IN || $criteria->typeCriteria == OrmTypeCriteria::$NIN) {
 			if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) > 0) {
-				$hql .= ' ( ';
+				$hql .= ' AND ( ';
 				$second = false; 
 				foreach($criteria->paramsCriteria as $param) {
 				  if($second) {
