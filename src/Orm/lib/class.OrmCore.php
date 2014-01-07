@@ -785,7 +785,7 @@ class OrmCore {
 			|| $criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE) {  
 			$val = $criteria->paramsCriteria[0];
 			
-			$params[] = OrmCore::FieldToDBValue($val, $filterType); 
+			$params[] = OrmCore::_fieldToDBValue($val, $filterType); 
 			$hql .= ' AND '.$criteria->fieldname.$criteria->typeCriteria.' ? ';
 			continue;
 		  }
@@ -798,8 +798,8 @@ class OrmCore {
 		  
 				//2 parameters
 		  if($criteria->typeCriteria == OrmTypeCriteria::$BETWEEN) {  
-			$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[0], $filterType); 
-			$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[1], $filterType); 
+			$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[0], $filterType); 
+			$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[1], $filterType); 
 			$hql .= ' AND '.$criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
 			continue;
 		  }
@@ -814,7 +814,7 @@ class OrmCore {
 					$hql .= ' OR ';
 				  }
 				  
-				  $params[] = OrmCore::FieldToDBValue($param, $filterType); 
+				  $params[] = OrmCore::_fieldToDBValue($param, $filterType); 
 				  $hql .= $criteria->fieldname.OrmTypeCriteria::$EQ.' ? ';
 				  
 				  $second = true;
