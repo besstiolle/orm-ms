@@ -359,6 +359,12 @@ class OrmCore {
 		//empty cache
 		OrmCache::getInstance()->clearCache();
 		
+		//Get the last Id inserted
+		if(empty($values[$entityParam->getPk()->getName()]) && $entityParam->isAutoincrement()){
+			$newId = OrmDb::getOne("SELECT LAST_INSERT_ID()");
+			$entityParam->set($entityParam->getPk()->getName(), $newId);
+		}
+		
 		return $entityParam;
 
 	}
