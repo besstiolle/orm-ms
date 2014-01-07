@@ -12,20 +12,32 @@
 	$double = "-129999.25";
 	
 	//Test insert
-	$cast = new CastOrmUTNumbers();
-	$cast->set("aInteger",$integer);
-	$cast->set("aIntegerNull",null);
-	$cast->set("aNumeric",$numeric);
-	$cast->set("aNumericNull",null);
-	$cast->set("aDouble",$double);
-	$cast->set("aDoubleNull",null);
-	
 	try{
+		$cast = new CastOrmUTNumbers();
+		$cast->set("aInteger",$integer);
+		$cast->set("aIntegerNull",null);
+		$cast->set("aNumeric",$numeric);
+		$cast->set("aNumericNull",null);
+		$cast->set("aDouble",$double);
+		$cast->set("aDoubleNull",null);
 		$cast->save();
 		echo "<p class='$cssSuccess'>saving entity with success</p>";
 	} catch (Exception $o){
 		echo "<p class='$cssError'>Exception during \$cast->save()</p>";
 	}
+	
+	//
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	
+	UtilsTest::assertIsEquals($cast->get("aInteger"),$integer);
+	UtilsTest::assertIsNull($cast->get("aIntegerNull"));
+	UtilsTest::assertIsEquals($cast->get("aNumeric"),$numeric);
+	UtilsTest::assertIsNull($cast->get("aNumericNull"));
+	UtilsTest::assertIsEquals($cast->get("aDouble"),$double);
+	UtilsTest::assertIsNull($cast->get("aDoubleNull"));
+	
+	echo "<br/>";
 	
 	// integer null ?
 	try{
@@ -38,6 +50,19 @@
 		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
 	}
 	
+	//
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	
+	UtilsTest::assertIsEquals($cast->get("aInteger"),$integer);
+	UtilsTest::assertIsNull($cast->get("aIntegerNull"));
+	UtilsTest::assertIsEquals($cast->get("aNumeric"),$numeric);
+	UtilsTest::assertIsNull($cast->get("aNumericNull"));
+	UtilsTest::assertIsEquals($cast->get("aDouble"),$double);
+	UtilsTest::assertIsNull($cast->get("aDoubleNull"));
+	
+	echo "<br/>";
+	
 	// integer empty ?
 	try{
 		$cast->set("aInteger","");
@@ -48,6 +73,19 @@
 	} catch (OrmIllegalArgumentException $o){
 		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
 	}
+	
+	//
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	
+	UtilsTest::assertIsEquals($cast->get("aInteger"),$integer);
+	UtilsTest::assertIsNull($cast->get("aIntegerNull"));
+	UtilsTest::assertIsEquals($cast->get("aNumeric"),$numeric);
+	UtilsTest::assertIsNull($cast->get("aNumericNull"));
+	UtilsTest::assertIsEquals($cast->get("aDouble"),$double);
+	UtilsTest::assertIsNull($cast->get("aDoubleNull"));
+	
+	echo "<br/>";
 		
 	// integer empty ?
 	try{
@@ -59,6 +97,19 @@
 	} catch (OrmIllegalArgumentException $o){
 		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
 	}
+	
+	//
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	
+	UtilsTest::assertIsEquals($cast->get("aInteger"),$integer);
+	UtilsTest::assertIsNull($cast->get("aIntegerNull"));
+	UtilsTest::assertIsEquals($cast->get("aNumeric"),$numeric);
+	UtilsTest::assertIsNull($cast->get("aNumericNull"));
+	UtilsTest::assertIsEquals($cast->get("aDouble"),$double);
+	UtilsTest::assertIsNull($cast->get("aDoubleNull"));
+	
+	echo "<br/>";
 		
 	// integer string ?
 	try{
@@ -71,6 +122,19 @@
 		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
 	}
 	
+	//
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	
+	UtilsTest::assertIsEquals($cast->get("aInteger"),$integer);
+	UtilsTest::assertIsNull($cast->get("aIntegerNull"));
+	UtilsTest::assertIsEquals($cast->get("aNumeric"),$numeric);
+	UtilsTest::assertIsNull($cast->get("aNumericNull"));
+	UtilsTest::assertIsEquals($cast->get("aDouble"),$double);
+	UtilsTest::assertIsNull($cast->get("aDoubleNull"));
+	
+	echo "<br/>";
+	
 	// integer with negatif ?
 	try{
 		$cast->set("aInteger","-99");
@@ -81,6 +145,19 @@
 	} catch (OrmIllegalArgumentException $o){
 		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
 	}
+	
+	//
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	
+	UtilsTest::assertIsEquals($cast->get("aInteger"),$integer);
+	UtilsTest::assertIsNull($cast->get("aIntegerNull"));
+	UtilsTest::assertIsEquals($cast->get("aNumeric"),$numeric);
+	UtilsTest::assertIsNull($cast->get("aNumericNull"));
+	UtilsTest::assertIsEquals($cast->get("aDouble"),$double);
+	UtilsTest::assertIsNull($cast->get("aDoubleNull"));
+	
+	echo "<br/>";
 	
 	
 	// integer with dot ?
@@ -93,6 +170,19 @@
 	} catch (OrmIllegalArgumentException $o){
 		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
 	}
+	
+	//
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	
+	UtilsTest::assertIsEquals($cast->get("aInteger"),$integer);
+	UtilsTest::assertIsNull($cast->get("aIntegerNull"));
+	UtilsTest::assertIsEquals($cast->get("aNumeric"),$numeric);
+	UtilsTest::assertIsNull($cast->get("aNumericNull"));
+	UtilsTest::assertIsEquals($cast->get("aDouble"),$double);
+	UtilsTest::assertIsNull($cast->get("aDoubleNull"));
+	
+	echo "<br/>";
 	
 	// integer zero ?
 	try{
@@ -110,12 +200,14 @@
 	$elements = OrmCore::findAll($cast);
 	$cast = $elements[0];
 	
-	UtilsTest::assertIsEquals($cast->get("aInteger"),$integer);
+	UtilsTest::assertIsEquals($cast->get("aInteger"),"0");
 	UtilsTest::assertIsNull($cast->get("aIntegerNull"));
 	UtilsTest::assertIsEquals($cast->get("aNumeric"),$numeric);
 	UtilsTest::assertIsNull($cast->get("aNumericNull"));
 	UtilsTest::assertIsEquals($cast->get("aDouble"),$double);
 	UtilsTest::assertIsNull($cast->get("aDoubleNull"));
+	
+	echo "<br/>";
 	
 
 	
