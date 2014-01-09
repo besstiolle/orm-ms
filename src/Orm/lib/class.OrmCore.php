@@ -892,6 +892,9 @@ class OrmCore {
 						}
 						$hql .= ' )';
 				}
+				else if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) == 0) {
+					$hql .= 'AND false '; // no value passed, so no result to be returned
+				}
 				continue;
 		 }
 		
