@@ -94,6 +94,11 @@ abstract class OrmEntity
 		$this->moduleName = strtolower($moduleName);
 		$this->name = strtolower($name);
 		
+		if(MyAutoload::hasInstance($this->moduleName,$this->name)){
+				$instance = MyAutoload::getInstance($this->moduleName,$this->name);
+				return  clone $instance;
+        } 
+		
 		$this->dbname = $this->name;
 		if(!empty($dbName)) {
 			$this->dbname = strtolower($dbName);
@@ -307,6 +312,11 @@ abstract class OrmEntity
 		if($this->get($this->pk) == null) {
 			return OrmCore::insertEntity($this);
 		} else {
+			//Try to find if it's an update or insert with already an Id
+			if(OrmCore::findById($this, $this->get($this->pk)) == null) {
+				return OrmCore::insertEntity($this);
+			}
+			
 			return OrmCore::updateEntity($this);
 		}
 	}
@@ -383,7 +393,6 @@ abstract class OrmEntity
 		return false;
 	}
 	
-		
 	/**
     * getter for autoincrement
     * 
@@ -446,7 +455,6 @@ abstract class OrmEntity
 	
 		$this->indexes[] = array('fields' => $fieldNames, 'unique' => $isUnique);
 	}
-	
 	
 	/**
 	 * This function will let you define some optional configuration for your Entity

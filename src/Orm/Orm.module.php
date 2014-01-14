@@ -25,7 +25,7 @@ class Orm extends CMSModule {
 	}
 
 	function GetVersion() {
-		return '0.2.1';
+		return '0.2.2-SNAPSHOT';
 	}
   
 	function GetDependencies()
@@ -111,17 +111,15 @@ class Orm extends CMSModule {
 		return parent::GetModulePath();		
 	}
 
-	protected function __autoload() {	
-		spl_autoload_register(array($this, 'autoload_classes'));
-		//spl_autoload_register(array($this, 'autoload_classes_addon'));
-		
+	protected function scan(){
+				
 		//We're listing the class declared into the directory of the child module
-		$repertoire = cms_join_path($this->GetMyModulePath(),'lib');
+		$dir = cms_join_path(parent::GetModulePath(),'lib');
 		
 		$liste['entities'] = array();
 		$liste['associate'] = array();
 		
-		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($repertoire));
+		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
 		foreach($objects as $name => $object){
 			if(stripos($name, 'class.entity.') !== FALSE){			
 				$classname = substr($object->getFileName() , 13 ,strlen($object->getFileName()) - 4 - 13);
@@ -136,30 +134,32 @@ class Orm extends CMSModule {
 		foreach($liste['entities'] as $element) {
 			$className = $element['classname'];
 			$filename = $element['filename'];
+			if(!class_exists($className)){
 			OrmTrace::debug("importing Entity ".$className." into the module ".$this->getName());
 			require_once($filename);			
 			$entity = new $className();
 		}
+		}
 		foreach($liste['associate'] as $element) {
 			$className = $element['classname'];
 			$filename = $element['filename'];
+			if(!class_exists($className)){
 			OrmTrace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
 			require_once($filename);
 			$entity = new $className();
 		}
 	}
+	}
 	
-	public function autoload_classes($classname){
+	public function autoload_framework($classname){
 		$Orm = new Orm();
 		$path = $Orm->GetMyModulePath();
 		$fn = cms_join_path($path,"lib","class.".$classname.".php");
 		
 		if(file_exists($fn)){
 			require_once($fn);
-			OrmTrace::debug("importing $fn with success");
-		} else {
-			OrmTrace::debug("File $fn not found, we skip it");
-		}
+			return;
+		} 
 	}
 	
 	/**

@@ -26,7 +26,7 @@ final class MyAutoload
 	protected function __construct(){}	
 	
 	/**
-	 * Function called by the entities themself during their _construct() function
+	 * Function called by the entities them-self during their _construct() function
 	 * it will stock an instance of the entity (if not already existing) in his memory
      * 
 	 * @param namespace namespace of the entity's module
@@ -35,14 +35,17 @@ final class MyAutoload
 	public final static function addInstance($namespace, OrmEntity $instance)
 	{	
 		$namespace = strtolower($namespace);
-		$name = $instance->getName();
-		$name = strtolower($name);
+		$name = strtolower($instance->getName());
 				
-		if(isset(self::$instances[$namespace][$name]))
-		{
+		if(!MyAutoload::isValideNamespace($namespace)){
+			self::$instances[$namespace] = array();
+		}
+				
+		if(isset(self::$instances[$namespace][$name])) {
 			OrmTrace::debug("Instance ".$name." already in memory.");
 			return;
 		}
+		
 		OrmTrace::debug("Adding the instance ".$name." into the namespace ".$namespace);
 		self::$instances[$namespace][$name] = $instance;
 	}
@@ -60,7 +63,10 @@ final class MyAutoload
 	{
 		$namespace = strtolower($namespace);
 		$instanceName = strtolower($instanceName);
-		MyAutoload::isValideNamespace($namespace);
+		if(!MyAutoload::isValideNamespace($namespace)){
+			OrmTrace::error("The namespace '$namespace' doesn't existe into the Orm System");
+			throw new OrmIllegalArgumentException("The namespace '$namespace' doesn't existe into the Orm System");
+		}
 		
 		OrmTrace::debug("Asking an instance of ".$instanceName. " for namespace ".$namespace);
 		if(MyAutoload::hasInstance($namespace, $instanceName))
@@ -85,7 +91,9 @@ final class MyAutoload
 		$namespace = strtolower($namespace);
 		$instanceName = strtolower($instanceName);
 		
-		MyAutoload::isValideNamespace($namespace);
+		if(MyAutoload::isValideNamespace($namespace)){
+			return false;
+		}
 		
 		return isset(self::$instances[$namespace][$instanceName]);
 	}
@@ -101,7 +109,10 @@ final class MyAutoload
 	public final static function getAllInstances($namespace)
 	{
 		$namespace = strtolower($namespace);
-		MyAutoload::isValideNamespace($namespace);
+		if(!MyAutoload::isValideNamespace($namespace)){
+			OrmTrace::error("The namespace '$namespace' doesn't existe into the Orm System");
+			throw new OrmIllegalArgumentException("The namespace '$namespace' doesn't existe into the Orm System");
+		}
 		
 		return self::$instances[$namespace];
 	}
@@ -113,13 +124,8 @@ final class MyAutoload
 	 *
 	 * @return Boolean if the namespace exists
 	 */
-	private static function isValideNamespace($namespace)
-	{
-		if(!isset(self::$instances[$namespace]))
-		{
-			OrmTrace::error("The namespace '$namespace' doesn't existe into the Orm System");
-			throw new OrmIllegalArgumentException("The namespace '$namespace' doesn't existe into the Orm System");
-		}
+	public static function isValideNamespace($namespace) {
+		return isset(self::$instances[strtolower($namespace)]);
 	}
 }
 ?>

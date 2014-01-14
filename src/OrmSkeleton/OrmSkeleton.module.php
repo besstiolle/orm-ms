@@ -12,8 +12,8 @@ require_once($Orm);
 class OrmSkeleton extends Orm
 {   
 	function __construct() {
-		parent::__autoload();
-		parent::__construct();
+		spl_autoload_register(array($this,'autoload_framework'));
+		$this->scan();
 	}
 
 	function GetName() {
@@ -25,11 +25,11 @@ class OrmSkeleton extends Orm
 	}
 
 	function GetVersion() {
-		return '0.2.1';
+		return '0.2.2-SNAPSHOT';
 	}
 
 	function GetDependencies() {
-		return array('Orm'=>'0.2.1');
+		return array('Orm'=>'0.2.2-SNAPSHOT');
 	}
 
 	function GetHelp() {
