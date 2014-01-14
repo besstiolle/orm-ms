@@ -833,7 +833,7 @@ class OrmCore {
      * @see OrmExample
      * @see OrmTypeCriteria
      */
-	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example, OrmOrderBy &$orderBy = null, OrmLimit &$limit = null) {
+	public static final function findByExample(OrmEntity &$entityParam, OrmExample $example, OrmOrderBy &$orderBy = null, OrmLimit &$limit = null, $condition = 'AND') {
 		$listeField = $entityParam->getFields();
 
 		$criterias = $example->getCriterias();
@@ -857,13 +857,13 @@ class OrmCore {
 				$val = $criteria->paramsCriteria[0];
 				
 				$params[] = OrmCore::FieldToDBValue($val, $filterType);
-				$hql .= ' AND '.$criteria->fieldname.$criteria->typeCriteria.' ? ';
+				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria.' ? ';
 				continue;
 		 }
 		
 						//0 parameter
 		 if($criteria->typeCriteria == OrmTypeCriteria::$NULL || $criteria->typeCriteria == OrmTypeCriteria::$NNULL) {
-				$hql .= ' AND '.$criteria->fieldname.$criteria->typeCriteria;
+				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria;
 				continue;
 		 }
 		
@@ -871,14 +871,14 @@ class OrmCore {
 		 if($criteria->typeCriteria == OrmTypeCriteria::$BETWEEN) {
 				$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[0], $filterType);
 				$params[] = OrmCore::FieldToDBValue($criteria->paramsCriteria[1], $filterType);
-				$hql .= ' AND '.$criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
+				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
 				continue;
 		 }
 		
 				// N parameters
 		 if($criteria->typeCriteria == OrmTypeCriteria::$IN || $criteria->typeCriteria == OrmTypeCriteria::$NIN) {
 				if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) > 0) {
-						$hql .= ' AND ( ';
+						$hql .= " {$condition} ( ";
 						$second = false;
 						foreach($criteria->paramsCriteria as $param) {
 						 if($second) {
@@ -897,11 +897,11 @@ class OrmCore {
 		
 		 //Other cases
 		 if($criteria->typeCriteria == OrmTypeCriteria::$EMPTY) {
-				$hql .= ' AND ( '.$criteria->fieldname .' is null || ' . $criteria->fieldname . "= '')";
+				$hql .= " {$condition} ( ".$criteria->fieldname .' is null || ' . $criteria->fieldname . "= '')";
 				continue;
 		 }
 		 if($criteria->typeCriteria == OrmTypeCriteria::$NEMPTY) {
-				$hql .= ' AND ( '.$criteria->fieldname .' is not null && ' . $criteria->fieldname . "!= '')";
+				$hql .= " {$condition} ( ".$criteria->fieldname .' is not null && ' . $criteria->fieldname . "!= '')";
 				continue;
 		 }
 										
@@ -928,8 +928,8 @@ class OrmCore {
 		} else {
 				//Execution
 				$result = OrmDb::execute($queryExample,
-																$params,
-																"Database error during OrmCore::findByExample(OrmEntity &{$entityParam->getName()}, , OrmExample \$example)");
+										$params,
+										"Database error during OrmCore::findByExample(OrmEntity &{$entityParam->getName()}, , OrmExample \$example)");
 
 				OrmTrace::debug("findByExample : ".$result->RecordCount()." resultat(s)");
 				
@@ -978,7 +978,7 @@ class OrmCore {
      * @see OrmExample
      * @see OrmTypeCriteria
      */
-	public static final function deleteByExample(OrmEntity &$entityParam, OrmExample $OrmExample) {
+	public static final function deleteByExample(OrmEntity &$entityParam, OrmExample $OrmExample, $condition = 'AND') {
 		$listeField = $entityParam->getFields();
 
 		$criterias = $OrmExample->getCriterias();
@@ -989,7 +989,7 @@ class OrmCore {
 		{
 		  if(!empty($hql))
 		  {
-			$hql .= ' AND ';
+			$hql .= " {$condition} ";
 		  }
 		  
 		  if(empty($hql))
