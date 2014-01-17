@@ -2,7 +2,7 @@
 /**
  * Contains the class Id
  *
- * @since 0.2.0 // A VERIFIER
+ * @since 0.3.0
  * @author Heriquet
  * @package Orm
  **/
@@ -11,7 +11,7 @@
 /**
  *   Represent an Entity's primary key and provides services
  *
- * @since 0.2.0
+ * @since 0.3.0
  * @author Heriquet
  * @package Orm
  **/
@@ -30,10 +30,31 @@ class OrmId
     */
 	public function __construct() {
 
-
 	}
 
+	public function addField(OrmField $field){
+		$fields[$field->getName()] = $field;
+	}
 	
+	public function getName(){
+		$name = '';
+		$glue = '|';
+		foreach($this->pk as $elt){
+			if(!empty($name)){
+				$name .= $glue;
+			}
+			$name .= $elt;
+		}
+		return $name;
+	}
+	
+	public function isEmpty(){
+		return empty($fields);		
+	}
+	
+	public function getFields(){
+		return $this->fields;
+	}
 }
 
 ?>

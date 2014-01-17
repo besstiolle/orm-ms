@@ -47,9 +47,9 @@ abstract class OrmEntity
 	private $values = array();
 	
 	/**
-	 * String : Name of the field wich will be used as a primaryKey
+	 * OrmId : Object wich will contain all the primaryKey
 	 * */
-	private $pk;
+	private $pk = null;
 	
 	/**
 	 * Boolean : if true the framework will try to use the inner autoincrement of Mysql instead generate a new table xxx_seq like usual
@@ -91,8 +91,10 @@ abstract class OrmEntity
      * @see MyAutoload
      */
 	protected function __construct($moduleName, $name, $prefixe = null, $dbName = null) {
+
 		$this->moduleName = strtolower($moduleName);
 		$this->name = strtolower($name);
+		$this->pk = new OrmId();
 		
 		$this->dbname = $this->name;
 		if(!empty($dbName)) {
@@ -129,10 +131,7 @@ abstract class OrmEntity
 
 		//Add a sequence on the keys
 		if($newField->isPrimaryKEY()) {
-			if($this->pk != null)
-				throw new OrmIllegalConfigurationException("Orm doesn't support multi-Primary-Key into the Entity ".$this->name);
-				
-			$this->pk = $newField->getName();
+			$this->pk->addField($newField);
 			if(!$this->isAutoincrement()) { // no sequence if autoincrement used
                 $this->seqname = $this->dbname.OrmEntity::$_CONST_SEQ;
             }
@@ -140,16 +139,30 @@ abstract class OrmEntity
 	}
 	
     /**
-    * Return the PrimaryKey Field
+    * Return the PrimaryKey Array
     * 
-    * @return OrmField the PrimaryKey Field
-    * @exception OrmIllegalArgumentException if there is no PrimaryKey Field
+    * @return OrmId The array containing the different OrmField that make up the primary key
+    * @exception OrmIllegalArgumentException if there is no PrimaryKey Field in the array
     */
 	public function getPk() {
-		if($this->pk == null)
+		if($this->pk->isEmpty()) {
 			throw new OrmIllegalArgumentException("the entity {$this->getName()} doesn't have any Primary-Key");
+		}
 		
-		return $this->fields[$this->pk];
+		return $this->pk;
+	}
+	
+	/**
+	 * Return a symbolic human-readably name of the PK
+	 * 
+	 * @return string the symbolic human-readably name of the PK like "entity_id" or "different|parts|of|the|pk"
+     * @exception OrmIllegalArgumentException if there is no PrimaryKey Field in the array
+	 **/
+	public function getPkName(){
+		if($this->pk->isEmpty()) {
+			throw new OrmIllegalArgumentException("the entity {$this->getName()} doesn't have any Primary-Key");
+		}
+		return $this->pk->getName();
 	}
 	
     /**
@@ -163,7 +176,7 @@ abstract class OrmEntity
 	}
 	
     /**
-    * return a Field by name
+    * return a Field by its name
     * 
     * @param string the field name
     * @return OrmField the Field
@@ -185,13 +198,13 @@ abstract class OrmEntity
 	}
 	
     /**
-    * Return true if a Field exists for the name
+    * Return true if a Field exists for the fieldName
     * 
     * @param string the name
     * @return Boolean if exists
     */
-	public function isFieldByNameExists($name) {
-		return isset($this->fields[$name]);
+	public function isFieldByNameExists($fieldName) {
+		return array_KEY_exists($fieldName,$this->fields);
 	}
 	
     /**
@@ -300,15 +313,27 @@ abstract class OrmEntity
 	 * @return the entity saved with its new new Id (customer_id in my example) if it's an insertion
 	 **/
 	public function save(){
-		if($this->pk == null) {
-			throw new OrmIllegalArgumentException("you can't save the entity ".$this->getName()." because it doesn't have any Primary-Key");
+		
+		$isFilled = false; 
+		foreach($this->pk->getFields() as $elt){
+			if(!is_null($this->get($elt->getName()))){
+				$isFilled = true;
+				break;
+			}
 		}
 	
-		if($this->get($this->pk) == null) {
+		if(!$isFilled) {
 			return OrmCore::insertEntity($this);
 		} else {
 			//Try to find if it's an update or insert with already an Id
-			if(OrmCore::findById($this, $this->get($this->pk)) == null) {
+			$example = new OrmExample();
+			foreach($this->pk->getFields() as $elt){
+				$example->addCriteria($elt->getName(), OrmTypeCriteria::$EQ, array($this->values[$elt->getName()]));
+			}
+			
+			$result = OrmCore::findByExample($this, $example);
+			
+			if(empty($result)) {
 				return OrmCore::insertEntity($this);
 			}
 			
@@ -318,17 +343,20 @@ abstract class OrmEntity
 	
 	/**
 	 * Shortcut to delete the entity
+	 *  Won't work with Entity without any PrimaryKey
 	 **/
 	public function delete(){
-		if($this->pk == null) {
+		if($this->pk->isEmpty()) {
 			throw new OrmIllegalArgumentException("you can't delete the entity ".$this->getName()." because it doesn't have any Primary-Key");
 		}
 		
-		if($this->get($this->pk) == null) {
-			throw new OrmIllegalArgumentException("you can't delete the entity ".$this->getName()." because its Primary-Key doesn't have any value");
+		//Try to find if it's an update or insert with already an Id
+		$example = new OrmExample();
+		foreach($this->pk->getFields() as $elt){
+			$example->addCriteria($elt->getName(), OrmTypeCriteria::$EQ, array($this->values[$elt->getName()]));
 		}
 		
-		OrmCore::deleteByIds($this, array($this->get($this->pk)));
+		OrmCore::deleteByExample($this, $example);
 	}
 	
     /**
@@ -403,7 +431,15 @@ abstract class OrmEntity
 	 **/
 	public function garnishAutoincrement(){
 		
-		if($this->getPk() == null || $this->getPk()->getType() != OrmCAST::$INTEGER){
+		$hasInt = false;
+		foreach($this->pk->getFields() as $elt){
+			if($elt->getType() == OrmCAST::$INTEGER){
+				$hasInt = true;
+				break;
+			}
+		}
+		
+		if(!$hasInt){
 			throw new OrmIllegalArgumentException("entity ".$this->getName()." don't have any INTEGER PK and so can't be defined autoincrement");
 		}
 		$this->autoincrement = true;
