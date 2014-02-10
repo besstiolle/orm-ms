@@ -13,6 +13,8 @@ if( !class_exists("OrmCache")) {
 $this->SetPreference('loglevel', OrmTrace::$INFO);
 $this->SetPreference('cacheType', OrmCache::$NONE);
 
+$this->CreatePermission('Manage_Orm', 'Manage Orm');
+
 $this->Audit( 0, 
 	      $this->Lang('friendlyname'), 
 	      $this->Lang('installed', $this->GetVersion()) );

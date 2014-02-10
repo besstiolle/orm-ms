@@ -70,7 +70,7 @@ class Orm extends CMSModule {
 	}
 
 	function VisibleToAdminUser() {
-		return true;
+		return $this->CheckPermission('Manage_Orm');
 	}
 
 	function InitializeFrontend() {
