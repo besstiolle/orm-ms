@@ -47,9 +47,9 @@ abstract class OrmEntity
 	private $values = array();
 	
 	/**
-	 * String : Name of the field wich will be used as a primaryKey
+	 * Array : Names of the fields wich will be used as a (compound) Primary Key
 	 * */
-	private $pk;
+	private $pk = array();
 	
 	/**
 	 * Boolean : if true the framework will try to use the inner autoincrement of Mysql instead generate a new table xxx_seq like usual
@@ -134,10 +134,8 @@ abstract class OrmEntity
 
 		//Add a sequence on the keys
 		if($newField->isPrimaryKEY()) {
-			if($this->pk != null)
-				throw new OrmIllegalConfigurationException("Orm doesn't support multi-Primary-Key into the Entity ".$this->name);
 				
-			$this->pk = $newField->getName();
+			$this->pk[] = $newField->getName();
 			if(!$this->isAutoincrement()) { // no sequence if autoincrement used
                 $this->seqname = $this->dbname.OrmEntity::$_CONST_SEQ;
             }
@@ -145,16 +143,20 @@ abstract class OrmEntity
 	}
 	
     /**
-    * Return the PrimaryKey Field
+    * Return the list of PrimaryKey Field
     * 
-    * @return OrmField the PrimaryKey Field
+    * @return array<OrmField> the list of PrimaryKey Field
     * @exception OrmIllegalArgumentException if there is no PrimaryKey Field
     */
 	public function getPk() {
 		if($this->pk == null)
 			throw new OrmIllegalArgumentException("the entity {$this->getName()} doesn't have any Primary-Key");
 		
-		return $this->fields[$this->pk];
+        $list_pk = array();
+        foreach($this->pk as $pk){
+            $list_pk[] = $this->fields[$pk];
+        }
+		return $list_pk;
 	}
 	
     /**
@@ -308,12 +310,24 @@ abstract class OrmEntity
 		if($this->pk == null) {
 			throw new OrmIllegalArgumentException("you can't save the entity ".$this->getName()." because it doesn't have any Primary-Key");
 		}
-	
-		if($this->get($this->pk) == null) {
+        
+        $asPkFilled = false;
+	    foreach($this->pk as $pk){
+            if($this->get($pk) != null){
+                $asPkFilled = true;
+                break;
+            }
+        }
+		if(!$asPkFilled) {
 			return OrmCore::insertEntity($this);
 		} else {
 			//Try to find if it's an update or insert with already an Id
-			if(OrmCore::findById($this, $this->get($this->pk)) == null) {
+            $ormExample = new OrmExample();
+            foreach($this->pk as $pk){
+                $ormExample->addCriteria($pk, OrmTypeCriteria::$EQ, array($this->get($pk)));
+            }
+            $entity = OrmCore::findByExample($this, $ormExample);
+			if(!empty($entity)) {
 				return OrmCore::insertEntity($this);
 			}
 			
@@ -329,11 +343,23 @@ abstract class OrmEntity
 			throw new OrmIllegalArgumentException("you can't delete the entity ".$this->getName()." because it doesn't have any Primary-Key");
 		}
 		
-		if($this->get($this->pk) == null) {
-			throw new OrmIllegalArgumentException("you can't delete the entity ".$this->getName()." because its Primary-Key doesn't have any value");
+        $asPkFilled = true;
+	    foreach($this->pk as $pk){
+            if($this->get($pk) == null){
+                $asPkFilled = false;
+                break;
+            }
+        }
+        
+		if(!$asPkFilled) {
+			throw new OrmIllegalArgumentException("you can't delete the entity ".$this->getName()." because at last one of its Primary-Key doesn't have any value");
 		}
 		
-		OrmCore::deleteByIds($this, array($this->get($this->pk)));
+        $ormExample = new OrmExample();
+        foreach($this->pk as $pk){
+            $ormExample->addCriteria($pk, OrmTypeCriteria::$EQ, array($this->get($pk)));
+        }
+        $entity = OrmCore::deleteByExample($this, $ormExample);
 	}
 	
     /**
@@ -408,9 +434,19 @@ abstract class OrmEntity
 	 **/
 	public function garnishAutoincrement(){
 		
-		if($this->getPk() == null || $this->getPk()->getType() != OrmCAST::$INTEGER){
+        $asPkInteger = false;
+	    foreach($this->pk as $pk){
+            $field = $this->getFieldByName($pk);
+            if($field->getType() == OrmCAST::$INTEGER){
+                $asPkInteger = true;
+                break;
+            }
+        }
+        
+		if(!$asPkInteger){
 			throw new OrmIllegalArgumentException("entity ".$this->getName()." don't have any INTEGER PK and so can't be defined autoincrement");
 		}
+        
 		$this->autoincrement = true;
 		
 		//Remove any seq that could be add before

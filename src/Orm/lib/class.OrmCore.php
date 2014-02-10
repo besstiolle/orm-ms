@@ -332,8 +332,10 @@ class OrmCore {
 				}
 				$msgError .= " {$elt} = {$values[$elt]} ";
 			}
-			$query .= ' AND ' . $entityParam->getPk()->getName() . ' != ? ';
-			$arrayFind[] = $values[$entityParam->getPk()->getName()];			
+            foreach($entityParam->getPk() as $pk){
+                $query .= ' AND ' . $pk->getName() . ' != ? ';
+                $arrayFind[] = $values[$pk->getName()];
+            }
 			$msgError .= '}';
 			
 			//Execution
@@ -359,12 +361,23 @@ class OrmCore {
 		//empty cache
 		OrmCache::getInstance()->clearCache();
 		
-		//Get the last Id inserted
-		if(empty($values[$entityParam->getPk()->getName()]) && $entityParam->isAutoincrement()){
-			$newId = OrmDb::getOne("SELECT LAST_INSERT_ID()");
-			$entityParam->set($entityParam->getPk()->getName(), $newId);
-		}
-		
+        if($entityParam->isAutoincrement()){
+            //Get the last Id inserted  (only for entity with only 1 integer Field as Key)
+            // @see also : http://stackoverflow.com/questions/372388/mysql-select-last-insert-id-for-compound-key-is-it-possible
+            $nbPkInteger = 0;
+            $nameOfPk = '';
+            foreach($entityParam->getPk() as $pk){
+                if($pk->getType == OrmCAST::$INTEGER){
+                    $nbPkInteger++;
+                    $nameOfPk = $pk->getName();
+                }
+            }
+            if($nbPkInteger == 1 && empty($values[$nameOfPk])){
+                $newId = OrmDb::getOne("SELECT LAST_INSERT_ID()");
+                $entityParam->set($entityParam->getPk()->getName(), $newId);
+            }
+        }
+        
 		return $entityParam;
 
 	}
