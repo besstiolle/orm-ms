@@ -12,8 +12,8 @@ require_once($Orm);
 class OrmUT extends Orm {   
 
 	function __construct() {
-		parent::__autoload();
-		parent::__construct();
+		spl_autoload_register(array($this,'autoload_framework'));
+		$this->scan();
 	}
 
 	function GetName() {

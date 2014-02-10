@@ -94,6 +94,11 @@ abstract class OrmEntity
 		$this->moduleName = strtolower($moduleName);
 		$this->name = strtolower($name);
 		
+		if(MyAutoload::hasInstance($this->moduleName,$this->name)){
+				$instance = MyAutoload::getInstance($this->moduleName,$this->name);
+				return  clone $instance;
+        } 
+		
 		$this->dbname = $this->name;
 		if(!empty($dbName)) {
 			$this->dbname = strtolower($dbName);
@@ -387,7 +392,7 @@ abstract class OrmEntity
 	public static function isIndexable(){
 		return false;
 	}
-		
+
 	/**
     * getter for autoincrement
     * 

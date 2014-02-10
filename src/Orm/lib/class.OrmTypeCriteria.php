@@ -106,7 +106,7 @@ class OrmTypeCriteria {
     * 
     * @var string
     */
-	public static $BETWEEN = ' after ';
+	public static $BETWEEN = ' between ';
      
     /**
     * is contained into the array

@@ -8,19 +8,27 @@
 	$chaine = "STRING_a€é$    ";
 	$buffer = "BUFFER_a€é$<br/>retour\r\nretour     ";
 	
-	//Test insert
-	$cast = new CastOrmUTString();
-	$cast->set("aString",$chaine);
-	$cast->set("aStringNull",null);
-	$cast->set("aBuffer",$buffer);
-	$cast->set("aBufferNull",null);
-	
+	//Valid values
 	try{
+		$cast = new CastOrmUTString();
+		$cast->set("aString",$chaine);
+		$cast->set("aStringNull",null);
+		$cast->set("aBuffer",$buffer);
+		$cast->set("aBufferNull",null);
 		$cast->save();
 		echo "<p class='$cssSuccess'>saving entity with success</p>";
 	} catch (Exception $o){
 		echo "<p class='$cssError'>Exception during \$cast->save()</p>";
 	}
+	
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	UtilsTest::assertIsEquals($cast->get("aString"),$chaine);
+	UtilsTest::assertIsNull($cast->get("aStringNull"));
+	UtilsTest::assertIsEquals($cast->get("aBuffer"),$buffer);
+	UtilsTest::assertIsNull($cast->get("aBufferNull"));
+	
+	echo "<br/>";
 	
 	// String null ?
 	try{
@@ -32,6 +40,17 @@
 		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
 	}
 	
+	//reset
+	
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	UtilsTest::assertIsEquals($cast->get("aString"),$chaine);
+	UtilsTest::assertIsNull($cast->get("aStringNull"));
+	UtilsTest::assertIsEquals($cast->get("aBuffer"),$buffer);
+	UtilsTest::assertIsNull($cast->get("aBufferNull"));
+	
+	echo "<br/>";
+	
 	// String empty ?
 	try{
 		$cast->set("aString","");
@@ -41,7 +60,17 @@
 	} catch (Exception $o){
 		echo "<p class='$cssError'>Exception during \$cast->save()</p>";
 	}
+	
+	
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	UtilsTest::assertIsEquals($cast->get("aString"),"");
+	UtilsTest::assertIsNull($cast->get("aStringNull"));
+	UtilsTest::assertIsEquals($cast->get("aBuffer"),$buffer);
+	UtilsTest::assertIsNull($cast->get("aBufferNull"));
 		
+	echo "<br/>";
+	
 	// String empty ?
 	try{
 		$cast->set("aString"," ");
@@ -51,6 +80,16 @@
 	} catch (Exception $o){
 		echo "<p class='$cssError'>Exception during \$cast->save()</p>";
 	}
+	
+	
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	UtilsTest::assertIsEquals($cast->get("aString")," ");
+	UtilsTest::assertIsNull($cast->get("aStringNull"));
+	UtilsTest::assertIsEquals($cast->get("aBuffer"),$buffer);
+	UtilsTest::assertIsNull($cast->get("aBufferNull"));
+	
+	echo "<br/>";
 	
 	// BUFFER null ?
 	try{
@@ -62,7 +101,17 @@
 		echo "<p class='$cssSuccess'>As expected we've got a OrmIllegalArgumentException</p>";
 	}
 	
-	// BUFFER empty ?
+	
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	UtilsTest::assertIsEquals($cast->get("aString")," ");
+	UtilsTest::assertIsNull($cast->get("aStringNull"));
+	UtilsTest::assertIsEquals($cast->get("aBuffer"),$buffer);
+	UtilsTest::assertIsNull($cast->get("aBufferNull"));
+	
+	echo "<br/>";
+	
+	// BUFFER empty ? 
 	try{
 		$cast->set("aString",$chaine);
 		$cast->set("aBuffer","");
@@ -71,6 +120,16 @@
 	} catch (Exception $o){
 		echo "<p class='$cssError'>Exception during \$cast->save()</p>";
 	}
+	
+	
+	$elements = OrmCore::findAll($cast);
+	$cast = $elements[0];
+	UtilsTest::assertIsEquals($cast->get("aString"),$chaine);
+	UtilsTest::assertIsNull($cast->get("aStringNull"));
+	UtilsTest::assertIsEquals($cast->get("aBuffer"),"");
+	UtilsTest::assertIsNull($cast->get("aBufferNull"));
+	
+	echo "<br/>";
 	
 	// BUFFER empty ?
 	try{
@@ -82,14 +141,13 @@
 		echo "<p class='$cssError'>Exception during \$cast->save()</p>";
 	}
 	
-	//
 	$elements = OrmCore::findAll($cast);
 	$cast = $elements[0];
-	
 	UtilsTest::assertIsEquals($cast->get("aString"),$chaine);
 	UtilsTest::assertIsNull($cast->get("aStringNull"));
-	UtilsTest::assertIsEquals($cast->get("aBuffer"),$buffer);
+	UtilsTest::assertIsEquals($cast->get("aBuffer")," ");
 	UtilsTest::assertIsNull($cast->get("aBufferNull"));
+
 	
 
 	
