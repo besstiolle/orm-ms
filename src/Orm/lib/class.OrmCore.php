@@ -658,32 +658,46 @@ class OrmCore {
 	 *
      * @param OrmEntity an instance of the entity  
 	 * @param resultQuery the returned value of sql execution
+	 * @param OrmOrderBy if you want order the external entity (via AK or FK)
 	 *
      * @return array<OrmEntity> list of Entities populate with all the informations on AK's Field
 	 **/
 	private static final function _processArrayEntity(OrmEntity &$entityParam, $resultQuery, OrmOrderBy &$orderBy=null) {
-
+		
+		
 		$entitys = array();
 		while ($row = $resultQuery->FetchRow()) {
-		  $anEntity = OrmCore::rowToEntity($entityParam, $row);
-		  
-		  $entitys[$anEntity->get($anEntity->getPk()->getName())] = $anEntity;
+		  $entitys[] = OrmCore::rowToEntity($entityParam, $row);
 		}
-				
+			
 		//Test the presence of $AK
 		$listeField = $entityParam->getFields();
 		foreach($listeField as $field) {
+		
 		  if($field->isAssociateKEY()) {
+
+			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
+			$entityAssoc = new $entityAssocName();
 			
+			$fieldAssoc = $entityAssoc->getFieldByName($fieldAssociateName);
+			list($entityCurrentName, $fieldCurrentName) = explode(".", $fieldAssoc->getKEYName());
+						
+			//The path must return to the current entity
+			if(strcasecmp($entityCurrentName,$entityParam->getName()) != 0){
+				throw new OrmIllegalConfigurationException("It seems you have a wrong path between {$entityParam->getName()}.{$field->getName()} and {$entityAssocName}.{$fieldAssociateName}");
+			}
+
 			//Initiate the field associate with an empty array.
-			foreach(array_keys($entitys) as $key){
-				$entitys[$key]->set($field->getName(), array());
+			$entitysKeys = array();
+			foreach($entitys as $entity){
+				$entity->set($field->getName(), array());
+				$entitysKeys[] = $entity->get($fieldCurrentName);
 			}
 		  
 			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
 			$entityAssoc = new $entityAssocName();
 			
-			$queryAdd = 'SELECT * FROM '.$entityAssoc->getDbname().' WHERE '.$fieldAssociateName.' IN ('.implode(',',array_keys($entitys)).')';
+			$queryAdd = 'SELECT * FROM '.$entityAssoc->getDbname().' WHERE '.$fieldAssociateName.' IN ('.implode(',',$entitysKeys).')';
 		
 			// Order By 
 			if($orderBy != null) {
@@ -698,9 +712,23 @@ class OrmCore {
 									null,
 									"Database error during request to get associative entity $entityAssocName");
 			
+			//FIXME
+			continue;
 			while ($rowAssociate = $result->FetchRow()) {
 				$arrayIdEntitiesDest = $entitys[$rowAssociate[$fieldAssociateName]]->get($field->getName());
-				$arrayIdEntitiesDest[] = $rowAssociate[$entityAssoc->getPk()->getName()];
+				
+				$entityAssocKeys = $entityAssoc->getPk();
+				if(count($entityAssocKeys) != 1){
+					//Put the combinaison of key in another array
+					$compound = array();
+					foreach ($entityAssocKeys as $pk){
+					   $compound[$pk->getName()] = $rowAssociate[get($pk->getName())];
+					}
+					$arrayIdEntitiesDest[] = $compound;
+				} else {
+					$arrayIdEntitiesDest[] = $rowAssociate[get($entityAssocKeys[0]->getName())];
+				}
+
 				$entitys[$rowAssociate[$fieldAssociateName]]->set($field->getName(),$arrayIdEntitiesDest);
 			}
 		  } 
@@ -738,7 +766,7 @@ class OrmCore {
 		if(count($ids) == 0)
 			return array();
 		
-		if(count($entityParam->getPk() != 1)){
+		if(count($entityParam->getPk()) != 1){
 			throw new OrmIllegalArgumentException('You cannot used function findById/findByIds on Entity with a compound key. You should try findByExample functions');
 		}
 		$pks = $entityParam->getPk();
