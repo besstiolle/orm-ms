@@ -372,9 +372,9 @@ class OrmCore {
                     $nameOfPk = $pk->getName();
                 }
             }
-            if($nbPkInteger == 1 && empty($values[$nameOfPk])){
+            if($nbPkInteger == 1 && $nameOfPk != '' && empty($values[$nameOfPk])){
                 $newId = OrmDb::getOne("SELECT LAST_INSERT_ID()");
-                $entityParam->set($entityParam->getPk()->getName(), $newId);
+                $entityParam->set($nameOfPk, $newId);
             }
         }
         
@@ -500,8 +500,11 @@ class OrmCore {
 				}
 				$msgError .= " {$elt} = {$values[$elt]} ";
 			}
-			$query .= ' AND ' . $entityParam->getPk()->getName() . ' != ? ';
-			$arrayFind[] = $values[$entityParam->getPk()->getName()];			
+			foreach($entityParam->getPk() as $pk){
+				$query .= ' AND ' . $pk()->getName() . ' != ? ';
+				$arrayFind[] = $values[$pk()->getName()];	
+			}
+					
 			$msgError .= '}';
 			
 			//Execution
@@ -663,6 +666,7 @@ class OrmCore {
 		$entitys = array();
 		while ($row = $resultQuery->FetchRow()) {
 		  $anEntity = OrmCore::rowToEntity($entityParam, $row);
+		  
 		  $entitys[$anEntity->get($anEntity->getPk()->getName())] = $anEntity;
 		}
 				
@@ -733,8 +737,12 @@ class OrmCore {
 	public static final function findByIds(OrmEntity &$entityParam, $ids, OrmOrderBy &$orderBy=null) {
 		if(count($ids) == 0)
 			return array();
-
-		$fieldname = $entityParam->getPk()->getName();
+		
+		if(count($entityParam->getPk() != 1)){
+			throw new OrmIllegalArgumentException('You cannot used function findById/findByIds on Entity with a compound key. You should try findByExample functions');
+		}
+		$pks = $entityParam->getPk();
+		$fieldname = $pks[0]->getName();
 		$example = new OrmExample();
 		$example->addCriteria($fieldname, OrmTypeCriteria::$EQ, $ids);
 		return OrmCore::findByExample($entityParam, $example, $orderBy);
