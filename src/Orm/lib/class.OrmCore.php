@@ -816,80 +816,10 @@ class OrmCore {
 		$listeField = $entityParam->getFields();
 
 		$criterias = $example->getCriterias();
-		$select = "SELECT * FROM ".$entityParam->getDbname().' WHERE 1 ';
-		$hql = "";
-		$params = array();
+		$select = "SELECT * FROM ".$entityParam->getDbname().' WHERE ';
 		
-		foreach($criterias as $criteria) {
-
-		 if($listeField[$criteria->fieldname] == null)
-		 {
-				throw new Exception("Field '".$criteria->fieldname."' not defined in entity '".$entityParam->getName()."' while you're searching on it");
-		 }
-		 $filterType = $listeField[$criteria->fieldname]->getType();
-		
-						//1 parameter
-		 if($criteria->typeCriteria == OrmTypeCriteria::$EQ || $criteria->typeCriteria == OrmTypeCriteria::$NEQ
-				|| $criteria->typeCriteria == OrmTypeCriteria::$GT || $criteria->typeCriteria == OrmTypeCriteria::$GTE
-				|| $criteria->typeCriteria == OrmTypeCriteria::$LT || $criteria->typeCriteria == OrmTypeCriteria::$LTE
-				|| $criteria->typeCriteria == OrmTypeCriteria::$BEFORE || $criteria->typeCriteria == OrmTypeCriteria::$AFTER
-				|| $criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE) {
-				$val = $criteria->paramsCriteria[0];
-				
-				$params[] = OrmCore::_fieldToDBValue($val, $filterType);
-				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria.' ? ';
-				continue;
-		 }
-		
-						//0 parameter
-		 if($criteria->typeCriteria == OrmTypeCriteria::$NULL || $criteria->typeCriteria == OrmTypeCriteria::$NNULL) {
-				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria;
-				continue;
-		 }
-		
-						//2 parameters
-		 if($criteria->typeCriteria == OrmTypeCriteria::$BETWEEN) {
-				$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[0], $filterType);
-				$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[1], $filterType);
-				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
-				continue;
-		 }
-		
-				// N parameters
-		 if($criteria->typeCriteria == OrmTypeCriteria::$IN || $criteria->typeCriteria == OrmTypeCriteria::$NIN) {
-				if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) > 0) {
-						$hql .= " {$condition} ( ";
-						$second = false;
-						foreach($criteria->paramsCriteria as $param) {
-						 if($second) {
-								$hql .= ' OR ';
-						 }
-						
-						 $params[] = OrmCore::_fieldToDBValue($param, $filterType);
-						 $hql .= $criteria->fieldname.OrmTypeCriteria::$EQ.' ? ';
-						
-						 $second = true;
-						}
-						$hql .= ' )';
-				} else if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) == 0) {
-					$hql .= 'AND false '; // no value passed, so no result to be returned
-				}
-				continue;
-		 }
-		
-		 //Other cases
-		 if($criteria->typeCriteria == OrmTypeCriteria::$EMPTY) {
-				$hql .= " {$condition} ( ".$criteria->fieldname .' is null || ' . $criteria->fieldname . "= '')";
-				continue;
-		 }
-		 if($criteria->typeCriteria == OrmTypeCriteria::$NEMPTY) {
-				$hql .= " {$condition} ( ".$criteria->fieldname .' is not null && ' . $criteria->fieldname . "!= '')";
-				continue;
-		 }
-										
-		 throw new Exception("The OrmCriteria $criteria->typeCriteria is not manage");
-		}
-				
+		list($hql, $params) = OrmCore::_getHqlExample($listeField, $criterias, $condition);
+					
 		// Order By
 		if($orderBy != null) {
 				$hql .= $orderBy->getOrderBy();
@@ -966,79 +896,105 @@ class OrmCore {
 		$listeField = $entityParam->getFields();
 
 		$criterias = $OrmExample->getCriterias();
-		$delete = "delete from ".$entityParam->getDbname();
-		$hql = "";
-		$params = array();
-		foreach($criterias as $criteria)
-		{
-		  if(!empty($hql))
-		  {
-			$hql .= " {$condition} ";
-		  }
-		  
-		  if(empty($hql))
-		  {
-			$hql .= ' WHERE ';
-		  }
-
-		  $filterType = $listeField[$criteria->fieldname]->getType();
-		  
-				// 1 paramètre  
-		  if($criteria->typeCriteria == OrmTypeCriteria::$EQ || $criteria->typeCriteria == OrmTypeCriteria::$NEQ 
-			|| $criteria->typeCriteria == OrmTypeCriteria::$GT || $criteria->typeCriteria == OrmTypeCriteria::$GTE 
-			|| $criteria->typeCriteria == OrmTypeCriteria::$LT || $criteria->typeCriteria == OrmTypeCriteria::$LTE 
-			|| $criteria->typeCriteria == OrmTypeCriteria::$BEFORE || $criteria->typeCriteria == OrmTypeCriteria::$AFTER
-			|| $criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE)
-		  {  
-			$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[0], $filterType); 
-			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? ';
-			continue;
-		  }
-		  
-				// 0 paramètre
-		  if($criteria->typeCriteria == OrmTypeCriteria::$NULL || $criteria->typeCriteria == OrmTypeCriteria::$NNULL)
-		  {  
-			$hql .= $criteria->fieldname.$criteria->typeCriteria;
-			continue;
-		  }
-		  
-				// 2 paramètres  
-		  if($criteria->typeCriteria == OrmTypeCriteria::$BETWEEN)
-		  {  
-			$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[0], $filterType); 
-			$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[1], $filterType); 
-			$hql .= $criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
-			continue;
-		  }
-				
-				// N paramètres
-				if($criteria->typeCriteria == OrmTypeCriteria::$IN || $criteria->typeCriteria == OrmTypeCriteria::$NIN)
-				{
-					$hql .= ' ( ';
-					$second = false; 
-					foreach($criteria->paramsCriteria as $param)
-					{
-						if($second)
-						{
-							$hql .= ' OR ';
-						}
-						$params[] = OrmCore::_fieldToDBValue($param, $filterType); 
-						$hql .= $criteria->fieldname.OrmTypeCriteria::$EQ.' ? ';
-						
-						$second = true;
-					}
-					$hql .= ' )';
-					continue;
-				}                        
-		  
-		  throw new Exception("Le OrmCriteria $criteria->typeCriteria n'est pas encore pris en charge");
-		}
+		$delete = "delete from ".$entityParam->getDbname().' WHERE ';
+		
+		list($hql, $params) = OrmCore::_getHqlExample($listeField, $criterias, $condition);
+		
 		$queryExample = $delete.$hql;
 										
 		//Execution
 		$result = OrmDb::execute($queryExample,
 									$params,
 									"Database error during OrmCore::deleteByExample(OrmEntity &{$entityParam->getName()}, , OrmExample \$example)");
+	}
+	
+	/**
+	 * Inner function to factorize the custruction of the HQL for the *byExample functions
+	 * @param : $listeField the list of Fields
+	 * @param : $criterias the list of Criteria
+	 *
+	 * @return : List[$hql, $params]
+	 **/
+	private static function _getHqlExample($listeField, $criterias, $condition){
+		
+		if( $condition == 'AND' ){
+			$hql = " 1 ";
+		} else {
+			$hql = " 0 ";
+		}
+		
+		$params = array();
+
+		foreach($criterias as $criteria) {
+
+			if($listeField[$criteria->fieldname] == null) {
+				throw new Exception("Field '".$criteria->fieldname."' not defined in entity '".$entityParam->getName()."' while you're searching on it");
+			}
+			$filterType = $listeField[$criteria->fieldname]->getType();
+
+			//1 parameter
+			if($criteria->typeCriteria == OrmTypeCriteria::$EQ || $criteria->typeCriteria == OrmTypeCriteria::$NEQ
+				|| $criteria->typeCriteria == OrmTypeCriteria::$GT || $criteria->typeCriteria == OrmTypeCriteria::$GTE
+				|| $criteria->typeCriteria == OrmTypeCriteria::$LT || $criteria->typeCriteria == OrmTypeCriteria::$LTE
+				|| $criteria->typeCriteria == OrmTypeCriteria::$BEFORE || $criteria->typeCriteria == OrmTypeCriteria::$AFTER
+				|| $criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE) {
+				$val = $criteria->paramsCriteria[0];
+				
+				$params[] = OrmCore::_fieldToDBValue($val, $filterType);
+				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria.' ? ';
+				continue;
+			}
+
+			//0 parameter
+			if($criteria->typeCriteria == OrmTypeCriteria::$NULL || $criteria->typeCriteria == OrmTypeCriteria::$NNULL) {
+				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria;
+				continue;
+			}
+
+			//2 parameters
+			if($criteria->typeCriteria == OrmTypeCriteria::$BETWEEN) {
+				$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[0], $filterType);
+				$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[1], $filterType);
+				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
+				continue;
+			}
+
+			// N parameters
+			if($criteria->typeCriteria == OrmTypeCriteria::$IN || $criteria->typeCriteria == OrmTypeCriteria::$NIN) {
+				if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) > 0) {
+						$hql .= " {$condition} ( ";
+						$second = false;
+						foreach($criteria->paramsCriteria as $param) {
+						 if($second) {
+								$hql .= ' OR ';
+						 }
+						
+						 $params[] = OrmCore::_fieldToDBValue($param, $filterType);
+						 $hql .= $criteria->fieldname.OrmTypeCriteria::$EQ.' ? ';
+						
+						 $second = true;
+						}
+						$hql .= ' )';
+				} else if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) == 0) {
+					$hql .= 'AND false '; // no value passed, so no result to be returned
+				}
+				continue;
+			}
+
+			//Other cases
+			if($criteria->typeCriteria == OrmTypeCriteria::$EMPTY) {
+				$hql .= " {$condition} ( ".$criteria->fieldname .' is null || ' . $criteria->fieldname . "= '')";
+				continue;
+			}
+			if($criteria->typeCriteria == OrmTypeCriteria::$NEMPTY) {
+				$hql .= " {$condition} ( ".$criteria->fieldname .' is not null && ' . $criteria->fieldname . "!= '')";
+				continue;
+			}
+										
+			throw new Exception("The OrmCriteria $criteria->typeCriteria is not manage");
+		}
+		
+		return array($hql, $params);
 	}
       
     /**
