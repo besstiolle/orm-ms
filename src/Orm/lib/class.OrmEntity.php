@@ -311,10 +311,10 @@ abstract class OrmEntity
 			throw new OrmIllegalArgumentException("you can't save the entity ".$this->getName()." because it doesn't have any Primary-Key");
 		}
         
-        $asPkFilled = false;
+        $asPkFilled = true;
 	    foreach($this->pk as $pk){
-            if($this->get($pk) != null){
-                $asPkFilled = true;
+            if(is_null($this->get($pk))){
+                $asPkFilled = false;
                 break;
             }
         }
@@ -327,7 +327,7 @@ abstract class OrmEntity
                 $ormExample->addCriteria($pk, OrmTypeCriteria::$EQ, array($this->get($pk)));
             }
             $entity = OrmCore::findByExample($this, $ormExample);
-			if(!empty($entity)) {
+			if(empty($entity)) {
 				return OrmCore::insertEntity($this);
 			}
 			
