@@ -313,7 +313,12 @@ abstract class OrmEntity
         
         $asPkFilled = true;
 	    foreach($this->pk as $pk){
-            if(is_null($this->get($pk))){
+	    	// Improve this test
+	    	// Seem to be 0 if pk is INT
+	    	// but in other case ?
+	    	// This code cast boolean pk value
+	    	// show more : http://www.php.net/manual/en/language.types.boolean.php
+            if(!$this->get($pk)){
                 $asPkFilled = false;
                 break;
             }
