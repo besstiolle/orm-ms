@@ -311,10 +311,15 @@ abstract class OrmEntity
 			throw new OrmIllegalArgumentException("you can't save the entity ".$this->getName()." because it doesn't have any Primary-Key");
 		}
         
-        $asPkFilled = false;
+        $asPkFilled = true;
 	    foreach($this->pk as $pk){
-            if($this->get($pk) != null){
-                $asPkFilled = true;
+	    	// Improve this test
+	    	// Seem to be 0 if pk is INT
+	    	// but in other case ?
+	    	// This code cast boolean pk value
+	    	// show more : http://www.php.net/manual/en/language.types.boolean.php
+            if(!$this->get($pk)){
+                $asPkFilled = false;
                 break;
             }
         }
@@ -327,7 +332,7 @@ abstract class OrmEntity
                 $ormExample->addCriteria($pk, OrmTypeCriteria::$EQ, array($this->get($pk)));
             }
             $entity = OrmCore::findByExample($this, $ormExample);
-			if(!empty($entity)) {
+			if(empty($entity)) {
 				return OrmCore::insertEntity($this);
 			}
 			
