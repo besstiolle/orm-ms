@@ -962,19 +962,11 @@ class OrmCore {
 			// N parameters
 			if($criteria->typeCriteria == OrmTypeCriteria::$IN || $criteria->typeCriteria == OrmTypeCriteria::$NIN) {
 				if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) > 0) {
-						$hql .= " {$condition} ( ";
-						$second = false;
+						$hql .= " {$condition} ";
+						$hql .= $criteria->fieldname.' '.sprintf($criteria->typeCriteria, implode(',', array_fill(0, count($criteria->paramsCriteria), '?'))).' ';
 						foreach($criteria->paramsCriteria as $param) {
-						 if($second) {
-								$hql .= ' OR ';
-						 }
-						
-						 $params[] = OrmCore::_fieldToDBValue($param, $filterType);
-						 $hql .= $criteria->fieldname.OrmTypeCriteria::$EQ.' ? ';
-						
-						 $second = true;
+							$params[] = OrmCore::_fieldToDBValue($param, $filterType);
 						}
-						$hql .= ' )';
 				} else if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) == 0) {
 					$hql .= 'AND false '; // no value passed, so no result to be returned
 				}
