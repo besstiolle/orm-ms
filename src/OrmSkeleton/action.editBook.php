@@ -33,7 +33,7 @@ if(!empty($params['error'])) {
 <?php echo $formStart; ?>
 	<input type='hidden' name='<?php echo $id; ?>book_id' value='<?php echo $this->securize($book->get('book_id')); ?>' />
 	<label for='title'>Title : </label><input type='text' name='<?php echo $id; ?>title' value='<?php echo $this->securize($book->get('title')); ?>' /><br/>
-	<label for='description'>Description : </label><input type='text' name='<?php echo $id; ?>description' value='<?php echo $this->securize($book->get('description')); ?>' /><br/>
+	<label for='description'>Description : </label><textarea name='<?php echo $id; ?>description' ><?php echo $this->securize($book->get('description')); ?></textarea><br/>
 	<label for='uuid'>UUID : </label><input type='text' name='<?php echo $id; ?>uuid' value='<?php echo $this->securize($book->get('uuid')); ?>' /> example : <?php echo OrmCore::generateUUID(); ?><br/>
 	<?php echo $submit; echo $return; ?>
 </form>

@@ -80,17 +80,19 @@ class OrmField
 		if(($KEY == OrmKEY::$FK || $KEY == OrmKEY::$AK) && empty($KEYName)) {
 			throw new OrmIllegalConfigurationException('$FK key or $AK key for the field '.$fieldname.' need a keyName');
 		}
+		if(($cast == OrmCAST::$INHERIT) && !($KEY == OrmKEY::$FK || $KEY == OrmKEY::$AK)) {
+			throw new OrmIllegalConfigurationException('$INHERIT cast is only made for a $FK key or a $AK key (field '.$fieldname.')');
+		}
 		
 		if(($cast == OrmCAST::$DATE || $cast == OrmCAST::$BUFFER || $cast == OrmCAST::$TIME
 				|| $cast == OrmCAST::$DATETIME || $cast == OrmCAST::$TS || $cast == OrmCAST::$UUID 
-				|| $cast == OrmCAST::$NONE) && !empty($size)) {
+				|| $cast == OrmCAST::$INHERIT || $cast == OrmCAST::$NONE) && !empty($size)) {
 			throw new OrmIllegalConfigurationException('The field '.$fieldname.' must not have size value because of its own OrmCAST');
 		}
 		if(($cast == OrmCAST::$STRING) && empty($size)) {
 			throw new OrmIllegalConfigurationException('The field '.$fieldname.' must have size value because of its own OrmCAST');
 		}
 		
-
 		if($nullable == null) {
 			$nullable = false;
 		}

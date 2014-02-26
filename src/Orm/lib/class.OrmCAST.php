@@ -46,6 +46,7 @@ class OrmCAST
 	
 	public static $UUID = 9;
 		  
+	public static $INHERIT = 98;
 	public static $NONE = 99;
 }
 
