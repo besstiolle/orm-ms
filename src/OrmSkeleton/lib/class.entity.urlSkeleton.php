@@ -36,6 +36,15 @@ class UrlSkeleton extends OrmEntity
 		));
 		
 		
+		$this->add(new OrmField('comments'	
+			, OrmCAST::$NONE
+            , null
+			, TRUE 		
+			, OrmKEY::$AK
+			, 'CommentSkeleton'
+		));
+		
+		
 		// 1] we want to be sure that the couple url/lang_iso is Unique.
 		//    we also want indexing the uuid
 		//$this->addIndexes(array('url', 'lang_iso'), true);

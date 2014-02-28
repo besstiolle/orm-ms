@@ -10,6 +10,7 @@ $count = OrmCore::countAll(new UrlSkeleton());
 
 $link = $this->CreateLink($id, 'editUrl', $returnid, 'add');
 
+
 echo "<table class='pagetable' cellspacing='0'><tr>
 		<th>url</th>
 		<th>lang_iso</th>
@@ -26,13 +27,16 @@ if($count == 0){
 
 	//And iterate over each one
 	foreach($all as $url){
-	
+		
+		$addComment = $this->CreateLink($id, 'editComment', $returnid, 'add', array('url'=>$url->get('url'), 'lang_iso'=>$url->get('lang_iso')));
+		
 		// We can easily get all the values with the $object->get('fieldname') syntax
 		echo "<tr>
 				<td>".$this->securize($url->get('url'))."</td>
 				<td>".$this->securize($url->get('lang_iso'))."</td>
 				<td>".$this->securize($url->get('title'))."</td>
 				<td>".$this->securize($url->get('description'))."</td>
+				<td>".$this->securize($url->get('comments'))." Comment(s) {$addComment}</td>
 				<td>".$this->CreateLink($id, 'editUrlDelete', $returnid, $img_delete,array('url'=>$url->get('url'),'lang_iso'=>$url->get('lang_iso'))).
 					"&nbsp;-&nbsp;".
 					$this->CreateLink($id, 'editUrl', $returnid, $img_edit,array('url'=>$url->get('url'), 'lang_iso'=>$url->get('lang_iso'))).

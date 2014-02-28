@@ -720,26 +720,56 @@ class OrmCore {
 
 			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
 			$entityAssoc = new $entityAssocName();
+			$fk_names = array();
 			
-			$fieldAssoc = $entityAssoc->getFieldByName($fieldAssociateName);
-			list($entityCurrentName, $fieldCurrentName) = explode(".", $fieldAssoc->getKEYName());
-						
-			//The path must return to the current entity
-			if(strcasecmp($entityCurrentName,$entityParam->getName()) != 0){
-				throw new OrmIllegalConfigurationException("It seems you have a wrong path between {$entityParam->getName()}.{$field->getName()} and {$entityAssocName}.{$fieldAssociateName}");
+			// Case : $AF -> "contry.city.id"
+			if($fieldAssociateName != null){
+				$fieldAssoc = $entityAssoc->getFieldByName($fieldAssociateName);
+				list($entityCurrentName, $fieldCurrentName) = explode(".", $fieldAssoc->getKEYName());
+				
+				//The path must return to the current entity
+				if(strcasecmp($entityCurrentName,$entityParam->getName()) != 0){
+					throw new OrmIllegalConfigurationException("It seems you have a wrong path between {$entityParam->getName()}.{$field->getName()} and {$entityAssocName}.{$fieldAssociateName}");
+				}
+				
+				$fk_names[] = $fieldAssociateName;
+			}
+			// Case : $AF -> "country"
+			else {
+				
+				// We 'll automaticly find the 1-N $FK
+				$pks = $entityParam->getPk();
+				foreach($pks as $pk){
+					$fk_name =  $entityParam->getName().'__'$pk->getName();
+					
+					if(!$entityAssoc->isFieldByNameExists($fk_name)){
+						throw new OrmIllegalConfigurationException("It seems the entity {$entityAssocName} doesn't have any ForeignKey pointing on the Primary Key {$fk_name}");
+					}
+					
+					$fk_names[] = $fk_name;
+				}
 			}
 
 			//Initiate the field associate with an empty array.
 			$entitysKeys = array();
+			$queryAdd = 'SELECT * FROM '.$entityAssoc->getDbname().' WHERE ';
+			$conditionOr = array();
+			
 			foreach($entitys as $entity){
 				$entity->set($field->getName(), array());
-				$entitysKeys[] = $entity->get($fieldCurrentName);
-			}
-		  
-			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
-			$entityAssoc = new $entityAssocName();
+				$conditionAdd = array();
+				$fieldsKeys = array();
+				
+				foreach($fk_names as $fk_name){
+		
+					$fieldsKeys[$fk_name] = array();
+					$conditionAdd[] = $fk_name.' = ('.implode(',',$entitysKeys[$fk_name]).')';
+				}
 			
-			$queryAdd = 'SELECT * FROM '.$entityAssoc->getDbname().' WHERE '.$fieldAssociateName.' IN ('.implode(',',$entitysKeys).')';
+				$conditionAdd[] = $fk_name.' IN ('.implode(',',$entitysKeys[$fk_name]).')';
+			}
+			
+			$queryAdd .= implode(' AND ', $conditionAdd);
 		
 			// Order By 
 			if($orderBy != null) {
