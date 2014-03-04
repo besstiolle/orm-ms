@@ -718,7 +718,7 @@ class OrmCore {
 		
 		  if($field->isAssociateKEY()) {
 
-			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
+			list($entityAssocName, $fieldAssociateName) = @explode(".", $field->getKEYName());
 			$entityAssoc = new $entityAssocName();
 			$fk_names = array();
 			
@@ -726,103 +726,52 @@ class OrmCore {
 			if($fieldAssociateName != null){
 				$fieldAssoc = $entityAssoc->getFieldByName($fieldAssociateName);
 				list($entityCurrentName, $fieldCurrentName) = explode(".", $fieldAssoc->getKEYName());
-				
 				//The path must return to the current entity
 				if(strcasecmp($entityCurrentName,$entityParam->getName()) != 0){
 					throw new OrmIllegalConfigurationException("It seems you have a wrong path between {$entityParam->getName()}.{$field->getName()} and {$entityAssocName}.{$fieldAssociateName}");
 				}
 				
-				$fk_names[] = $fieldAssociateName;
+				$fk_names[$fieldAssociateName] = $fieldCurrentName;
 			}
 			// Case : $AF -> "country"
 			else {
-				
+				// FIXME case Coumpound key
 				// We 'll automaticly find the 1-N $FK
 				$pks = $entityParam->getPk();
 				foreach($pks as $pk){
-					$fk_name =  $entityParam->getName().'__'$pk->getName();
-					
-					if(!$entityAssoc->isFieldByNameExists($fk_name)){
+					$fk_name =  $entityParam->getName().'__'.$pk->getName();    // version entity__fieldPK
+					$fk_nameShort =  $entityParam->getName();                   //Short version
+					//die($fk_nameShort);
+					if(!$entityAssoc->isFieldByNameExists($fk_name) && !$entityAssoc->isFieldByNameExists($fk_nameShort)){
 						throw new OrmIllegalConfigurationException("It seems the entity {$entityAssocName} doesn't have any ForeignKey pointing on the Primary Key {$fk_name}");
 					}
 					
-					$fk_names[] = $fk_name;
+					$fk_names[$fk_name] = $pk->getName();
 				}
 			}
-
-			//Initiate the field associate with an empty array.
-			$entitysKeys = array();
-			$queryAdd = 'SELECT * FROM '.$entityAssoc->getDbname().' WHERE ';
-			$conditionOr = array();
+					
+			//Get the default Order
+			$orderBy = null;
+			if($entityParam->getDefaultOrderBy() != null){
+				$orderBy = $entityParam->getDefaultOrderBy()->getOrderBy();
+			}
 			
+			//For each Current Entity we will make a request. No panic for performance, the cache system is here to avoid complications.
 			foreach($entitys as $entity){
-				$entity->set($field->getName(), array());
-				$conditionAdd = array();
-				$fieldsKeys = array();
 				
-				foreach($fk_names as $fk_name){
-		
-					$fieldsKeys[$fk_name] = array();
-					$conditionAdd[] = $fk_name.' = ('.implode(',',$entitysKeys[$fk_name]).')';
+				$example = new OrmExample();
+				foreach($fk_names as $fkassoc_name => $fkcurrent_name){					
+					$example->addCriteria($fkassoc_name, OrmTypeCriteria::$EQ, array($entity->get($fkcurrent_name)));
 				}
-			
-				$conditionAdd[] = $fk_name.' IN ('.implode(',',$entitysKeys[$fk_name]).')';
-			}
-			
-			$queryAdd .= implode(' AND ', $conditionAdd);
-		
-			// Order By 
-			if($orderBy != null) {
-				$queryAdd .= $orderBy->getOrderBy();
-			}
-			else if($entityParam->getDefaultOrderBy() != null) {
-				$queryAdd .= $entityParam->getDefaultOrderBy()->getOrderBy();
-			}
-			
-			//Execution
-			$result = OrmDb::execute($queryAdd,
-									null,
-									"Database error during request to get associative entity $entityAssocName");
-			
-			
-			$entityAssocKeys = $entityAssoc->getPk();
-			while ($rowAssociate = $result->FetchRow()) {
-			
-				echo print_r($rowAssociate, true);
-				echo "<br/>";
-				echo $rowAssociate[$fieldAssociateName];
-				echo "<br/>";
-				echo $rowAssociate[$entityAssocKeys[0]->getName()];
-				echo "<br/>";
 				
-				for($i = 0; $i < count($entitys); $i++){
-				
-					$list = $entitys[$i]->get($field->getName());
-					
-					/*if(count($entityAssocKeys) != 1){*/
-						//Put the combinaison of key in another array
-						$compound = array();
-						foreach ($entityAssocKeys as $pk){
-						   $compound[$pk->getName()] = $rowAssociate[$pk->getName()];
-						}
-						$list[] = $compound;
-					/*} else {
-						$list[] = $rowAssociate[$entityAssocKeys[0]->getName()];
-					}*/
-					echo "#".print_r($list, true);
-					echo "<br/>";
-					$entitys[$i]->set($field->getName(), $list);
-					
+				// We put in the entity->AssociateKey Field a list of differents array, 1 per result
+				// We use simple array instead of recursive loading and OrmEntity because we don't want a "lazymode=false" symptome and overcharging the system
+				$result = OrmCore::findByExample($entityAssoc, $example, $orderBy);
+				$arrayIds = array();
+				foreach($result as $elt){
+					$arrayIds[] = $elt->getValues();
 				}
-				echo "<hr/>";
-				/*
-				
-				$arrayIdEntitiesDest = $entitys[$rowAssociate[$fieldAssociateName]]->get($field->getName());
-				
-				
-				
-
-				$entitys[$rowAssociate[$fieldAssociateName]]->set($field->getName(),$arrayIdEntitiesDest);*/
+				$entity->set($field->getName(), $arrayIds);
 			}
 		  } 
 		}

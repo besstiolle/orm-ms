@@ -28,6 +28,27 @@ if($count == 0){
 	//And iterate over each one
 	foreach($all as $url){
 		
+		//We'll get the id of each comments linked to our Url.
+		$arrayComments = $url->get('comments');
+		
+		if(count($arrayComments) == 0){
+			$commentsLabel = "= No comment =";
+		} else {
+			$commentsLabel = "";
+			foreach($arrayComments as $comment) {
+				if($commentsLabel != ""){
+					$commentsLabel.= " , ";
+				}
+				$commentsText.= $comment['text'];
+			}
+		}
+		
+		if(OrmCore::verifIntegrity($url, $url->get('url_id')) == ""){
+			$linkDelete = $this->CreateLink($id, 'editUrlDelete', $returnid, $img_delete,array('url_id'=>$url->get('url_id')));
+		} else {
+			$linkDelete = '<span style="color:#CCC">still used</span>';
+		}
+		
 		$addComment = $this->CreateLink($id, 'editComment', $returnid, 'add', array('url'=>$url->get('url'), 'lang_iso'=>$url->get('lang_iso')));
 		
 		// We can easily get all the values with the $object->get('fieldname') syntax
