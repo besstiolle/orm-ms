@@ -80,6 +80,7 @@ class OrmField
 		if(($KEY == OrmKEY::$FK || $KEY == OrmKEY::$AK) && empty($KEYName)) {
 			throw new OrmIllegalConfigurationException('$FK key or $AK key for the field '.$fieldname.' need a keyName');
 		}
+
 		if(($cast == OrmCAST::$INHERIT) && !($KEY == OrmKEY::$FK || $KEY == OrmKEY::$AK)) {
 			throw new OrmIllegalConfigurationException('$INHERIT cast is only made for a $FK key or a $AK key (field '.$fieldname.')');
 		}
@@ -93,6 +94,7 @@ class OrmField
 			throw new OrmIllegalConfigurationException('The field '.$fieldname.' must have size value because of its own OrmCAST');
 		}
 		
+
 		if($nullable == null) {
 			$nullable = false;
 		}

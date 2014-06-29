@@ -18,9 +18,9 @@ include_once('inc_adminUser.php');
 include_once('inc_adminCountry.php');
 include_once('inc_adminCity.php');
 
+
 echo "<h1>Advanced Examples</h1>";
 
 include_once('inc_adminBook.php');
 include_once('inc_adminUrl.php');
-
 ?>

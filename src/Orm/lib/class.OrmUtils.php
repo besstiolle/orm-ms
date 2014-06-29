@@ -33,6 +33,19 @@ class OrmUtils
 			}
 		}
 	}
+
+	/**
+	 * Return a unique encoding for the list of key.
+	 * For now simply an Json Encoding
+	 *
+	 * @return securized hash for the entity
+	 */
+	public static function generatePUID(array $primaryKeysValue){
+		
+		$puid = json_encode($primaryKeysValue);
+
+		return $puid;
+	}
 }
 
 ?>

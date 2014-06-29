@@ -10,7 +10,6 @@ $count = OrmCore::countAll(new UrlSkeleton());
 
 $link = $this->CreateLink($id, 'editUrl', $returnid, 'add');
 
-
 echo "<table class='pagetable' cellspacing='0'><tr>
 		<th>url</th>
 		<th>lang_iso</th>
@@ -21,44 +20,21 @@ echo "<table class='pagetable' cellspacing='0'><tr>
 if($count == 0){
 	echo "<tr><td colspan='5'><center>no record in database</center></td></tr>";
 } else {
-	// Let's find all the UrlSkeleton
-	$all = OrmCore::findAll(new UrlSkeleton()); 
-	
 
+	//We simply find all the Url with no limit and no sort
+	$all = OrmCore::findAll(new UrlSkeleton());
+	
 	//And iterate over each one
 	foreach($all as $url){
-		
-		//We'll get the id of each comments linked to our Url.
-		$arrayComments = $url->get('comments');
-		
-		if(count($arrayComments) == 0){
-			$commentsLabel = "= No comment =";
-		} else {
-			$commentsLabel = "";
-			foreach($arrayComments as $comment) {
-				if($commentsLabel != ""){
-					$commentsLabel.= " , ";
-				}
-				$commentsText.= $comment['text'];
-			}
-		}
-		
-		if(OrmCore::verifIntegrity($url, $url->get('url_id')) == ""){
-			$linkDelete = $this->CreateLink($id, 'editUrlDelete', $returnid, $img_delete,array('url_id'=>$url->get('url_id')));
-		} else {
-			$linkDelete = '<span style="color:#CCC">still used</span>';
-		}
-		
-		$addComment = $this->CreateLink($id, 'editComment', $returnid, 'add', array('url'=>$url->get('url'), 'lang_iso'=>$url->get('lang_iso')));
-		
+	
 		// We can easily get all the values with the $object->get('fieldname') syntax
 		echo "<tr>
 				<td>".$this->securize($url->get('url'))."</td>
 				<td>".$this->securize($url->get('lang_iso'))."</td>
 				<td>".$this->securize($url->get('title'))."</td>
 				<td>".$this->securize($url->get('description'))."</td>
-				<td>".$this->securize($url->get('comments'))." Comment(s) {$addComment}</td>
-				<td>".$this->CreateLink($id, 'editUrlDelete', $returnid, $img_delete,array('url'=>$url->get('url'),'lang_iso'=>$url->get('lang_iso'))).
+				". //We must add the values of all the differents primary keys
+				"<td>".$this->CreateLink($id, 'editUrlDelete', $returnid, $img_delete,array('url'=>$url->get('url'), 'lang_iso'=>$url->get('lang_iso'))).
 					"&nbsp;-&nbsp;".
 					$this->CreateLink($id, 'editUrl', $returnid, $img_edit,array('url'=>$url->get('url'), 'lang_iso'=>$url->get('lang_iso'))).
 				"</td>

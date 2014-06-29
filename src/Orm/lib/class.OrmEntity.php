@@ -76,7 +76,6 @@ abstract class OrmEntity
 	public static $_CONST_MOD = 'module';
 	
 	
-	
     /**
      * constructor protected to avoid a direct instantiation like "new OrmEntity()"
      * Each time a entity is constructed, we place a copy into the autoloader.
@@ -126,6 +125,7 @@ abstract class OrmEntity
     * Add a new Field into the list of Fields
     * 
     * @param OrmField the object Field to add
+    * @return OrmEntity the current instance
 	* 
 	* @exception OrmIllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
     */
@@ -140,6 +140,8 @@ abstract class OrmEntity
                 $this->seqname = $this->dbname.OrmEntity::$_CONST_SEQ;
             }
 		}
+
+		return $this;
 	}
 	
     /**
@@ -149,14 +151,42 @@ abstract class OrmEntity
     * @exception OrmIllegalArgumentException if there is no PrimaryKey Field
     */
 	public function getPk() {
-		if($this->pk == null)
+		if($this->pk == null) {
 			throw new OrmIllegalArgumentException("the entity {$this->getName()} doesn't have any Primary-Key");
+		}
 		
         $list_pk = array();
         foreach($this->pk as $pk){
-            $list_pk[] = $this->fields[$pk];
+            $list_pk[$pk] = $this->fields[$pk];
         }
 		return $list_pk;
+	}
+
+	/*
+	 * Return true if there is more than one PrimaryKey 
+	 *
+	 * @return Boolean  if there is more than one PrimaryKey 
+	 **/
+	public function hasCompositeKey(){
+		if($this->pk == null) {
+			return false;
+		}
+		return count($this->pk) > 1 ;
+	}
+
+	/**
+	 * Return a securizes agregate for single or composite PrimaryKey to make distinction between 2 entity of the same type
+	 *
+	 * @return String the "Primary Unique IDentifier"
+	 *
+	 */
+	public function getPUID(){
+		$vals = array();
+		foreach ($this->getPk() as $pkname => $pk) {
+			$vals[] = $this->get($pkname);
+		}
+		return OrmUtils::generatePUID($vals);
+		
 	}
 	
     /**
@@ -313,16 +343,18 @@ abstract class OrmEntity
         
         $asPkFilled = true;
 	    foreach($this->pk as $pk){
-	    	// Improve this test
+          	// Improve this test
 	    	// Seem to be 0 if pk is INT
 	    	// but in other case ?
 	    	// This code cast boolean pk value
 	    	// show more : http://www.php.net/manual/en/language.types.boolean.php
             if(!$this->get($pk)){
                 $asPkFilled = false;
-                break;
             }
         }
+
+
+
 		if(!$asPkFilled) {
 			return OrmCore::insertEntity($this);
 		} else {
@@ -436,6 +468,9 @@ abstract class OrmEntity
 	/**
 	 * This function will let you define some optional configuration for your Entity
 	 *    => the field must be auto-incremental
+     *
+     * @return OrmEntity the current instance
+     *
 	 **/
 	public function garnishAutoincrement(){
 		
@@ -456,6 +491,8 @@ abstract class OrmEntity
 		
 		//Remove any seq that could be add before
         $this->seqname = null;
+
+        return $this;
 	}
 	
 	/**
@@ -480,6 +517,8 @@ abstract class OrmEntity
 	 * @param mixed One (string) or many (array) name of field to be indexing
 	 * @param boolean if the index must be UNIQUE (default = false) 
 	 *
+     * @return OrmEntity the current instance
+	 *
 	 **/
 	public function addIndexes($fieldNames, $isUnique=false){
 		
@@ -495,6 +534,8 @@ abstract class OrmEntity
 		}
 	
 		$this->indexes[] = array('fields' => $fieldNames, 'unique' => $isUnique);
+
+		return $this;
 	}
 	
 	/**
@@ -505,6 +546,8 @@ abstract class OrmEntity
 	 *
 	 * @param String the name of the Field
 	 * @param Mixed the default value.
+	 *
+     * @return OrmEntity the current instance
 	 *
 	 **/
 	public function garnishDefaultValue($fieldName,$defaultValue){
@@ -518,6 +561,8 @@ abstract class OrmEntity
 		}
 		
 		$this->getFieldByName($fieldName)->setDefaultValue($defaultValue);
+
+		return $this;
 		
 	}
 	
@@ -529,6 +574,8 @@ abstract class OrmEntity
 	 *
 	 * @param OrmorderBy the default sort order.
 	 *
+     * @return OrmEntity the current instance
+	 *
 	 **/
 	public function garnishDefaultOrderBy(OrmOrderBy $defaultOrderBy){
 		foreach($defaultOrderBy as $fieldName => $value) {
@@ -537,6 +584,8 @@ abstract class OrmEntity
 			}
 		}
 		$this->defaultOrderBy = $defaultOrderBy;
+
+		return $this;
 	}
 	
 	/**
