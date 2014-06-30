@@ -35,15 +35,14 @@ class UrlSkeleton extends OrmEntity
             , TRUE
 		));
 
-				
 		$this->add(new OrmField('comments'	
 			, OrmCAST::$NONE
             , null
 			, TRUE 		
 			, OrmKEY::$AK
-			, 'CommentSkeleton'
+			//We don't need to specifie the field as soon as a comment has many FK, one for each PK of UrlSkeleton
+			, 'CommentSkeleton' 
 		));
-		
 	}	
 }
 ?>

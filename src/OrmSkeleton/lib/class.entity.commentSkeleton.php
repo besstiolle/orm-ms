@@ -1,8 +1,8 @@
 <?php
 /**
- * A complex example with a component key : an url of a website, a lang and the title/description in this lang.
- *  We don't want to create 2 entries for the same website for the same lang.
- *  We accept to create 2 entries for the same website if it's not with the same lang
+ * A complex example with a single primary key linked to an entity with a composite primary key.
+ *  One comment is linked to a combinaison of 1 Url and 1 Lang_iso
+ *  We also want to retrieve all the comments for 1 Url and 1 Lang_iso
  */ 
 class CommentSkeleton extends OrmEntity
 {
@@ -21,20 +21,25 @@ class CommentSkeleton extends OrmEntity
 			, OrmCAST::$BUFFER
 		));
 			
-		$this->add(new OrmField('website'
+		// We must create as many FK that their is PK in urlSkeleton
+		// http://dev.mysql.com/doc/refman/5.6/en/create-table-foreign-keys.html
+		$this->add(new OrmField('url'
 			, OrmCAST::$INHERIT
             , null
             , null
 			, OrmKEY::$FK
-			, "urlSkeleton" 
-			//, "urlSkeleton.lang_iso" 
+			, "urlSkeleton.url" 
+		));
+
+		$this->add(new OrmField('lang_iso'
+			, OrmCAST::$INHERIT
+            , null
+            , null
+			, OrmKEY::$FK
+			, "urlSkeleton.lang_iso" 
 		));
 		
 		
-		// 1] we want to be sure that the couple url/lang_iso is Unique.
-		//    we also want indexing the uuid
-		//$this->addIndexes(array('url', 'lang_iso'), true);
-
 	}	
 }
 ?>

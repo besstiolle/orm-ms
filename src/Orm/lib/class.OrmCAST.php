@@ -32,22 +32,22 @@
 */
 class OrmCAST
 {
-	public static $STRING = 0;
-	public static $BUFFER = 1;
+	public static $STRING = "STRING";
+	public static $BUFFER = "BUFFER";
 	
-	public static $INTEGER = 2;
-	public static $NUMERIC = 3;
-	public static $DOUBLE = 4;
+	public static $INTEGER = "INTEGER";
+	public static $NUMERIC = "NUMERIC";
+	public static $DOUBLE = "DOUBLE";
 	
-	public static $DATE = 5;
-	public static $TIME = 6;
-	public static $TS = 7;
-	public static $DATETIME = 8;
+	public static $DATE = "DATE";
+	public static $TIME = "TIME";
+	public static $TS = "TS";
+	public static $DATETIME = "DATETIME";
 	
-	public static $UUID = 9;
+	public static $UUID = "UUID";
 		  
-	public static $INHERIT = 98;
-	public static $NONE = 99;
+	public static $INHERIT = "INHERIT";
+	public static $NONE = "NONE";
 }
 
 ?>
