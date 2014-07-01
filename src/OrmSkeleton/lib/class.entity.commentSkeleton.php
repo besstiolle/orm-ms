@@ -39,7 +39,7 @@ class CommentSkeleton extends OrmEntity
 			, "urlSkeleton.lang_iso" 
 		));
 		
-		
+		$this->addShortcut('myurl', ['url', 'lang_iso']);
 	}	
 }
 ?>

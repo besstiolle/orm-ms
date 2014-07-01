@@ -65,6 +65,11 @@ abstract class OrmEntity
 	 * OrmOrderBy : if true the framework will try to use the inner autoincrement of Mysql instead generate a new table xxx_seq like usual
 	 */
 	private $defaultOrderBy;
+
+	/**
+	 * Array, contains the shortcuts for get* and set* function
+	 */ 
+	private $shortcuts = array();
 	
 	/**
 	 * String : constant, suffix for the sequence name into the database
@@ -130,6 +135,8 @@ abstract class OrmEntity
 	* @exception OrmIllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
     */
 	protected function add(OrmField $newField) {
+
+
 		$this->fields[$newField->getName()] = $newField;
 
 		//Add a sequence on the keys
@@ -140,6 +147,8 @@ abstract class OrmEntity
                 $this->seqname = $this->dbname.OrmEntity::$_CONST_SEQ;
             }
 		}
+
+
 
 		return $this;
 	}
@@ -589,11 +598,21 @@ abstract class OrmEntity
 	}
 	
 	/**
-	 * Return 
+	 * Return the default orderBy object for the entity
 	 * @return OrmOrderBy : default OrmOrderBy
 	 **/
 	public function getDefaultOrderBy() {
 		return $this->defaultOrderBy;
+	}
+
+	/**
+	 * Add a shortcut, very useful for entity with 2+ FK pointing on the same entity with a composite primary key
+	 *
+	 * @param string : the name of the shortcut
+	 * @param array : the liste of fieldname for the shortcut
+	 */
+	public function addShortcut($shortcutName, array $pointers){
+		$this->shortcuts[$shortcutName] = $pointers;
 	}
 	
 	
