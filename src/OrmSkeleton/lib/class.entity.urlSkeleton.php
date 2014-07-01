@@ -44,5 +44,24 @@ class UrlSkeleton extends OrmEntity
 			, 'CommentSkeleton' 
 		));
 	}	
+
+
+	/**
+	 * When you declare this function, the framework will try to execute this function as soon as the table is created.
+	 * So it's the best place to initiate your tables with some data !
+	 */
+	public function initTable(){
+		$website = new UrlSkeleton();
+		$website->set('url', 'http://www.furie.be');
+		$website->set('lang_iso', 'fr_FR');
+		$website->set('title', 'mon site perso');
+		$website->save();
+
+		$website = new UrlSkeleton();
+		$website->set('url', 'http://www.furie.be');
+		$website->set('lang_iso', 'en_US');
+		$website->set('title', 'my personal blog');
+		$website->save();
+	}
 }
 ?>

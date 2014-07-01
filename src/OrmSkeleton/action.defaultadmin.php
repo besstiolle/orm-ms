@@ -24,4 +24,5 @@ echo "<h1>Advanced Examples</h1>";
 
 include_once('inc_adminBook.php');
 include_once('inc_adminUrl.php');
+include_once('inc_adminComment.php');
 ?>

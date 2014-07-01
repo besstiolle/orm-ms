@@ -240,7 +240,6 @@ class OrmDb {
 			$sqlarray = OrmDb::$dict->CreateIndexSQL($md5, $tableName, $idxflds, OrmDb::$idxoptarrayUnique);
 		} else {
 			$sqlarray = OrmDb::$dict->CreateIndexSQL($md5, $tableName, $idxflds);
-			//die(implode(",",$sqlarray));
 		}
 		
 		$result = OrmDb::$dict->executeSQLArray($sqlarray);

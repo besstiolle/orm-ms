@@ -41,7 +41,7 @@ if($count == 0){
 					$citiesLabel.= " , ";
 				}
 
-				$citiesLabel.= $city['labelCity'];
+				$citiesLabel.= $city->get('labelCity');
 			}
 		}
 		

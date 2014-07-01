@@ -12,22 +12,22 @@ $comment->set('url', $params['url']);
 $comment->set('lang_iso', $params['lang_iso']);
 $comment->set('text', $params['text']);
 
-//try{
+try{
 	// We simply save the entity
 	$comment->save();
 	// Please note that this code could also work.
 	//OrmCore::insertEntity($comment);
 	
-	die("");
+
 
 	//Go back to the default admin page
-	//$this->Redirect($id, 'defaultadmin', $returnid, $params);
+	$this->Redirect($id, 'defaultadmin', $returnid, $params);
 	
 // The illegaArgument will happen each time you don't controle enough the data before inserting them
-//} catch (OrmIllegalArgumentException $e){
+} catch (OrmIllegalArgumentException $e){
 	// Ho ho ho... there is shitty information ...
 	// Let's go inform the user
-	//$params['error'] = $e->getMessage();
-	//$this->Redirect($id, 'editComment', $returnid, $params);
-//}
+	$params['error'] = $e->getMessage();
+	$this->Redirect($id, 'editComment', $returnid, $params);
+}
 ?>

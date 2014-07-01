@@ -135,6 +135,9 @@ abstract class OrmEntity
 	* @exception OrmIllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
     */
 	protected function add(OrmField $newField) {
+		
+		$this->fields[$newField->getName()] = $newField;
+
 		//Add a sequence on the keys
 		if($newField->isPrimaryKEY()) {
 				
@@ -292,7 +295,7 @@ abstract class OrmEntity
 			throw new OrmIllegalArgumentException("The function get(\$fieldName) doesn't accept a null parameter (entity : {$this->getName()})");
 		}
 	
-		if(!array_KEY_exists($fieldName,$this->fields)){
+		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldName,$this->alias)){
 			throw new OrmIllegalArgumentException("Function get(\$fieldName) : The field {$fieldName} doesn't exist into the entity {$this->getName()}");
 		}
 		
@@ -316,8 +319,7 @@ abstract class OrmEntity
 		if(empty($fieldName)){
 			throw new OrmIllegalArgumentException("The function set(\$fieldName) doesn't accept a null parameter (entity : {$this->getName()})");
 		}
-	
-		if(!array_KEY_exists($fieldName,$this->fields)){
+		if(!array_KEY_exists($fieldName,$this->fields) && !array_KEY_exists($fieldName,$this->alias)){
 			throw new OrmIllegalArgumentException("Function set(\$fieldName) : The field {$fieldName} doesn't exist into the entity {$this->getName()}");
 		}
 		
@@ -347,18 +349,12 @@ abstract class OrmEntity
 		}
         
         $asPkFilled = true;
+        $values = $this->getValues();
 	    foreach($this->pk as $pk){
-          	// Improve this test
-	    	// Seem to be 0 if pk is INT
-	    	// but in other case ?
-	    	// This code cast boolean pk value
-	    	// show more : http://www.php.net/manual/en/language.types.boolean.php
-            if(!$this->get($pk)){
+            if(!isset($values[$pk]) || $values[$pk] === ""){
                 $asPkFilled = false;
             }
         }
-
-
 
 		if(!$asPkFilled) {
 			return OrmCore::insertEntity($this);
@@ -609,6 +605,15 @@ abstract class OrmEntity
 	 */
 	public function addAlias($aliasName, array $pointers){
 		$this->alias[$aliasName] = $pointers;
+	}
+
+	/**
+	 * getter for field alias
+	 *
+	 * @return array 
+	 **/
+	public function getAlias(){
+		return $this->alias;
 	}
 	
 	

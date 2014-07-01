@@ -3,8 +3,10 @@
 if (!function_exists("cmsms")) exit;
 
 if(empty($params['url']) || empty($params['lang_iso'])){
-	//XXXXXXXXXXXXXXXXXXXXXX
+	$this->Redirect($id, 'defaultadmin', $returnid, $params);
 }
+
+$img_delete = cmsms()->variables['admintheme']->DisplayImage('icons/system/delete.gif','delete','','','systemicon');
 
 //Let's retrieve the comments !
 $example = new OrmExample();
