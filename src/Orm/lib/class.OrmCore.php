@@ -687,7 +687,7 @@ class OrmCore {
 		  	} 
 
 		  	if($field->isForeignKEY() && strpos($field->getKEYName(),".")) {
-		  		//$entitys = OrmCore::populateFKField($entityParam, $entitys, $field);
+		  		$entitys = OrmCore::populateFKField($entityParam, $entitys, $field);
 		  	}
 		}
 /*
@@ -703,7 +703,93 @@ class OrmCore {
 		
 		return $entitys;
 	}
+	/**
+	 * Will found all the entitys available for the field FK of parameter $entityParam.
+	 * 
+	 * @param OrmEntity 
+	 * @param array list of Object OrmEntity
+	 * @param OrmField the FK field to populate
+	 * 
+	 * @return list of Object OrmEntity with the values of the field FK populated by the other OrmEntity founded
+	 * 
+	 * @since 0.3.0
+	 *
+	 */
+	public static final function populateFKField($entityParam, $entitys, $field){
 
+		if(!$field->isForeignKEY()){
+			throw new OrmIllegalArgumentException("function populateFKField(\$entityParam, \$entitys, \$field) only accept fields of type ForeignKey");
+		}
+
+		if(!strpos($field->getKEYName(),".")){
+			return $entitys;
+		}
+
+		if(strpos($field->getKEYName(),".")){
+			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
+			$entityAssoc = new $entityAssocName();
+			$sqlfieldvalue = array();
+
+			$sqlfieldvalue[] = $field->getName();
+			$assocFieldsName[] = $fieldAssociateName;
+			$sqlfieldname[] = " {$fieldAssociateName} = ? ";
+
+		}
+
+		// ( field1 = ? and field2 = ? ) 
+		$sqlfieldsname = ' ( ' . implode(" AND ", $sqlfieldname) . ' ) ' ;
+		$sqlfieldsnameOR = ' OR ' . $sqlfieldsname;
+
+		$sqlfields = " 1 ";
+		if(!empty($entitys)){
+			$sqlfields = $sqlfieldsname . str_repeat($sqlfieldsnameOR, count($entitys)-1);	
+		} 
+
+		$queryAdd = 'SELECT * FROM ' . $entityAssoc->getDbname() . ' WHERE ' . $sqlfields;
+		$queryParams = array();
+		foreach($entitys as $entity){
+				$queryParams[] = $entity->get($field->getName());
+			
+		}
+					
+		// Order By 
+		//FIXME should be $entityAssoc ?
+		if($entityParam->getDefaultOrderBy() != null) {
+			$queryAdd .= $entityParam->getDefaultOrderBy()->getOrderBy();
+		}
+
+
+		//Execution
+		$result = OrmDb::execute($queryAdd,
+								$queryParams,
+								"Database error during request to get associative entity $entityAssocName");
+		
+		$countFields = count($sqlfieldvalue);
+
+		while ($rowAssociate = $result->FetchRow()) {
+			foreach($entitys as $entity){
+				$alreadyPresent = null;
+				$ismatch = true;
+				for ( $i = 0 ; $i < $countFields; $i++){
+
+					if($entity->get($field->getName()) !== $rowAssociate[$assocFieldsName[$i]]){
+						$ismatch = false;
+						break;
+					}
+				}
+				if($ismatch){
+					// At this point we found a result for the current entity.
+					// We must add this result into the $field 
+					
+					$newObject = OrmCore::rowToEntity (new $entityAssocName(), $rowAssociate);
+					$entity->set($field->getName(), $newObject);
+
+				}
+			}
+		}
+
+		return $entitys;
+	}
 	/**
 	 * Will found all the entitys available for the field AK of parameter $entityParam.
 	 * 
@@ -744,7 +830,6 @@ class OrmCore {
 				$entity->set($field->getName(), array());
 			}
 
-			//TODO : remembering this part in memory to avoid triple reseach
 			$sqlfieldvalue[] = $fieldCurrentName;
 			$assocFieldsName[] = $fieldAssociateName;
 			$sqlfieldname[] = " {$fieldAssociateName} = ? ";

@@ -26,17 +26,13 @@ if($count == 0){
 	foreach($all as $country){
 	
 		//We'll automatticly get the cities linked to our Country in an Array form
-		$arrayCities = $country->get('cities');
+		$cities = $country->get('cities');
 		
-		//Let's transform this information to a better way
-		//$arrayCities = OrmCore::findByIds(new CitySkeleton(), $arrayCitiesId);
-
-
-		if(count($arrayCities) == 0){
+		if(count($cities) == 0){
 			$citiesLabel = "= No city =";
 		} else {
 			$citiesLabel = "";
-			foreach($arrayCities as $city) {
+			foreach($cities as $city) {
 				if($citiesLabel != ""){
 					$citiesLabel.= " , ";
 				}

@@ -26,14 +26,14 @@ if($count == 0){
 	foreach($all as $city){
 	
 		//We'll only have the id of the country, so we need to retrieve the Entity Country selected
-		$country_id = $city->get('country');
-		$country = OrmCore::findById(new CountrySkeleton(), $country_id);
+		//$country = $city->get('country');
+		//$country = OrmCore::findById(new CountrySkeleton(), $country_id);
 		
 		// We can easily get all the values with the $object->get('fieldname') syntax
 		echo "<tr>
 				<td>".$this->securize($city->get('city_id'))."</td>
 				<td>".$this->securize($city->get('labelCity'))."</td>
-				<td>".$this->securize($country->get('labelCountry'))." (#".$city->get('country').")</td>
+				<td>".$this->securize($city->get('country')->get('labelCountry'))."</td>
 				<td>".$this->CreateLink($id, 'editCityDelete', $returnid, $img_delete,array('city_id'=>$city->get('city_id'))).
 					"&nbsp;-&nbsp;".
 					$this->CreateLink($id, 'editCity', $returnid, $img_edit,array('city_id'=>$city->get('city_id'))).
