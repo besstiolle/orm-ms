@@ -11,6 +11,7 @@ echo $error;
 
 $img_delete = cmsms()->variables['admintheme']->DisplayImage('icons/system/delete.gif','delete','','','systemicon');
 $img_edit = cmsms()->variables['admintheme']->DisplayImage('icons/system/edit.gif','edit','','','systemicon');
+$img_view = cmsms()->variables['admintheme']->DisplayImage('icons/system/view.gif','view','','','systemicon');
 
 echo "<h1>Basic Examples</h1>";
 

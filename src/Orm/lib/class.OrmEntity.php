@@ -135,10 +135,6 @@ abstract class OrmEntity
 	* @exception OrmIllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
     */
 	protected function add(OrmField $newField) {
-
-
-		$this->fields[$newField->getName()] = $newField;
-
 		//Add a sequence on the keys
 		if($newField->isPrimaryKEY()) {
 				

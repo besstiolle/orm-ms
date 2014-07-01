@@ -98,6 +98,13 @@ class OrmField
 		if($nullable == null) {
 			$nullable = false;
 		}
+
+		if(OrmCAST::$INHERIT == $cast) {
+			//Must take the distant type
+			list($entityAssocName, $fieldAssociateName) = explode(".", $KEYName);
+			$cast = (new $entityAssocName())->getFieldByName($fieldAssociateName)->getType();
+			$size = (new $entityAssocName())->getFieldByName($fieldAssociateName)->getSize();
+		}
 			
 		$this->name 	= $fieldname;
 		$this->type 	= $cast;

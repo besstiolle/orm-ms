@@ -297,6 +297,8 @@ class OrmCore {
 				}
 			}
 			
+
+
 			//Empty Field that shouldn't be !
 			if(!$field->isNullable() && !isset($values[$field->getName()])) {
 				//Exception : if the field have a default value we set it manually
@@ -324,6 +326,9 @@ class OrmCore {
 				$params[] = null;
 			}
 		}
+
+		var_dump($params);
+		die('');
 		
 		//control uniqueness on unique Field
 		foreach($indexes as $index){

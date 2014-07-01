@@ -19,7 +19,7 @@ echo "<table class='pagetable' cellspacing='0'><tr>
 		<th>&nbsp;</th>
 	</tr>";
 if($count == 0){
-	echo "<tr><td colspan='5'><center>no record in database</center></td></tr>";
+	echo "<tr><td colspan='6'><center>no record in database</center></td></tr>";
 } else {
 
 	//We simply find all the Url with no limit and no sort
@@ -39,7 +39,8 @@ if($count == 0){
 				<td>".$this->securize($url->get('lang_iso'))."</td>
 				<td>".$this->securize($url->get('title'))."</td>
 				<td>".$this->securize($url->get('description'))."</td>
-				<td>".count($url->get('comments'))." Comment(s)</td>
+				<td><a href='".$this->CreateLink($id, 'editComment', $returnid, '',array('url'=>$url->get('url'), 'lang_iso'=>$url->get('lang_iso')),'',true)
+					."' >".count($url->get('comments'))." Comment(s) ".$img_view."</a></td>
 				". //We must add the values of all the differents primary keys
 				"<td>".$this->CreateLink($id, 'editUrlDelete', $returnid, $img_delete,array('url'=>$url->get('url'), 'lang_iso'=>$url->get('lang_iso'))).
 					"&nbsp;-&nbsp;".
