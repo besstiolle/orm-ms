@@ -756,7 +756,10 @@ class OrmCore {
 			$sqlfieldsname = ' ( ' . implode(" AND ", $sqlfieldname) . ' ) ' ;
 			$sqlfieldsnameOR = ' OR ' . $sqlfieldsname;
 
-			$sqlfields = $sqlfieldsname . str_repeat($sqlfieldsnameOR, count($entitys)-1);
+			$sqlfields = " 1 ";
+			if(!empty($entitys)){
+				$sqlfields = $sqlfieldsname . str_repeat($sqlfieldsnameOR, count($entitys)-1);	
+			} 
 
 			$queryAdd = 'SELECT * FROM ' . $entityAssoc->getDbname() . ' WHERE ' . $sqlfields;
 			$queryParams = array();
@@ -774,7 +777,7 @@ class OrmCore {
 			else if($entityParam->getDefaultOrderBy() != null) {
 				$queryAdd .= $entityParam->getDefaultOrderBy()->getOrderBy();
 			}
-			
+
 			//Execution
 			$result = OrmDb::execute($queryAdd,
 									$queryParams,

@@ -67,9 +67,9 @@ abstract class OrmEntity
 	private $defaultOrderBy;
 
 	/**
-	 * Array, contains the shortcuts for get* and set* function
+	 * Array, contains the alias for get* and set* function
 	 */ 
-	private $shortcuts = array();
+	private $alias = array();
 	
 	/**
 	 * String : constant, suffix for the sequence name into the database
@@ -606,13 +606,13 @@ abstract class OrmEntity
 	}
 
 	/**
-	 * Add a shortcut, very useful for entity with 2+ FK pointing on the same entity with a composite primary key
+	 * Add a alias, very useful for entity with 2+ FK pointing on the same entity with a composite primary key
 	 *
-	 * @param string : the name of the shortcut
+	 * @param string : the name of the alias
 	 * @param array : the liste of fieldname for the shortcut
 	 */
-	public function addShortcut($shortcutName, array $pointers){
-		$this->shortcuts[$shortcutName] = $pointers;
+	public function addAlias($aliasName, array $pointers){
+		$this->alias[$aliasName] = $pointers;
 	}
 	
 	
