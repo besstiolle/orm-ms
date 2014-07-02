@@ -677,58 +677,71 @@ class OrmCore {
 	 **/
 	public static final function populateFields(OrmEntity &$entityParam, array $entitys) {
 		
+		if(empty($entitys)){
+			return $entitys;
+		}
 
-		//Test the presence of $AK
 		$listeField = $entityParam->getFields();
 		foreach($listeField as $field) {
 
+			//Test the presence of $AK
 		  	if($field->isAssociateKEY()) {
 				$entitys = OrmCore::populateAKField($entityParam, $entitys, $field);
 		  	} 
-
+		  	
+		  	//Test the presence of $FK
 		  	if($field->isForeignKEY() && strpos($field->getKEYName(),".")) {
-		  		$entitys = OrmCore::populateFKField($entityParam, $entitys, $field);
+		  		
+		  		list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
+				$entityAssoc = new $entityAssocName();
+		  		
+		  		//Avoid FK pointing on composite primary key
+		  		if(count($entityAssoc->getPk()) == 1){
+		  			$entitys = OrmCore::populateFKField($entityParam, $entitys, $field);
+		  		}
 		  	}
 		}
-/*
-		$alias = $entityParam->getAlias();
-		foreach ($alias as $anAlias => $fieldsname) {
 
-			foreach ($entitys as $entity) {
-				//We initiate the value 
-				$entity->set($anAlias, null);
-			}
-			var_dump($fieldsname);
-		}*/
+		$alias = $entityParam->getAlias();
+		foreach ($alias as $anAlias => $aliasComponent) {
+			$entitys = OrmCore::populateAliasField($entityParam, $entitys, $anAlias);
+		}
 		
 		return $entitys;
 	}
+
 	/**
-	 * Will found all the entitys available for the field FK of parameter $entityParam.
+	 * Will found all the entitys available for the Alias parameter $entityParam.
+	 *   Allow $myentity->get('my_alias');
+	 * 
 	 * 
 	 * @param OrmEntity 
 	 * @param array list of Object OrmEntity
-	 * @param OrmField the FK field to populate
+	 * @param string the alias to populate
 	 * 
-	 * @return list of Object OrmEntity with the values of the field FK populated by the other OrmEntity founded
+	 * @return list of Object OrmEntity with the values of the alias populated by the other OrmEntity founded
 	 * 
 	 * @since 0.3.0
 	 *
 	 */
-	public static final function populateFKField($entityParam, $entitys, $field){
+	public static final function populateAliasField($entityParam, $entitys, $anAlias) {
 
-		if(!$field->isForeignKEY()){
-			throw new OrmIllegalArgumentException("function populateFKField(\$entityParam, \$entitys, \$field) only accept fields of type ForeignKey");
+		$alias = $entityParam->getAlias();
+		if(!isset($alias[$anAlias])){
+			throw new OrmIllegalArgumentException("function populateAliasField(\$entityParam, \$entitys, \$anAlias) only accept alias name in third parameter");
 		}
 
-		if(!strpos($field->getKEYName(),".")){
-			return $entitys;
-		}
-
-		if(strpos($field->getKEYName(),".")){
+		$aliasComponent = $alias[$anAlias]; 
+		foreach ($aliasComponent as $component) {
+			$field = $entityParam->getFieldByName($component);
 			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
 			$entityAssoc = new $entityAssocName();
-			$sqlfieldvalue = array();
+
+			//Initiate the field associate with an empty array.
+			$entitysKeys = array();
+			foreach($entitys as $entity){
+				$entity->set($anAlias, null);
+			}
 
 			$sqlfieldvalue[] = $field->getName();
 			$assocFieldsName[] = $fieldAssociateName;
@@ -748,16 +761,19 @@ class OrmCore {
 		$queryAdd = 'SELECT * FROM ' . $entityAssoc->getDbname() . ' WHERE ' . $sqlfields;
 		$queryParams = array();
 		foreach($entitys as $entity){
-				$queryParams[] = $entity->get($field->getName());
+		
+
+			foreach ($assocFieldsName as $fieldname) {
+
+				$queryParams[] = $entity->get($fieldname);
+			}
 			
 		}
 					
 		// Order By 
-		//FIXME should be $entityAssoc ?
-		if($entityParam->getDefaultOrderBy() != null) {
-			$queryAdd .= $entityParam->getDefaultOrderBy()->getOrderBy();
+		if($entityAssoc->getDefaultOrderBy() != null) {
+			$queryAdd .= $entityAssoc->getDefaultOrderBy()->getOrderBy();
 		}
-
 
 		//Execution
 		$result = OrmDb::execute($queryAdd,
@@ -766,13 +782,14 @@ class OrmCore {
 		
 		$countFields = count($sqlfieldvalue);
 
+
 		while ($rowAssociate = $result->FetchRow()) {
 			foreach($entitys as $entity){
 				$alreadyPresent = null;
 				$ismatch = true;
 				for ( $i = 0 ; $i < $countFields; $i++){
 
-					if($entity->get($field->getName()) !== $rowAssociate[$assocFieldsName[$i]]){
+					if($entity->get($sqlfieldvalue[$i]) !== $rowAssociate[$assocFieldsName[$i]]){
 						$ismatch = false;
 						break;
 					}
@@ -780,9 +797,9 @@ class OrmCore {
 				if($ismatch){
 					// At this point we found a result for the current entity.
 					// We must add this result into the $field 
-					
+
 					$newObject = OrmCore::rowToEntity (new $entityAssocName(), $rowAssociate);
-					$entity->set($field->getName(), $newObject);
+					$entity->set($anAlias, $newObject);
 
 				}
 			}
@@ -790,6 +807,7 @@ class OrmCore {
 
 		return $entitys;
 	}
+
 	/**
 	 * Will found all the entitys available for the field AK of parameter $entityParam.
 	 * 
@@ -887,8 +905,8 @@ class OrmCore {
 		}
 					
 		// Order By 
-		if($entityParam->getDefaultOrderBy() != null) {
-			$queryAdd .= $entityParam->getDefaultOrderBy()->getOrderBy();
+		if($entityAssoc->getDefaultOrderBy() != null) {
+			$queryAdd .= $entityAssoc->getDefaultOrderBy()->getOrderBy();
 		}
 
 		//Execution
@@ -920,6 +938,94 @@ class OrmCore {
 				}
 			}
 		}
+		return $entitys;
+	}
+
+
+	/**
+	 * Will found all the entitys available for the field FK of parameter $entityParam.
+	 * 
+	 * @param OrmEntity 
+	 * @param array list of Object OrmEntity
+	 * @param OrmField the FK field to populate
+	 * 
+	 * @return list of Object OrmEntity with the values of the field FK populated by the other OrmEntity founded
+	 * 
+	 * @since 0.3.0
+	 *
+	 */
+	public static final function populateFKField($entityParam, $entitys, $field){
+
+		if(!$field->isForeignKEY()){
+			throw new OrmIllegalArgumentException("function populateFKField(\$entityParam, \$entitys, \$field) only accept fields of type ForeignKey");
+		}
+
+		if(!strpos($field->getKEYName(),".")){
+			return $entitys;
+		}
+
+		if(strpos($field->getKEYName(),".")){
+			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
+			$entityAssoc = new $entityAssocName();
+			$sqlfieldvalue = array();
+
+			$sqlfieldvalue[] = $field->getName();
+			$assocFieldsName[] = $fieldAssociateName;
+			$sqlfieldname[] = " {$fieldAssociateName} = ? ";
+
+		}
+
+		// ( field1 = ? and field2 = ? ) 
+		$sqlfieldsname = ' ( ' . implode(" AND ", $sqlfieldname) . ' ) ' ;
+		$sqlfieldsnameOR = ' OR ' . $sqlfieldsname;
+
+		$sqlfields = " 1 ";
+		if(!empty($entitys)){
+			$sqlfields = $sqlfieldsname . str_repeat($sqlfieldsnameOR, count($entitys)-1);	
+		} 
+
+		$queryAdd = 'SELECT * FROM ' . $entityAssoc->getDbname() . ' WHERE ' . $sqlfields;
+		$queryParams = array();
+		foreach($entitys as $entity){
+				$queryParams[] = $entity->get($field->getName());
+			
+		}
+					
+		// Order By 
+		if($entityAssoc->getDefaultOrderBy() != null) {
+			$queryAdd .= $entityAssoc->getDefaultOrderBy()->getOrderBy();
+		}
+
+
+		//Execution
+		$result = OrmDb::execute($queryAdd,
+								$queryParams,
+								"Database error during request to get associative entity $entityAssocName");
+		
+		$countFields = count($sqlfieldvalue);
+
+		while ($rowAssociate = $result->FetchRow()) {
+			foreach($entitys as $entity){
+				$alreadyPresent = null;
+				$ismatch = true;
+				for ( $i = 0 ; $i < $countFields; $i++){
+
+					if($entity->get($field->getName()) !== $rowAssociate[$assocFieldsName[$i]]){
+						$ismatch = false;
+						break;
+					}
+				}
+				if($ismatch){
+					// At this point we found a result for the current entity.
+					// We must add this result into the $field 
+					
+					$newObject = OrmCore::rowToEntity (new $entityAssocName(), $rowAssociate);
+					$entity->set($field->getName(), $newObject);
+
+				}
+			}
+		}
+
 		return $entitys;
 	}
   

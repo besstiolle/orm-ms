@@ -14,10 +14,11 @@ $all = OrmCore::findAll(new CommentSkeleton());
 echo "There are " . $count . " CommentSkeleton(s) into the database.";
 
 if($count > 0){
-	$lastComment = $all[$count-1];
+	$rand = mt_rand(0,$count-1);
+	$randomComment = $all[$rand];
 
-//	$url = $lastComment->get('myurl');
-//	echo " The last comment was <i>{$lastComment->get('text')}</i> on : {$url['title']}";
+	echo " The random comment is <b>{$randomComment->get('text')} </b>
+			 on : <b>{$randomComment->get('myurl')->get('title')}</b>";
 }
 
 
