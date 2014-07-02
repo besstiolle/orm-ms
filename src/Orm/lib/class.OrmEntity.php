@@ -364,7 +364,8 @@ abstract class OrmEntity
             foreach($this->pk as $pk){
                 $ormExample->addCriteria($pk, OrmTypeCriteria::$EQ, array($this->get($pk)));
             }
-            $entity = OrmCore::findByExample($this, $ormExample);
+            $lazymode = true;
+            $entity = OrmCore::findByExample($this, $ormExample, null, null, 'AND', $lazymode);
 			if(empty($entity)) {
 				return OrmCore::insertEntity($this);
 			}

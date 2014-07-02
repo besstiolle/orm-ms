@@ -54,12 +54,12 @@ class OrmCore {
 
 			$castType = $field->getType();
 			$size = $field->getSize();
-			if(OrmCAST::$INHERIT == $castType) {
+			/*if(OrmCAST::$INHERIT == $castType) {
 				//Must take the distant type
 				list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKeyName());
 				$castType = (new $entityAssocName())->getFieldByName($fieldAssociateName)->getType();
 				$size = (new $entityAssocName())->getFieldByName($fieldAssociateName)->getSize();
-			}
+			}*/
 
 			
 			$size = $size != "" ? " (".$size.") " : "";
@@ -675,7 +675,7 @@ class OrmCore {
 	 *
      * @return array<OrmEntity> list of Entities populate with all the informations on AK's Field
 	 **/
-	private static final function _processArrayEntity(OrmEntity &$entityParam, array $entitys) {
+	public static final function populateFields(OrmEntity &$entityParam, array $entitys) {
 		
 
 		//Test the presence of $AK
@@ -1000,7 +1000,7 @@ class OrmCore {
      * @see OrmExample
      * @see OrmTypeCriteria
      */
-	public static final function findByExample(OrmEntity $entityParam, OrmExample $example, OrmOrderBy $orderBy = null, OrmLimit $limit = null, $condition = 'AND') {
+	public static final function findByExample(OrmEntity $entityParam, OrmExample $example, OrmOrderBy $orderBy = null, OrmLimit $limit = null, $condition = 'AND', $lazymode = false) {
 
 		$listeField = $entityParam->getFields();
 
@@ -1032,7 +1032,7 @@ class OrmCore {
 				//Execution
 				$result = OrmDb::execute($queryExample,
 										$params,
-										"Database error during OrmCore::findByExample(OrmEntity &{$entityParam->getName()}, , OrmExample \$example)");
+										"Database error during OrmCore::findByExample(OrmEntity &{$entityParam->getName()}, OrmExample \$example)");
 
 				OrmTrace::debug("findByExample : ".$result->RecordCount()." resultat(s)");
 
@@ -1041,7 +1041,9 @@ class OrmCore {
 				  $entities[] = OrmCore::rowToEntity($entityParam, $row);
 				}
 
-				$entities = OrmCore::_processArrayEntity($entityParam, $entities);
+				if(!$lazymode){
+					$entities = OrmCore::populateFields($entityParam, $entities);
+				}
 				
 				//We push the result into the cache before return it
 				OrmCache::getInstance()->setCache($queryExample, null, $entities);
