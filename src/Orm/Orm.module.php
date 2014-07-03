@@ -1,11 +1,11 @@
 <?php
-	/**
-	* Class of cmsmadesimple's API. Used to make a link between the API of CmsMadeSimple and other modules'
-	*
-	* @since 0.0.1
-	* @author Bess
-	* @package Orm
-	**/
+/**
+* Class of cmsmadesimple's API. Used to make a link between the API of CmsMadeSimple and other modules'
+*
+* @since 0.0.1
+* @author Bess
+* @package Orm
+**/
 
 	/**
 	* The Class Orm define the module Orm and allow having all the orm functionalities into another module
@@ -15,6 +15,25 @@
 	* @package cmsms
 	*/
 class Orm extends CMSModule {
+
+	function __construct(){
+
+		//Required to preserve the {Module} on Front-Office
+		parent::__construct();
+
+		//Load all the librairies for ORM exclusivly
+		if($this->GetName() === self::GetName()){
+			$dir = parent::GetModulePath().'/lib/'; 
+			$libs = scandir ( $dir );
+			foreach ($libs as $librairy) {
+				if($librairy !== '.' && $librairy !== '..' ){
+					require_once($dir.$librairy);
+				}
+			}
+		} else {
+			$this->scan();
+		}
+	}
 
 	function GetName() {
 		return 'Orm';
@@ -115,7 +134,7 @@ class Orm extends CMSModule {
 				
 		//We're listing the class declared into the directory of the child module
 		$dir = cms_join_path(parent::GetModulePath(),'lib');
-		
+
 		$liste['entities'] = array();
 		$liste['associate'] = array();
 		
@@ -152,8 +171,11 @@ class Orm extends CMSModule {
 	}
 	
 	public function autoload_framework($classname){
-		$Orm = new Orm();
-		$path = $Orm->GetMyModulePath();
+		echo "autoload_framework($classname)";
+				
+		//$Orm = new Orm();
+		//$path = $Orm->GetMyModulePath();
+		$path = parent::GetModulePath();
 		$fn = cms_join_path($path,"lib","class.".$classname.".php");
 		
 		if(file_exists($fn)){
