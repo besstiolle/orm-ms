@@ -14,9 +14,12 @@ if(!file_exists(OrmTrace::getLogFile())){
 	OrmTrace::info("Initiate the log file");;
 }
 
+$checkUrl = $this->CreateLink ($id, 'admin_check', null, '',array(),'',true);
+
 $smarty = cmsms()->GetSmarty();
 $smarty->assign("id",$id);
 $smarty->assign("formstart",$this->CreateFormStart($id, 'admin_save'));
+$smarty->assign("checkUrl",$checkUrl);
 $smarty->assign("submit",$this->CreateInputSubmit ($id, 'submit', 'Save Prefs'));
 $smarty->assign("deleteLog",$this->CreateInputSubmit ($id, 'deleteLog', 'Clean Logs'));
 $smarty->assign("deleteCache",$this->CreateInputSubmit ($id, 'deleteCache', 'Clean Cache'));

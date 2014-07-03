@@ -131,7 +131,7 @@ class Orm extends CMSModule {
 	}
 
 	protected function scan(){
-				
+
 		//We're listing the class declared into the directory of the child module
 		$dir = cms_join_path(parent::GetModulePath(),'lib');
 
