@@ -149,27 +149,52 @@ class Orm extends CMSModule {
 			} else {
 			}
 		}
+
+		$errors = array();
 		
 		foreach($liste['entities'] as $element) {
 			$className = $element['classname'];
 			$filename = $element['filename'];
 			if(!class_exists($className)){
-			OrmTrace::debug("importing Entity ".$className." into the module ".$this->getName());
-			require_once($filename);			
-			$entity = new $className();
+				OrmTrace::debug("importing Entity ".$className." into the module ".$this->getName());
+				require_once($filename);	
+				try{
+					$entity = new $className();
+				} catch(OrmIllegalConfigurationException $oce){
+					$errors[$className] = $oce;
+					continue;
+				}
+			}
 		}
-		}
+
 		foreach($liste['associate'] as $element) {
 			$className = $element['classname'];
 			$filename = $element['filename'];
 			if(!class_exists($className)){
-			OrmTrace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
-			require_once($filename);
-			$entity = new $className();
+				OrmTrace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
+				require_once($filename);
+				$entity = new $className();
+			}
 		}
+
+		//Process all the errors
+		if(!empty($errors)){
+			echo '<h3 style="color:#F00">Some OrmIllegalConfigurationException have been thrown</h3>';
+			
+			foreach ($errors as $className => $error) {
+				echo '<h4>Entity '.$className.' </h4><ol>';
+				foreach ($error->getMessages() as $message) {
+					echo '<li>'.$message.'</li>';
+				}
+				echo '</ol>';
+			}
+			
+			exit;
+		}
+
+		
 	}
-	}
-	
+	/*
 	public function autoload_framework($classname){
 		echo "autoload_framework($classname)";
 				
@@ -182,7 +207,7 @@ class Orm extends CMSModule {
 			require_once($fn);
 			return;
 		} 
-	}
+	}*/
 	
 	/**
 	 * Shortcut to call all the instances for a single module

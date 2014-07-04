@@ -70,30 +70,35 @@ class OrmField
     * 
     */
 	public function __construct($fieldname, $cast, $size = null, $nullable = false, $KEY = null, $KEYName=null) {
-	
+		
+		$errors = array();
+
 		if(empty($KEY) && !empty($KEYName)) {
-			throw new OrmIllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
+			$errors[] = 'Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK';
 		}
 		if($KEY == OrmKEY::$PK && !empty($KEYName)) {
-			throw new OrmIllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
+			$errors[] = 'Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK';
 		}
 		if(($KEY == OrmKEY::$FK || $KEY == OrmKEY::$AK) && empty($KEYName)) {
-			throw new OrmIllegalConfigurationException('$FK key or $AK key for the field '.$fieldname.' need a keyName');
+			$errors[] = '$FK key or $AK key for the field '.$fieldname.' need a keyName';
 		}
 
 		if(($cast == OrmCAST::$INHERIT) && !($KEY == OrmKEY::$FK || $KEY == OrmKEY::$AK)) {
-			throw new OrmIllegalConfigurationException('$INHERIT cast is only made for a $FK key or a $AK key (field '.$fieldname.')');
+			$errors[] = '$INHERIT cast is only made for a $FK key or a $AK key (field '.$fieldname.')';
 		}
 		
 		if(($cast == OrmCAST::$DATE || $cast == OrmCAST::$BUFFER || $cast == OrmCAST::$TIME
 				|| $cast == OrmCAST::$DATETIME || $cast == OrmCAST::$TS || $cast == OrmCAST::$UUID 
 				|| $cast == OrmCAST::$INHERIT || $cast == OrmCAST::$NONE) && !empty($size)) {
-			throw new OrmIllegalConfigurationException('The field '.$fieldname.' must not have size value because of its own OrmCAST');
+			$errors[] = 'The field '.$fieldname.' must not have size value because of its own OrmCAST';
 		}
 		if(($cast == OrmCAST::$STRING) && empty($size)) {
-			throw new OrmIllegalConfigurationException('The field '.$fieldname.' must have size value because of its own OrmCAST');
+			$errors[] = 'The field '.$fieldname.' must have size value because of its own OrmCAST';
 		}
 		
+		if(!empty($errors)){
+			throw new OrmIllegalConfigurationException($errors);
+		}
 
 		if($nullable == null) {
 			$nullable = false;
