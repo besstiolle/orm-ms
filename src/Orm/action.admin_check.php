@@ -36,7 +36,7 @@
 		color: #fff
 	}
 </style>
-
+<script type="text/javascript" src='http://prettydiff.com/lib/diffview.js'></script>
 <?php
 
 //Find all module ORM-like
@@ -56,6 +56,53 @@ if(empty($instanceOrm)){
 
 foreach ($instanceOrm as $moduleName => $module) {
 	$instance = new $moduleName;
+	echo "<h3> Module '".$moduleName."'</h3>";
+	$liste = $instance->scan();
+	$entites = $liste['entities'];
+	foreach ($entites as $entite) {
+		echo "<h5 style='margin-left:10px;'>{$entite['classname']}</h5>";
+		$obj = new $entite['classname']();
+		$tempname = 'XXXXXXXXXXX';
+		$descXXQuery = "desc ".$tempname;
+		$descDBQuery = "desc ".$obj->getDbname();
+		$findDBQuery = "SHOW TABLES LIKE '".$obj->getDbname()."'";
+
+		$result = OrmDb::execute($findDBQuery, null, $errorMsg = "Find Table Query error");
+		if(empty($result->GetArray())){
+			echo "<p style='color:#F00;'>The table <b>{$obj->getDbname()}</b> for entity <b>{$moduleName}</b> is not found.</p>";
+			continue;
+		} 
+
+		$hql = OrmCore::_getFieldsToHql($obj);
+		OrmDb::dropTable($tempname);
+		OrmDb::createTable($tempname, $hql);
+		$resultXX = OrmDb::execute($descXXQuery, null, $errorMsg = "Desciption on table 'XXX' produce an error");
+		$resultDB = OrmDb::execute($descDBQuery, null, $errorMsg = "Desciption on table '".$obj->getDbname()."' produce an error");
+		
+		$arrayXX = $resultXX->GetAssoc();
+		$arrayDB = $resultDB->GetAssoc();
+
+		$descXX = print_r($arrayXX, true);
+		$descDB = print_r($arrayDB, true);
+
+		$arrayDiffXX = json_encode(preg_split('/$\R?^/m', $descXX));
+		$arrayDiffDB = json_encode(preg_split('/$\R?^/m', $descDB));
+
+		if($descXX === $descDB){
+			echo "<p style='color:#0F0;'>The table <b>{$obj->getDbname()}</b> for entity <b>{$moduleName}</b> is well formed</p>";
+			continue;	
+		}
+		echo <<<HTML
+			<script type="text/javascript" >
+				$( document ).ready(function() {
+				    \$html = diffview({$arrayDiffXX},{$arrayDiffDB},'premier','second');
+					$('#{$entite['classname']}').html(\$html);
+				});
+			</script>
+HTML;
+		echo "<div id='{$entite['classname']}'></div>";
+
+	}
 }
 
 

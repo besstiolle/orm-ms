@@ -130,6 +130,12 @@ class Orm extends CMSModule {
 		return parent::GetModulePath();		
 	}
 
+	/**
+	 * Will found every Entity for the current module and return the liste of their name
+	 *
+	 * @return Array<String> a list of name of entities founded
+	 *
+	 **/
 	protected function scan(){
 
 		//We're listing the class declared into the directory of the child module
@@ -192,7 +198,7 @@ class Orm extends CMSModule {
 			exit;
 		}
 
-		
+		return $liste;
 	}
 	/*
 	public function autoload_framework($classname){

@@ -28,7 +28,7 @@ class OrmCore {
     * @param OrmEntity the entity
     * @return the adodb informations
     */
-	private static final function _getFieldsToHql(OrmEntity &$entityParam) {    
+	public static final function _getFieldsToHql(OrmEntity &$entityParam) {    
 		$hql = '';
 
 		$listeField = $entityParam->getFields();
