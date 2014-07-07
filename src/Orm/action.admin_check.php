@@ -119,6 +119,15 @@ foreach ($instanceOrm as $moduleName => $module) {
 		$hql = OrmCore::_getFieldsToHql($obj);
 		OrmDb::dropTable($tempname);
 		OrmDb::createTable($tempname, $hql);
+
+		//We manage the ("unique") indexes
+		$indexes = $obj->getIndexes();
+
+		//For each Field contained in the entity
+		foreach($indexes as $index) {
+			$result = OrmDb::createIndex($tempname, $index['fields'], $index['unique']);
+		}
+
 		$resultXX = OrmDb::execute($descXXQuery, null, $errorMsg = "Desciption on table '".$tempname."' produce an error");
 		$resultDB = OrmDb::execute($descDBQuery, null, $errorMsg = "Desciption on table '".$obj->getDbname()."' produce an error");
 		
