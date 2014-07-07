@@ -1,3 +1,9 @@
+<?php
+
+$config = cmsms()->GetConfig();
+
+
+?>
 <style>
 	label.help{
 		
@@ -35,8 +41,45 @@
 	a.ormbutton:hover {
 		color: #fff
 	}
+	.hidden{
+		display:none;
+	}
+
+	.div__output{
+		max-height: 300px;
+		overflow: auto;
+		border: 1px solid #000;
+	}
 </style>
-<script type="text/javascript" src='http://prettydiff.com/lib/diffview.js'></script>
+<script type="text/javascript" src='<? echo $config['root_url']; ?>/modules/Orm/js/diffview.js'></script>
+<script type="text/javascript" src='<? echo $config['root_url']; ?>/modules/Orm/js/difflib.js'></script>
+<link rel="stylesheet" type="text/css" href="<? echo $config['root_url']; ?>/modules/Orm/js/diffview.css" media="screen" />
+<script type="text/javascript">
+	function diffUsingJS(viewType,idbase, idnew, idoutput) {
+	"use strict";
+	var byId = function (id) { return document.getElementById(id); },
+		base = difflib.stringAsLines(byId(idbase).value),
+		newtxt = difflib.stringAsLines(byId(idnew).value),
+		sm = new difflib.SequenceMatcher(base, newtxt),
+		opcodes = sm.get_opcodes(),
+		diffoutputdiv = byId(idoutput),
+		contextSize = null; //byId("contextSize").value;
+
+	diffoutputdiv.innerHTML = "";
+	contextSize = contextSize || null;
+
+	diffoutputdiv.appendChild(diffview.buildView({
+		baseTextLines: base,
+		newTextLines: newtxt,
+		opcodes: opcodes,
+		baseTextName: "Orm Values",
+		newTextName: "Database Values",
+		contextSize: contextSize,
+		viewType: viewType
+	}));
+}
+</script>
+
 <?php
 
 //Find all module ORM-like
@@ -69,14 +112,14 @@ foreach ($instanceOrm as $moduleName => $module) {
 
 		$result = OrmDb::execute($findDBQuery, null, $errorMsg = "Find Table Query error");
 		if(empty($result->GetArray())){
-			echo "<p style='color:#F00;'>The table <b>{$obj->getDbname()}</b> for entity <b>{$moduleName}</b> is not found.</p>";
+			echo "<p style='color:#870909;'>The table <b>{$obj->getDbname()}</b> for entity <b>{$moduleName}</b> is not found.</p>";
 			continue;
 		} 
 
 		$hql = OrmCore::_getFieldsToHql($obj);
 		OrmDb::dropTable($tempname);
 		OrmDb::createTable($tempname, $hql);
-		$resultXX = OrmDb::execute($descXXQuery, null, $errorMsg = "Desciption on table 'XXX' produce an error");
+		$resultXX = OrmDb::execute($descXXQuery, null, $errorMsg = "Desciption on table '".$tempname."' produce an error");
 		$resultDB = OrmDb::execute($descDBQuery, null, $errorMsg = "Desciption on table '".$obj->getDbname()."' produce an error");
 		
 		$arrayXX = $resultXX->GetAssoc();
@@ -85,19 +128,25 @@ foreach ($instanceOrm as $moduleName => $module) {
 		$descXX = print_r($arrayXX, true);
 		$descDB = print_r($arrayDB, true);
 
-		$arrayDiffXX = json_encode(preg_split('/$\R?^/m', $descXX));
-		$arrayDiffDB = json_encode(preg_split('/$\R?^/m', $descDB));
+		//$arrayDiffXX = json_encode(preg_split('/$\R?^/m', $descXX));
+		//$arrayDiffDB = json_encode(preg_split('/$\R?^/m', $descDB));
 
 		if($descXX === $descDB){
-			echo "<p style='color:#0F0;'>The table <b>{$obj->getDbname()}</b> for entity <b>{$moduleName}</b> is well formed</p>";
+			echo <<<HTML
+				<p style='color:#09870E;'>The table <b>{$obj->getDbname()}</b> for entity <b>{$moduleName}</b> is well formed</p>
+HTML;
 			continue;	
 		}
 		echo <<<HTML
+			<p style='color:#FAA00F;'>The table <b>{$obj->getDbname()}</b> for entity <b>{$moduleName}</b> have some differents.</p>
+			<textarea id='baseText_{$moduleName}' class='hidden'>{$descXX}</textarea>
+			<textarea id='newText_{$moduleName}' class='hidden'>{$descDB}</textarea>
+			<div id="diffoutput_{$moduleName}" class='div__output'> </div>
 			<script type="text/javascript" >
 				$( document ).ready(function() {
-				    \$html = diffview({$arrayDiffXX},{$arrayDiffDB},'premier','second');
-					$('#{$entite['classname']}').html(\$html);
+					diffUsingJS(0, "baseText_{$moduleName}", "newText_{$moduleName}", "diffoutput_{$moduleName}");
 				});
+				
 			</script>
 HTML;
 		echo "<div id='{$entite['classname']}'></div>";
