@@ -87,7 +87,7 @@
 		{if !empty($emptyTable)}
 
 			<p style='color:#870909;'>
-				The table <b>{$emptyTable}</b> for entity <b>{$entityname}</b> is not found.
+				The table <b>{$emptyTable}</b> for entity <b>{$entityname}</b> doesn't not exist.
 			</p>
 
 		{elseif $module['listResultXX'][$entityname] == $module['listResultDB'][$entityname]}
