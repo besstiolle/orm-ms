@@ -4,7 +4,6 @@
  *
  * @since 0.2.0
  * @author Bess
- * @package Orm
  **/
 
 
@@ -50,7 +49,14 @@
  **/
 abstract class OrmCache {	
 
+	/**
+	 * Won't use any cache system
+	 **/
 	public static $NONE = 0;
+
+	/**
+	 * Will use a cache during the time of the execution of the script
+	 **/
 	public static $SCRIPT = 1;
 		
 	/**
@@ -61,7 +67,7 @@ abstract class OrmCache {
 	/**
 	 * Will return a implementation of the cache.
 	 *
-	 * @param mixed not required : the type of cache. By default it will take the type of cache defined as default into CmsMadeSimple
+	 * @param mixed $typeCache not required : the type of cache. By default it will take the type of cache defined as default into CmsMadeSimple
 	 *
 	 * @return an instance of Cache.
 	 **/
@@ -88,27 +94,27 @@ abstract class OrmCache {
 	/**
 	 *	Set the cache for a sql request, its parameters and of course the result
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
-	 * @param object the result
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
+	 * @param mixed $value the result
 	 */
 	public abstract function setCache($sql, $params = null, $value);
 	
 	/**
 	 * Querying the cache for a sql request and its parameters
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
 	 *
-	 * @return object the result
+	 * @return mixed the result
 	 */
 	public abstract function getCache($sql, $params = null);
 
 	/**
 	 * Return true if a cache exist for a sql request and its parameters
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
 	 *
 	 * @return boolean true if the cache exists
 	 */	
@@ -124,8 +130,8 @@ abstract class OrmCache {
 	 * Return a unique hash for a sql request and its parameters
 	 *  this hash is used to Defines a unique entry into the cache
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
 	 *
 	 * @return string the hash
 	 */	

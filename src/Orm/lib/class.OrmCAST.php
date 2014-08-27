@@ -4,7 +4,6 @@
  *
  * @since 0.0.1
  * @author Bess
- * @package Orm
  **/
 
 
@@ -32,21 +31,64 @@
 */
 class OrmCAST
 {
+	/**
+	 * * Stored in database under the SQL type String (x)
+	 **/
 	public static $STRING = "STRING";
+
+	/**
+	 * * Stored in database under the SQL type BUFFER
+	 **/
 	public static $BUFFER = "BUFFER";
 	
+	/**
+	 * * Stored in database under the SQL type INTEGER (x)
+	 **/
 	public static $INTEGER = "INTEGER";
+
+	/**
+	 * * Stored in database under the SQL type NUMBER (x)
+	 **/
 	public static $NUMERIC = "NUMERIC";
+
+	/**
+	 * * Stored in database under the SQL type DOUBLE (x)
+	 **/
 	public static $DOUBLE = "DOUBLE";
 	
+	/**
+	 * * Stored in database under the SQL type DATE
+	 **/
 	public static $DATE = "DATE";
+
+	/**
+	 * * Stored in database under the SQL type TIME
+	 **/
 	public static $TIME = "TIME";
+
+	/**
+	 ** Stored in database under the SQL type INTEGER (?)
+	 **/
 	public static $TS = "TS";
+
+	/**
+	 ** Stored in database under the SQL type DATETIME
+	 **/
 	public static $DATETIME = "DATETIME";
 	
+	/**
+	 * Stored in database under the type SQL String (32)
+	 **/
 	public static $UUID = "UUID";
-		  
+	
+	/**
+	 * Will inherit from it's parents
+	 **/
 	public static $INHERIT = "INHERIT";
+
+	/**
+	 * Won't be stored in database
+	 **/
 	public static $NONE = "NONE";
 }
 

@@ -4,7 +4,6 @@
  *
  * @since 0.3.0
  * @author Heriquet
- * @package Orm
  **/
 
 
@@ -26,7 +25,7 @@ class OrmUtils
 	* @param OrmEntity an instance of the entity  
 	* @param data array hashtable
 	*/ 
-	public static function arrayToEntity(OrmEntity &$entity, &$data) {
+	public static function arrayToEntity(OrmEntity $entity, $data) {
 		foreach($entity->getFields() as $field) {
 			if(isset($data[$field->getName()])) {
 				$entity->set($field->getName(), $data[$field->getName()]);

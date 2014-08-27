@@ -4,7 +4,6 @@
  *
  * @since 0.2.0
  * @author Bess
- * @package Orm
  **/
 
 /**
@@ -53,7 +52,14 @@
  **/
 class OrmCacheScript extends OrmCache {	
 	
+	/**
+	 * @var OrmCacheScript $instance The current instance
+	 **/
 	private static $instance;
+
+	/**
+	 * @var mixed[] $cache an array containing all the data cached 
+	 **/
 	private static $cache;
 		
 	/**
@@ -63,6 +69,11 @@ class OrmCacheScript extends OrmCache {
 		self::$cache = array();
 	}
 	
+	/**
+	 * Will return an instance of the cache class
+	 *
+	 * @return OrmCacheScript the cache class
+	 */
 	public static function getMyOwnInstance(){
 		if(self::$instance == null){
 			self::$instance = new OrmCacheScript();
@@ -73,9 +84,9 @@ class OrmCacheScript extends OrmCache {
 	/**
 	 *	Set the cache for a sql request, its parameters and of course the result
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
-	 * @param object the result
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
+	 * @param mixed $value the result
 	 */
 	public function setCache($sql, $params = null, $value) {		
 		self::$cache[self::hash($sql,$params)] = $value;
@@ -85,10 +96,10 @@ class OrmCacheScript extends OrmCache {
 	/**
 	 * Querying the cache for a sql request and its parameters
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
 	 *
-	 * @return object the result
+	 * @return mixed the result
 	 */
 	public function getCache($sql, $params = null) {
 		if(self::isCache($sql, $params)) {
@@ -101,8 +112,8 @@ class OrmCacheScript extends OrmCache {
 	/**
 	 * Return true if a cache exist for a sql request and its parameters
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
 	 *
 	 * @return boolean true if the cache exists
 	 */	

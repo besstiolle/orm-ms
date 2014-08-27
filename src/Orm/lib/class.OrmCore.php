@@ -4,7 +4,6 @@
  * 
  * @since 0.0.1
  * @author Bess
- * @package Orm
  **/
  
  
@@ -25,10 +24,10 @@ class OrmCore {
     /**
     * transforms the entity's structure into adodb informations 
     *         
-    * @param OrmEntity the entity
-    * @return the adodb informations
+    * @param OrmEntity $entityParam the entity
+    * @return String the adodb informations
     */
-	public static final function _getFieldsToHql(OrmEntity &$entityParam) {    
+	public static final function _getFieldsToHql(OrmEntity $entityParam) {    
 		$hql = '';
 
 		$listeField = $entityParam->getFields();
@@ -155,10 +154,9 @@ class OrmCore {
     * 
     *  The function will also try to populate the table with a call to the function initTable() if it's define into the entity class.
     * 
-	* @param Orm the module which extends the Orm module
-    * @param OrmEntity an instance of the entity
+    * @param OrmEntity $entityParam an instance of the entity
     */
-	public static final function createTable(OrmEntity &$entityParam) {
+	public static final function createTable(OrmEntity $entityParam) {
 	
 		$hql = OrmCore::_getFieldsToHql($entityParam);
 
@@ -185,9 +183,9 @@ class OrmCore {
     * Drop the table for the OrmEntity in parameters
     *  Will also drop the sequence if it's needed
     * 
-    * @param OrmEntity an instance of the entity
+    * @param OrmEntity $entityParam an instance of the entity
     */
-	public static final function dropTable(OrmEntity &$entityParam) {
+	public static final function dropTable(OrmEntity $entityParam) {
 
 		OrmDb::dropTable($entityParam->getDbname());
 
@@ -216,10 +214,10 @@ class OrmCore {
     * </code>
     *   
     * 
-    * @param OrmEntity an instance of the entity
-    * @param string the SQL query
+    * @param OrmEntity $entityParam an instance of the entity
+    * @param string $sql the SQL query
     */
-	public static final function alterTable(OrmEntity &$entityParam, $sql) {	
+	public static final function alterTable(OrmEntity $entityParam, $sql) {	
 		$queryAlter = "ALTER TABLE ".$entityParam->getDbname()." ".$sql;    
 		
 		//Execution
@@ -246,11 +244,11 @@ class OrmCore {
      * 
      * Important : you must not set the primaryKey value. It will be calculate by the system it-self
      *                                      
-     * @param OrmEntity an instance of the entity
+     * @param OrmEntity $entityParam an instance of the entity
 	 *
-     * @return the entity saved with its new new Id (customer_id in my example)
+     * @return OrmEntity the entity saved with its new new Id (customer_id in my example)
      */
-	public static final function insertEntity(OrmEntity &$entityParam) {
+	public static final function insertEntity(OrmEntity $entityParam) {
 
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
@@ -420,11 +418,11 @@ class OrmCore {
      * 	 
      * You could also code for the last line : $customer->save();  it will automatically 
 	 *
-     * @param OrmEntity an instance of the entity
+     * @param OrmEntity $entityParam an instance of the entity
 	 *
-	 * @return the entity saved with its new Id (customer_id in my example)
+	 * @return OrmEntity the entity saved with its new Id (customer_id in my example)
      */	
-	public static final function updateEntity(OrmEntity &$entityParam) {
+	public static final function updateEntity(OrmEntity $entityParam) {
 
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
@@ -579,10 +577,10 @@ class OrmCore {
     *       OrmCore::deleteByIds($customer, $myArray);
     * </code>
     *                                    
-    * @param OrmEntity an instance of the entity    
-    * @param array all the ids to delete ($customer_id in my example)
+    * @param OrmEntity $entityParam an instance of the entity    
+    * @param mixed[] $ids array all the ids to delete ($customer_id in my example)
     */
-	public static final function deleteByIds(OrmEntity &$entityParam, $ids) {
+	public static final function deleteByIds(OrmEntity $entityParam, $ids) {
 
 		$listeField = $entityParam->getFields();
 
@@ -639,11 +637,11 @@ class OrmCore {
     /**
     * Returns the number of occurrences from the table of the entity in Parameters
     *                                     
-    * @param OrmEntity an instance of the entity    
+    * @param OrmEntity $entityParam an instance of the entity    
 	* 
     * @return int the number of occurrences from the table   
     */
-	public static final function countAll(OrmEntity &$entityParam) {
+	public static final function countAll(OrmEntity $entityParam) {
 
 		$querySelect = 'SELECT count(*) FROM '.$entityParam->getDbname();
 		
@@ -658,11 +656,13 @@ class OrmCore {
     /**
     * Returns all the occurrences from the table of the entity in Parameters
     * 
-    * @param OrmEntity an instance of the entity  
+    * @param OrmEntity $entityParam an instance of the entity  
+    * @param OrmOrderBy $orderBy the order if necessary
+    * @param OrmLimit $limit the limit if necessary
 	*
-    * @return array<OrmEntity> list of Entities found
+    * @return OrmEntity[] list of Entities found
     */
-	public static final function findAll(OrmEntity &$entityParam, OrmOrderBy &$orderBy=null, OrmLimit &$limit = null) {
+	public static final function findAll(OrmEntity $entityParam, OrmOrderBy $orderBy=null, OrmLimit $limit = null) {
 		return OrmCore::findByExample($entityParam, new OrmExample(), $orderBy, $limit);
 	}
 	
@@ -670,12 +670,12 @@ class OrmCore {
 	 * Inner function to factorize some code for each "find*" functions
 	 *  It will retrieve all the informations on the AK's Field
 	 *
-     * @param OrmEntity an instance of the entity  
-	 * @param array the list of object Entity to populate
+     * @param OrmEntity $entityParam an instance of the entity  
+	 * @param OrmEntity[] $entitys the list of object Entity to populate
 	 *
-     * @return array<OrmEntity> list of Entities populate with all the informations on AK's Field
+     * @return OrmEntity[] list of Entities populate with all the informations on AK's Field
 	 **/
-	public static final function populateFields(OrmEntity &$entityParam, array $entitys) {
+	public static final function populateFields(OrmEntity $entityParam, array $entitys) {
 		
 		if(empty($entitys)){
 			return $entitys;
@@ -715,16 +715,16 @@ class OrmCore {
 	 *   Allow $myentity->get('my_alias');
 	 * 
 	 * 
-	 * @param OrmEntity 
-	 * @param array list of Object OrmEntity
-	 * @param string the alias to populate
+     * @param OrmEntity $entityParam an instance of the entity  
+	 * @param OrmEntity[] $entitys array list of Object OrmEntity
+	 * @param string $anAlias the alias to populate
 	 * 
-	 * @return list of Object OrmEntity with the values of the alias populated by the other OrmEntity founded
+	 * @return OrmEntity[] list of Object with the values of the alias populated by the other OrmEntity founded
 	 * 
 	 * @since 0.3.0
 	 *
 	 */
-	public static final function populateAliasField($entityParam, $entitys, $anAlias) {
+	public static final function populateAliasField(OrmEntity $entityParam, $entitys, $anAlias) {
 
 		$alias = $entityParam->getAlias();
 		if(!isset($alias[$anAlias])){
@@ -811,16 +811,16 @@ class OrmCore {
 	/**
 	 * Will found all the entitys available for the field AK of parameter $entityParam.
 	 * 
-	 * @param OrmEntity 
-	 * @param array list of Object OrmEntity
-	 * @param OrmField the AK field to populate
+     * @param OrmEntity $entityParam an instance of the entity  
+	 * @param OrmEntity[] $entitys array list of Object OrmEntity
+	 * @param OrmField $field the AK field to populate
 	 * 
-	 * @return list of Object OrmEntity with the values of the field AK populated by the other OrmEntity founded
+	 * @return OrmEntity[] list of Object OrmEntity with the values of the field AK populated by the other OrmEntity founded
 	 * 
 	 * @since 0.3.0
 	 *
 	 */
-	public static final function populateAKField($entityParam, $entitys, $field){
+	public static final function populateAKField(OrmEntity $entityParam, $entitys, OrmField $field){
 
 		if(!$field->isAssociateKEY()){
 			throw new OrmIllegalArgumentException("function populateAKField(\$entityParam, \$entitys, \$field) only accept fields of type AssociateKey");
@@ -945,16 +945,16 @@ class OrmCore {
 	/**
 	 * Will found all the entitys available for the field FK of parameter $entityParam.
 	 * 
-	 * @param OrmEntity 
-	 * @param array list of Object OrmEntity
-	 * @param OrmField the FK field to populate
+     * @param OrmEntity $entityParam an instance of the entity  
+	 * @param OrmEntity[] $entitys array list of Object OrmEntity
+	 * @param OrmField $field the FK field to populate
 	 * 
-	 * @return list of Object OrmEntity with the values of the field FK populated by the other OrmEntity founded
+	 * @return OrmEntity[] list of Object OrmEntity with the values of the field FK populated by the other OrmEntity founded
 	 * 
 	 * @since 0.3.0
 	 *
 	 */
-	public static final function populateFKField($entityParam, $entitys, $field){
+	public static final function populateFKField(OrmEntity $entityParam, $entitys, OrmField $field){
 
 		if(!$field->isForeignKEY()){
 			throw new OrmIllegalArgumentException("function populateFKField(\$entityParam, \$entitys, \$field) only accept fields of type ForeignKey");
@@ -1032,11 +1032,12 @@ class OrmCore {
 	/**
 	* Return a OrmEntity from its Id
 	* 
-	* @param OrmEntity an instance of the entity  
-	* @param mixed the Id to find
+	* @param OrmEntity $entityParam an instance of the entity  
+	* @param mixed $id the Id to find
+	*
 	* @return OrmEntity the OrmEntity found or NULL
 	*/
-	public static final function findById(OrmEntity &$entityParam, $id) {
+	public static final function findById(OrmEntity $entityParam, $id) {
 		$liste = OrmCore::findByIds($entityParam, array($id));
 		
 		if(!isset($liste[0])){
@@ -1049,12 +1050,13 @@ class OrmCore {
 	/**
 	* Return Entities from their Ids
 	* 
-	* @param OrmEntity an instance of the entity  
-	* @param array list of the Ids to find
+	* @param OrmEntity $entityParam an instance of the entity  
+	* @param mixed[] $ids array list of the Ids to find
+	* @param OrmOrderBy $orderBy the orderby object if necessary
 	*
-	* @return array<OrmEntity> list of Entities found
+	* @return OrmEntity[] list of Entities found
 	*/
-	public static final function findByIds(OrmEntity &$entityParam, $ids, OrmOrderBy &$orderBy=null) {
+	public static final function findByIds(OrmEntity $entityParam, $ids, OrmOrderBy $orderBy=null) {
 		if(count($ids) == 0)
 			return array();
 
@@ -1100,8 +1102,12 @@ class OrmCore {
      * 
      * NOTE 2 : you can add as many Criterias as you want in an Example Object
      * 
-     * @param OrmEntity an instance of the entity
-     * @param OrmExample the Object OrmExample with some Criterias inside
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param OrmOrderBy $orderBy the order if necessary
+     * @param OrmLimit $limit the limit if necessary
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
+     * @param boolean $lazymode set to TRUE to avoid loading child object. Default : FALSE
      * 
      * @see OrmExample
      * @see OrmTypeCriteria
@@ -1188,16 +1194,17 @@ class OrmCore {
      * 
      * NOTE 2 : you can add as many Criterias as you want in an OrmExample Object
      * 
-     * @param OrmEntity an instance of the entity
-     * @param OrmExample the Object OrmExample with some Criterias inside
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param $condition let user define if the multiple conditions must of type AND or OR
      * 
      * @see OrmExample
      * @see OrmTypeCriteria
      */
-	public static final function deleteByExample(OrmEntity &$entityParam, OrmExample $OrmExample, $condition = 'AND') {
+	public static final function deleteByExample(OrmEntity $entityParam, OrmExample $example, $condition = 'AND') {
 		$listeField = $entityParam->getFields();
 
-		$criterias = $OrmExample->getCriterias();
+		$criterias = $example->getCriterias();
 		$delete = "delete from ".$entityParam->getDbname().' WHERE ';
 		
 		list($hql, $params) = OrmCore::_getHqlExample($listeField, $criterias, $condition);
@@ -1212,10 +1219,11 @@ class OrmCore {
 		  
 	/**
 	 * Inner function to factorize the custruction of the HQL for the *byExample functions
-	 * @param : $listeField the list of Fields
-	 * @param : $criterias the list of Criteria
+	 * @param OrmField[] $listeField the list of Fields
+	 * @param OrmTypeCriteria[] $criterias the list of Criteria
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
 	 *
-	 * @return : List[$hql, $params]
+	 * @return mixed[] an array under the format array($hql, mixed[] $params)
 	 **/
 	private static function _getHqlExample($listeField, $criterias, $condition){
 		
@@ -1310,10 +1318,10 @@ class OrmCore {
      * 
      * </code>
      *         
-     * @param OrmEntity an instance of the entity
-     * @param array the list with the data
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param mixed[] $row the list with the data
     */
-	public static final function rowToEntity (OrmEntity &$entityParam, $row) {
+	public static final function rowToEntity (OrmEntity $entityParam, $row) {
 
 		OrmTrace::debug("rowToEntity : ".print_r($row,true));
 		$listeField = $entityParam->getFields();
@@ -1332,8 +1340,8 @@ class OrmCore {
     /**
      * Transform a PHP value into a SQL value
      * 
-     * @param mixed the PHP value
-     * @param mixed the CAST value
+     * @param mixed $data the PHP value
+     * @param mixed $type the CAST value
      * 
      * @see OrmCAST
      */
@@ -1360,8 +1368,8 @@ class OrmCore {
     /**
      * Transform a SQL value into a PHP value
      * 
-     * @param mixed the SQL value 
-     * @param mixed the CAST value
+     * @param mixed $data the SQL value 
+     * @param mixed $type the CAST value
      * 
      * @see OrmCAST
      */
@@ -1386,14 +1394,13 @@ class OrmCore {
      * Verify in all type of entities if anyone still has a link with the OrmEntity passed in parameters (ForeignKEy and AssociateKey)
      * 
      *  This function is used by the delete* functions to avoid orphans data in database
-     * 
-	 * @param Orm the module which extends the Orm module                                      
-     * @param OrmEntity an instance of the entity
-     * @param mixed the id of the OrmEntity to verify
+     *                                       
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param mixed $sid the id of the OrmEntity to verify
 	 *
 	 * @return a message if a link is still present. nothing if the integrity is ok
      */
-	public static final function verifIntegrity(OrmEntity &$entityParam, $sid) {
+	public static final function verifIntegrity(OrmEntity $entityParam, $sid) {
 		$listeEntitys = MyAutoload::getAllInstances($entityParam->getModuleName());
 
 		foreach($listeEntitys as $key=>$anEntity) {

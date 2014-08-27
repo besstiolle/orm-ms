@@ -4,7 +4,6 @@
  *
  * @since 0.2.0
  * @author Bess
- * @package Orm
  **/
 
 
@@ -21,6 +20,9 @@
  **/
 class OrmCacheNone extends OrmCache{	
 	
+	/**
+	 * @var OrmCacheScript $instance The current instance
+	 **/
 	private static $instance;
 		
 	/**
@@ -28,6 +30,11 @@ class OrmCacheNone extends OrmCache{
 	 */
 	protected function __construct() {}
 	
+	/**
+	 * Will return an instance of the cache class
+	 *
+	 * @return OrmCacheNone the cache class
+	 */
 	public static function getMyOwnInstance(){
 		if(self::$instance == null){
 			self::$instance = new OrmCacheNone();
@@ -38,9 +45,9 @@ class OrmCacheNone extends OrmCache{
 	/**
 	 *	Set the cache for a sql request, its parameters and of course the result
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
-	 * @param object the result
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
+	 * @param mixed $value the result
 	 */
 	public function setCache($sql, $params = null, $value) {		
 		//No processing		
@@ -49,10 +56,10 @@ class OrmCacheNone extends OrmCache{
 	/**
 	 * Querying the cache for a sql request and its parameters
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
 	 *
-	 * @return object the result
+	 * @return mixed the result
 	 */
 	public function getCache($sql, $params = null) {
 		return null;
@@ -61,8 +68,8 @@ class OrmCacheNone extends OrmCache{
 	/**
 	 * Return true if a cache exist for a sql request and its parameters
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
 	 *
 	 * @return boolean true if the cache exists
 	 */	
@@ -73,7 +80,7 @@ class OrmCacheNone extends OrmCache{
 	/**
 	 * Empty the cache. Very important if between 2 querying, the system may insert/delete/update some data in the database
 	 *  In the Orm system, we always drop the cache in the insert/delete/update function.
-	 */	
+	 */		
 	public function clearCache(){
 		//No processing	
 	}
@@ -82,8 +89,8 @@ class OrmCacheNone extends OrmCache{
 	 * Return a unique hash for a sql request and its parameters
 	 *  this hash is used to Defines a unique entry into the cache
      * 
-	 * @param string the sql query
-	 * @param array the parameters into a array. May be null
+	 * @param string $sql the sql query
+	 * @param mixed[] $params array the parameters into a array. May be null
 	 *
 	 * @return string the hash
 	 */	

@@ -4,7 +4,6 @@
  *
  * @since 0.0.1
  * @author Bess
- * @package Orm
  **/
  
  /**
@@ -18,6 +17,9 @@
  **/
 final class MyAutoload
 {
+	/**
+	 * List of all instances
+	 **/
 	private static $instances;
 	
 	/**
@@ -29,8 +31,8 @@ final class MyAutoload
 	 * Function called by the entities them-self during their _construct() function
 	 * it will stock an instance of the entity (if not already existing) in his memory
      * 
-	 * @param namespace namespace of the entity's module
-	 * @param string an instance of the entity
+	 * @param string $namespace namespace of the entity's module
+	 * @param OrmEntity $instance an instance of the entity
 	 */
 	public final static function addInstance($namespace, OrmEntity $instance)
 	{	
@@ -54,8 +56,8 @@ final class MyAutoload
 	 * Return an instance of entity from the memory. Each instance is a clone to avoid using
 	 * the same object 
      * 
-	 * @param namespace namespace of the entity's module
-	 * @param string an instance of the entity
+	 * @param string $namespace namespace of the entity's module
+	 * @param string $instanceName name of an instance of the entity
 	 *
 	 * @return OrmEntity an instance of entity
 	 */
@@ -82,8 +84,8 @@ final class MyAutoload
 	/**
 	 * Return true if the instance exists in the memory for the same namespace
      * 
-	 * @param namespace namespace of the entity's module
-	 * @param string an instance of the entity
+	 * @param string $namespace namespace of the entity's module
+	 * @param string $instanceName name of an instance of the entity
 	 *
 	 * @return Boolean if the instance exists
 	 */
@@ -101,8 +103,7 @@ final class MyAutoload
 	/**
 	 * Return all the instances of all the entities from a single namespace
      * 
-	 * @param namespace namespace of the entity's module
-	 * @param string an instance of the entity
+	 * @param string $namespace namespace of the entity's module
 	 *
 	 * @return array<OrmEntity> an array of all the entities
 	 */
@@ -120,7 +121,7 @@ final class MyAutoload
 	/**
 	 * Retourne true if the namespace is known in memory
      * 
-	 * @param namespace namespace of the entity's module
+	 * @param string $namespace namespace of the entity's module
 	 *
 	 * @return Boolean if the namespace exists
 	 */
