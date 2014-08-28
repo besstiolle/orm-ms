@@ -26,23 +26,48 @@
  * @package Orm
  **/   
  
-final class OrmTrace
-{
+final class OrmTrace {
+
+	/**
+	* DEBUG & INFO & WARN & ERROR level
+	**/
 	public static $DEBUG = 0;
+
+	/**
+	* INFO & WARN & ERROR level
+	**/
 	public static $INFO = 1;
+
+	/**
+	* WARN & ERROR level
+	**/
 	public static $WARN = 2;
+
+	/**
+	* ERROR level
+	**/
 	public static $ERROR = 3;
-	
+
+	/**
+	* inner path to the log file
+	**/
 	protected static $logFile;
+
+	/**
+	* inner url to the log file 
+	**/
 	protected static $logUrl;
 	
+	/**
+	* protected constructor
+	**/
 	protected function __construct() {
 	}
 
 	/**
     * Display a message with DEBUG level
     * 
-    * @param string the message to display
+    * @param string $msg the message to display
     */
 	public static final	function debug($msg) {	
 		self::innerWriter(OrmTrace::$DEBUG, 'debug', $msg);
@@ -51,7 +76,7 @@ final class OrmTrace
     /**
     * Display a message with INFO level
     * 
-    * @param string the message to display
+    * @param string $msg the message to display
     */
 	public static final	function info($msg) {	
 		self::innerWriter(OrmTrace::$INFO, 'info', $msg);
@@ -60,7 +85,7 @@ final class OrmTrace
     /**
     * Display a message with WARN level
     * 
-    * @param string the message to display
+    * @param string $msg the message to display
     */
 	public static final	function warn($msg) {	
 		self::innerWriter(OrmTrace::$WARN, 'warn', $msg);
@@ -69,7 +94,7 @@ final class OrmTrace
     /**
     * Display a message with ERROR level
     * 
-    * @param string the message to display
+    * @param string $msg the message to display
     */
 	public static final	function error($msg) {	
 		self::innerWriter(OrmTrace::$ERROR, 'error', $msg);
@@ -104,9 +129,9 @@ final class OrmTrace
 	/**
 	 * Do all the suff behind
 	 *
-	 * @param string the level of message.
-	 * @param string the css class to display the "inline" message
-	 * @param string the message to display
+	 * @param string $level the level of message.
+	 * @param string $cssClass the css class to display the "inline" message
+	 * @param string $msg the message to display
 	 */
 	private static final function innerWriter($level, $cssClass, $msg){
 		$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
@@ -114,7 +139,6 @@ final class OrmTrace
 		if($orm->GetPreference('loglevel', OrmTrace::$INFO) > $level) {return;}
 		
 		$content = date('Y-m-d H:i:s', time())." - [$cssClass] - $msg \n";
-	//	$content = utf8_encode($content);
 				
 		//in file log
 		file_put_contents(self::getLogFile() ,$content, FILE_APPEND );

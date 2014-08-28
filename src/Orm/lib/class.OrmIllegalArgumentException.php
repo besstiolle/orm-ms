@@ -15,9 +15,16 @@
  * @package Orm
 */
 class OrmIllegalArgumentException extends Exception {
-    
-    public function __construct($msg=NULL, $code=0)
-    {parent::__construct($msg, $code);}
+ 
+    /**
+    * Public constructor
+    *
+    * @param string $msg [optional] the error message 
+    * @param int $code [optional] the error code
+    */
+    public function __construct($msg=NULL, $code=0) {
+    	parent::__construct($msg, $code);
+    }
 }
 
 

@@ -84,10 +84,10 @@ abstract class OrmEntity
      * constructor protected to avoid a direct instantiation like "new OrmEntity()"
      * Each time a entity is constructed, we place a copy into the autoloader.
      * 
-     * @param string The name of the module who calling this method (so not "Orm")
-     * @param string The name of the entity
-     * @param string [optional] Prefix to use into database for table. If not setted, it will use the name of your module
-     * @param string [optional] The name of table for this entity. If not setted, it will use the name of your entity
+     * @param string $moduleName The name of the module who calling this method (so not "Orm")
+     * @param string $name The name of the entity
+     * @param string $prefixe [optional] Prefix to use into database for table. If not setted, it will use the name of your module
+     * @param string $dbName [optional] The name of table for this entity. If not setted, it will use the name of your entity
      *
      * @return OrmEntity the entity as a new instance
      * 
@@ -128,7 +128,8 @@ abstract class OrmEntity
     /**
     * Add a new Field into the list of Fields
     * 
-    * @param OrmField the object Field to add
+    * @param OrmField $newField the object Field to add
+    *
     * @return OrmEntity the current instance
 	* 
 	* @exception OrmIllegalConfigurationException if we try to use more than a single PrimaryKey in the entity
@@ -154,7 +155,8 @@ abstract class OrmEntity
     /**
     * Return the list of PrimaryKey Field
     * 
-    * @return array<OrmField> the list of PrimaryKey Field
+    * @return OrmField[] the list of PrimaryKey Field
+    *
     * @exception OrmIllegalArgumentException if there is no PrimaryKey Field
     */
 	public function getPk() {
@@ -169,10 +171,10 @@ abstract class OrmEntity
 		return $list_pk;
 	}
 
-	/*
+	/**
 	 * Return true if there is more than one PrimaryKey 
 	 *
-	 * @return Boolean  if there is more than one PrimaryKey 
+	 * @return boolean if there is more than one PrimaryKey 
 	 **/
 	public function hasCompositeKey(){
 		if($this->pk == null) {
@@ -184,7 +186,7 @@ abstract class OrmEntity
 	/**
 	 * Return a securizes agregate for single or composite PrimaryKey to make distinction between 2 entity of the same type
 	 *
-	 * @return String the "Primary Unique IDentifier"
+	 * @return string the "Primary Unique IDentifier"
 	 *
 	 */
 	public function getPUID(){
@@ -199,7 +201,7 @@ abstract class OrmEntity
     /**
     * Return the list of Fields
     * 
-    * @return array<Field> an array with all the Fields
+    * @return Field[] an array with all the Fields
     * 
     */
 	public function getFields() {
@@ -209,7 +211,7 @@ abstract class OrmEntity
     /**
     * return a Field by name
     * 
-    * @param string the field name
+    * @param string $fieldName the field name
     * @return OrmField the Field
     * 
     * @exception OrmIllegalArgumentException if no Field exist for the name
@@ -231,8 +233,8 @@ abstract class OrmEntity
     /**
     * Return true if a Field exists for the name
     * 
-    * @param string the name
-    * @return Boolean if exists
+    * @param string $name the name
+    * @return boolean true if exists
     */
 	public function isFieldByNameExists($name) {
 		return isset($this->fields[$name]);
@@ -283,7 +285,7 @@ abstract class OrmEntity
     /**
     * Return the value for a Field by the name 
     * 	
-    * @param string the name of the Field
+    * @param string $fieldName the name of the Field
     * @return mixed the value for the field
     * 
     * @exception OrmIllegalArgumentException if no Field exists for the name
@@ -308,8 +310,8 @@ abstract class OrmEntity
    /**
     * Set a value to a Field
     *     
-    * @param string The name of the Field
-    * @param mixed the new value of the Field
+    * @param string $fieldName The name of the Field
+    * @param mixed $value the new value of the Field
     * 
     * @exception OrmIllegalArgumentException if no Field exists for the name
     */
@@ -403,8 +405,8 @@ abstract class OrmEntity
     /**
     * Can be overridden Let you modify some data just before saving the data into the datatable.
     * 
-    * @param array all the values to process
-    * @param array more parameters if you need, if you want
+    * @param mixed[] $rows all the values to process
+    * @param mixed[] $args [optional] more parameters if you need, if you want
     * 
     * @return mixed to define
     */
@@ -428,9 +430,9 @@ abstract class OrmEntity
 	 * 
 	 *  </code>
 	 *
-	 * @param array<OrmEntity> the list of Entity to sort
+	 * @param OrmEntity[] $array the list of Entity to sort
 	 *
-	 * @return array<OrmEntity> the list of Entity gracefully sorted
+	 * @return OrmEntity[] the list of Entity gracefully sorted
 	 */
 	public static function sort(array $array) {
 
@@ -452,6 +454,8 @@ abstract class OrmEntity
 	 *	}
 	 * 
 	 *  </code>
+	 *
+	 * @return boolean false by default
 	 **/
 	public static function isIndexable(){
 		return false;
@@ -460,7 +464,7 @@ abstract class OrmEntity
 	/**
     * getter for autoincrement
     * 
-    * @return true of the Field is autoincrement
+    * @return boolean true of the Field is autoincrement
     */
 	public function IsAutoincrement() {
 		return $this->autoincrement;
@@ -498,7 +502,7 @@ abstract class OrmEntity
 	
 	/**
 	 * Return 
-	 * @return array : the list of couple of unique index
+	 * @return string[] : the list of couple of unique index
 	 **/
 	public function getIndexes() {
 		return $this->indexes;
@@ -515,13 +519,13 @@ abstract class OrmEntity
 	 *  <code>
 	 *  will create 1 unique index on field1 and 1 index on field2,field3
 	 *
-	 * @param mixed One (string) or many (array) name of field to be indexing
-	 * @param boolean if the index must be UNIQUE (default = false) 
+	 * @param mixed $fieldNames One (string) or many (array) name of field to be indexing
+	 * @param boolean $isUnique [optional] if the index must be UNIQUE (default = false) 
 	 *
      * @return OrmEntity the current instance
 	 *
 	 **/
-	public function addIndexes($fieldNames, $isUnique=false){
+	public function addIndexes($fieldNames, $isUnique = false){
 		
 		if(!is_array($fieldNames)){
 			$fieldNames = array($fieldNames);
@@ -545,13 +549,13 @@ abstract class OrmEntity
 	 *
 	 *  ex : myEntity->garnishDefaultValue('field1', 'some text')
 	 *
-	 * @param String the name of the Field
-	 * @param Mixed the default value.
+	 * @param string $fieldName the name of the Field
+	 * @param mixed $defaultValue the default value.
 	 *
      * @return OrmEntity the current instance
 	 *
 	 **/
-	public function garnishDefaultValue($fieldName,$defaultValue){
+	public function garnishDefaultValue($fieldName, $defaultValue){
 		if(!$this->isFieldByNameExists($fieldName)){
 			throw new OrmIllegalArgumentException("garnishDefault() only accept valid Field but ".$fieldName." is not a existing Field in the Entity ".$this->getName());
 		}
@@ -573,7 +577,7 @@ abstract class OrmEntity
 	 *
 	 *  ex : myEntity->garnishDefaultOrderBy(new OrmOrderBy()->addAsc('field1')->addDesc('field2'))
 	 *
-	 * @param OrmorderBy the default sort order.
+	 * @param OrmorderBy $defaultOrderBy the default sort order.
 	 *
      * @return OrmEntity the current instance
 	 *
@@ -600,8 +604,8 @@ abstract class OrmEntity
 	/**
 	 * Add a alias, very useful for entity with 2+ FK pointing on the same entity with a composite primary key
 	 *
-	 * @param string : the name of the alias
-	 * @param array : the liste of fieldname for the shortcut
+	 * @param string $aliasName the name of the alias
+	 * @param string[] $pointers the liste of fieldname for the shortcut
 	 */
 	public function addAlias($aliasName, array $pointers){
 		$this->alias[$aliasName] = $pointers;
@@ -610,12 +614,11 @@ abstract class OrmEntity
 	/**
 	 * getter for field alias
 	 *
-	 * @return array 
+	 * @return string[] 
 	 **/
 	public function getAlias(){
 		return $this->alias;
 	}
-	
 	
 }
 

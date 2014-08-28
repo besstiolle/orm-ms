@@ -53,12 +53,12 @@ class OrmField
     /**
     * public constructor
     * 	
-    * @param string the (unique) name of the field
-    * @param OrmCAST The OrmCAST value of the field example : OrmOrmCAST::$INTEGER
-    * @param int The max size of the field. May be null if $type is Date, Time, Buffer, None ...
-    * @param true if the value may be NULL. Default value is false
-    * @param OrmKEY the KEY value of the field. May be null example: OrmKEY::$PK for a primary key
-    * @param string the name of the key. Only used for ForeignKey and AssociateKey example : "Customer.customer_id" in the field "customer" of an entity "Order".
+    * @param string $fieldname the (unique) name of the field
+    * @param OrmCAST $cast The OrmCAST value of the field example : OrmOrmCAST::$INTEGER
+    * @param int $size The max size of the field. May be null if $type is Date, Time, Buffer, None ...
+    * @param boolean $nullable true if the value may be NULL. Default value is false
+    * @param OrmKEY $KEY the KEY value of the field. May be null example: OrmKEY::$PK for a primary key
+    * @param string $KEYName the name of the key. Only used for ForeignKey and AssociateKey example : "Customer.customer_id" in the field "customer" of an entity "Order".
     * 
     * @return OrmField the Field Object
     * 
@@ -201,7 +201,7 @@ class OrmField
    /**
     * setter for defaultValue
     * 
-    * @param mixed the default value of Field
+    * @param mixed $defaultValue the default value of Field
     * 
     */	
 	public function setDefaultValue($defaultValue){

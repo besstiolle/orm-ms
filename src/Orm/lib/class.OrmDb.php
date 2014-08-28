@@ -16,10 +16,24 @@
 */
 class OrmDb {  
 
+	/**
+	 * Contains the adodb engine
+	 */
 	private static $db;
+
+	/**
+	 * Contains the adodb dictionnary
+	 */
 	private static $dict;
 	
+	/**
+	 * Contains the default value for database and table creation for cmsms
+	 */
 	private static $taboptarray = array( 'mysql' => 'ENGINE MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci');
+
+	/**
+	 * Contains words for the UNIQUE key
+	 */
 	private static $idxoptarrayUnique = array('UNIQUE');
 
     /**
@@ -27,6 +41,9 @@ class OrmDb {
     */
 	protected function __construct() {}
 	
+	/**
+	 * Allow initializing the OrmDb fields
+	 */
 	protected static final function init(){
 		if(OrmDb::$db != null){
 			return;
@@ -38,10 +55,10 @@ class OrmDb {
     /**
     * will execute the Adodb "execute" function and add logs of everything
     *         
-    * @param string the sql Query
-    * @param array the list of parameters or null
-    * @param string the message of error to display to the user
-    * @return the adodb result
+    * @param string $query the sql Query
+    * @param mixed[] $parameters array the list of parameters or null
+    * @param string $errorMsg the message of error to display to the user
+    * @return mixed the adodb result
 	*
 	* @exception OrmSqlException if the query failed
     */
@@ -69,10 +86,10 @@ class OrmDb {
 	 /**
     * will execute the Adodb "GetOne" function and add logs of everything
     *         
-    * @param string the sql Query
-    * @param array the list of parameters or null
-    * @param string the message of error to display to the user
-    * @return the adodb result
+    * @param string $query the sql Query
+    * @param mixed[] $parameters array the list of parameters or null
+    * @param string $errorMsg the message of error to display to the user
+    * @return mixed the adodb result
 	*
 	* @exception OrmSqlException if the query failed
     */
@@ -100,9 +117,10 @@ class OrmDb {
 	 /**
     * will execute the Adodb "GenID" function and add logs of everything
     *         
-    * @param string the table used for sequence 
-    * @param string the message of error to display to the user
-    * @return the adodb result
+    * @param string $seqname the table used for sequence 
+    * @param string $errorMsg the message of error to display to the user
+    *
+    * @return mixed the adodb result
 	*
 	* @exception OrmSqlException if the query failed
     */
@@ -126,9 +144,10 @@ class OrmDb {
 	 /**
     * will execute the Adodb "CreateTableSQL" function and add logs of everything
     *         
-    * @param string the table used for sequence 
-    * @param string the hql information about the fields
-    * @return the adodb result
+    * @param string $tableName the table used for sequence 
+    * @param string $hql the hql information about the fields
+    *
+    * @return mixed the adodb result
 	*
 	* @exception OrmSqlException if the query failed
     */
@@ -153,12 +172,13 @@ class OrmDb {
 		
 		return $result;
 	}
+
 	/**
     * will execute the Adodb "DropTableSQL" function and add logs of everything
     *         
-    * @param string the table used for sequence 
-    * @param string the hql information about the fields
-    * @return the adodb result
+    * @param string $tableName the table used for sequence 
+	* 
+    * @return mixed the adodb result
 	*
 	* @exception OrmSqlException if the query failed
     */
@@ -185,7 +205,7 @@ class OrmDb {
 	/**
     * will execute the Adodb "CreateSequence" function and add logs of everything
     *         
-    * @param string the table used for sequence 
+    * @param string $seqName the table used for sequence 
     */
 	public static final function createSequence($seqName){
 		//Be sure we initiate the db connector;
@@ -199,7 +219,7 @@ class OrmDb {
 	/**
     * will execute the Adodb "DropSequence" function and add logs of everything
     *         
-    * @param string the table used for sequence 
+    * @param string $seqName the table used for sequence 
     */
 	public static final function dropSequence($seqName){
 		//Be sure we initiate the db connector;
@@ -214,10 +234,11 @@ class OrmDb {
 	/**
     * will execute the Adodb "CreateIndexSQL" function with or without UNIQUE parameter and add logs of everything
     *         
-    * @param string the table used for sequence 
-    * @param mixed the list of the FieldName (array) or a single fieldName (String)
-    * @param boolean true if the index must be UNIQUE
-    * @return the adodb result
+    * @param string $tableName the table used for sequence 
+    * @param mixed $listFields the list of the FieldName (array) or a single fieldName (String)
+    * @param boolean $isUnique true if the index must be UNIQUE
+    *
+    * @return mixed the adodb result
 	*
 	* @exception OrmSqlException if the query failed
     */

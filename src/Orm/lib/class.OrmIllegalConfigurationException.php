@@ -16,8 +16,17 @@
 */
 class OrmIllegalConfigurationException extends Exception  {
     
+    /**
+    * the inner error messages
+    **/
 	private $messages = array();
 
+    /**
+    * Public constructor
+    *
+    * @param string $msg [optional] the error message 
+    * @param int $code [optional] the error code
+    */
     public function __construct($msg=NULL, $code=0)
     {
     	if(is_array($msg) && count($msg) > 1 ){
@@ -34,6 +43,11 @@ class OrmIllegalConfigurationException extends Exception  {
     	
     }
 
+    /**
+    * Will return the messages
+    *
+    * @return string[] the messages
+    **/
     public function getMessages(){
     	return $this->messages;
     }
