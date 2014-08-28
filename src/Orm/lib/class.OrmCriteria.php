@@ -4,7 +4,6 @@
  * 
  * @since 0.0.1
  * @author Bess
- * @package Orm
  **/
  
  
@@ -41,10 +40,10 @@ class OrmCriteria
     /**
     * Public Constructor
     * 
-    * @param string Name of the field 
-    * @param OrmTypeCriteria Type of Criteria
-    * @param array all the parameters used for the parameter $typeCriteria
-    * @param boolean [Optional] if we must ignore the case (aze equals AZE) or not. Default value is "false"
+    * @param string $fieldname Name of the field 
+    * @param OrmTypeCriteria $typeCriteria Type of Criteria
+    * @param mixed[] $paramsCriteria array with all the parameters used for the parameter $typeCriteria
+    * @param boolean $ignoreCase [Optional] if we must ignore the case (aze equals AZE) or not. Default value is "false"
     *
 	* @return OrmCriteria a Criteria
 	*

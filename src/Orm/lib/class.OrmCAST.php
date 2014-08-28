@@ -4,7 +4,6 @@
  *
  * @since 0.0.1
  * @author Bess
- * @package Orm
  **/
 
 
@@ -32,21 +31,65 @@
 */
 class OrmCAST
 {
-	public static $STRING = 0;
-	public static $BUFFER = 1;
+	/**
+	 * * Stored in database under the SQL type String (x)
+	 **/
+	public static $STRING = "STRING";
+
+	/**
+	 * * Stored in database under the SQL type BUFFER
+	 **/
+	public static $BUFFER = "BUFFER";
 	
-	public static $INTEGER = 2;
-	public static $NUMERIC = 3;
-	public static $DOUBLE = 4;
+	/**
+	 * * Stored in database under the SQL type INTEGER (x)
+	 **/
+	public static $INTEGER = "INTEGER";
+
+	/**
+	 * * Stored in database under the SQL type NUMBER (x)
+	 **/
+	public static $NUMERIC = "NUMERIC";
+
+	/**
+	 * * Stored in database under the SQL type DOUBLE (x)
+	 **/
+	public static $DOUBLE = "DOUBLE";
 	
-	public static $DATE = 5;
-	public static $TIME = 6;
-	public static $TS = 7;
-	public static $DATETIME = 8;
+	/**
+	 * * Stored in database under the SQL type DATE
+	 **/
+	public static $DATE = "DATE";
+
+	/**
+	 * * Stored in database under the SQL type TIME
+	 **/
+	public static $TIME = "TIME";
+
+	/**
+	 ** Stored in database under the SQL type INTEGER (?)
+	 **/
+	public static $TS = "TS";
+
+	/**
+	 ** Stored in database under the SQL type DATETIME
+	 **/
+	public static $DATETIME = "DATETIME";
 	
-	public static $UUID = 9;
-		  
-	public static $NONE = 99;
+	/**
+	 * Stored in database under the type SQL String (32)
+	 **/
+	public static $UUID = "UUID";
+	
+	/**
+	 * Will inherit from it's parents
+	 **/
+	public static $INHERIT = "INHERIT";
+
+	/**
+	 * Won't be stored in database
+	 **/
+	public static $NONE = "NONE";
 }
 
 ?>

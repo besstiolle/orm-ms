@@ -12,6 +12,7 @@ if( !class_exists("OrmCache")) {
 
 $this->SetPreference('loglevel', OrmTrace::$INFO);
 $this->SetPreference('cacheType', OrmCache::$NONE);
+$this->SetPreference('useCache', true);
 
 $this->CreatePermission('Manage_Orm', 'Manage Orm');
 

@@ -1,11 +1,11 @@
 <?php
-	/**
-	* Class of cmsmadesimple's API. Used to make a link between the API of CmsMadeSimple and other modules'
-	*
-	* @since 0.0.1
-	* @author Bess
-	* @package Orm
-	**/
+/**
+* Class of cmsmadesimple's API. Used to make a link between the API of CmsMadeSimple and other modules'
+*
+* @since 0.0.1
+* @author Bess
+* @package Orm
+**/
 
 	/**
 	* The Class Orm define the module Orm and allow having all the orm functionalities into another module
@@ -16,6 +16,25 @@
 	*/
 class Orm extends CMSModule {
 
+	function __construct(){
+
+		//Required to preserve the {Module} on Front-Office
+		parent::__construct();
+
+		//Load all the librairies for ORM exclusivly
+		if($this->GetName() === self::GetName()){
+			$dir = parent::GetModulePath().'/lib/'; 
+			$libs = scandir ( $dir );
+			foreach ($libs as $librairy) {
+				if($librairy !== '.' && $librairy !== '..' ){
+					require_once($dir.$librairy);
+				}
+			}
+		} else {
+			$this->scan();
+		}
+	}
+
 	function GetName() {
 		return 'Orm';
 	}
@@ -25,7 +44,7 @@ class Orm extends CMSModule {
 	}
 
 	function GetVersion() {
-		return '0.3.0-SNAPSHOT';
+		return '0.3.0';
 	}
   
 	function GetDependencies()
@@ -111,11 +130,17 @@ class Orm extends CMSModule {
 		return parent::GetModulePath();		
 	}
 
+	/**
+	 * Will found every Entity for the current module and return the liste of their name
+	 *
+	 * @return Array<String> a list of name of entities founded
+	 *
+	 **/
 	protected function scan(){
-				
+
 		//We're listing the class declared into the directory of the child module
 		$dir = cms_join_path(parent::GetModulePath(),'lib');
-		
+
 		$liste['entities'] = array();
 		$liste['associate'] = array();
 		
@@ -130,37 +155,65 @@ class Orm extends CMSModule {
 			} else {
 			}
 		}
+
+		$errors = array();
 		
 		foreach($liste['entities'] as $element) {
 			$className = $element['classname'];
 			$filename = $element['filename'];
 			if(!class_exists($className)){
-			OrmTrace::debug("importing Entity ".$className." into the module ".$this->getName());
-			require_once($filename);			
-			$entity = new $className();
+				OrmTrace::debug("importing Entity ".$className." into the module ".$this->getName());
+				require_once($filename);	
+				try{
+					$entity = new $className();
+				} catch(OrmIllegalConfigurationException $oce){
+					$errors[$className] = $oce;
+					continue;
+				}
+			}
 		}
-		}
+
 		foreach($liste['associate'] as $element) {
 			$className = $element['classname'];
 			$filename = $element['filename'];
 			if(!class_exists($className)){
-			OrmTrace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
-			require_once($filename);
-			$entity = new $className();
+				OrmTrace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
+				require_once($filename);
+				$entity = new $className();
+			}
 		}
+
+		//Process all the errors
+		if(!empty($errors)){
+			echo '<h3 style="color:#F00">Some OrmIllegalConfigurationException have been thrown</h3>';
+			
+			foreach ($errors as $className => $error) {
+				echo '<h4>Entity '.$className.' </h4><ol>';
+				foreach ($error->getMessages() as $message) {
+					echo '<li>'.$message.'</li>';
+				}
+				echo '</ol>';
+			}
+			
+			exit;
+		}
+
+		return $liste;
 	}
-	}
-	
+	/*
 	public function autoload_framework($classname){
-		$Orm = new Orm();
-		$path = $Orm->GetMyModulePath();
+		echo "autoload_framework($classname)";
+				
+		//$Orm = new Orm();
+		//$path = $Orm->GetMyModulePath();
+		$path = parent::GetModulePath();
 		$fn = cms_join_path($path,"lib","class.".$classname.".php");
 		
 		if(file_exists($fn)){
 			require_once($fn);
 			return;
 		} 
-	}
+	}*/
 	
 	/**
 	 * Shortcut to call all the instances for a single module

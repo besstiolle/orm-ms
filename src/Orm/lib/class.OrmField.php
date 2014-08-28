@@ -4,7 +4,6 @@
  *
  * @since 0.0.1
  * @author Bess
- * @package Orm
  **/
  
 /**
@@ -54,12 +53,12 @@ class OrmField
     /**
     * public constructor
     * 	
-    * @param string the (unique) name of the field
-    * @param OrmCAST The OrmCAST value of the field example : OrmOrmCAST::$INTEGER
-    * @param int The max size of the field. May be null if $type is Date, Time, Buffer, None ...
-    * @param true if the value may be NULL. Default value is false
-    * @param OrmKEY the KEY value of the field. May be null example: OrmKEY::$PK for a primary key
-    * @param string the name of the key. Only used for ForeignKey and AssociateKey example : "Customer.customer_id" in the field "customer" of an entity "Order".
+    * @param string $fieldname the (unique) name of the field
+    * @param OrmCAST $cast The OrmCAST value of the field example : OrmOrmCAST::$INTEGER
+    * @param int $size The max size of the field. May be null if $type is Date, Time, Buffer, None ...
+    * @param boolean $nullable true if the value may be NULL. Default value is false
+    * @param OrmKEY $KEY the KEY value of the field. May be null example: OrmKEY::$PK for a primary key
+    * @param string $KEYName the name of the key. Only used for ForeignKey and AssociateKey example : "Customer.customer_id" in the field "customer" of an entity "Order".
     * 
     * @return OrmField the Field Object
     * 
@@ -70,30 +69,48 @@ class OrmField
     * 
     */
 	public function __construct($fieldname, $cast, $size = null, $nullable = false, $KEY = null, $KEYName=null) {
-	
+		
+		$errors = array();
+
 		if(empty($KEY) && !empty($KEYName)) {
-			throw new OrmIllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
+			$errors[] = 'Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK';
 		}
 		if($KEY == OrmKEY::$PK && !empty($KEYName)) {
-			throw new OrmIllegalConfigurationException('Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK');
+			$errors[] = 'Impossible to specify a keyName parameter for the field '.$fieldname.' if the key is not $FK or $AK';
 		}
 		if(($KEY == OrmKEY::$FK || $KEY == OrmKEY::$AK) && empty($KEYName)) {
-			throw new OrmIllegalConfigurationException('$FK key or $AK key for the field '.$fieldname.' need a keyName');
+			$errors[] = '$FK key or $AK key for the field '.$fieldname.' need a keyName';
+		}
+
+		if(($cast == OrmCAST::$INHERIT) && !($KEY == OrmKEY::$FK || $KEY == OrmKEY::$AK)) {
+			$errors[] = '$INHERIT cast is only made for a $FK key or a $AK key (field '.$fieldname.')';
 		}
 		
 		if(($cast == OrmCAST::$DATE || $cast == OrmCAST::$BUFFER || $cast == OrmCAST::$TIME
 				|| $cast == OrmCAST::$DATETIME || $cast == OrmCAST::$TS || $cast == OrmCAST::$UUID 
-				|| $cast == OrmCAST::$NONE) && !empty($size)) {
-			throw new OrmIllegalConfigurationException('The field '.$fieldname.' must not have size value because of its own OrmCAST');
+				|| $cast == OrmCAST::$INHERIT || $cast == OrmCAST::$NONE) && !empty($size)) {
+			$errors[] = 'The field '.$fieldname.' must not have size value because of its own OrmCAST';
 		}
 		if(($cast == OrmCAST::$STRING) && empty($size)) {
-			throw new OrmIllegalConfigurationException('The field '.$fieldname.' must have size value because of its own OrmCAST');
+			$errors[] = 'The field '.$fieldname.' must have size value because of its own OrmCAST';
 		}
 		
+		if(!empty($errors)){
+			throw new OrmIllegalConfigurationException($errors);
+		}
 
 		if($nullable == null) {
 			$nullable = false;
 		}
+
+		//TODO : fix futur INHERIT fonction
+		/*
+		if(OrmCAST::$INHERIT == $cast) {
+			//Must take the distant type
+			list($entityAssocName, $fieldAssociateName) = explode(".", $KEYName);
+			$cast = (new $entityAssocName())->getFieldByName($fieldAssociateName)->getType();
+			$size = (new $entityAssocName())->getFieldByName($fieldAssociateName)->getSize();
+		}*/
 			
 		$this->name 	= $fieldname;
 		$this->type 	= $cast;
@@ -184,7 +201,7 @@ class OrmField
    /**
     * setter for defaultValue
     * 
-    * @param mixed the default value of Field
+    * @param mixed $defaultValue the default value of Field
     * 
     */	
 	public function setDefaultValue($defaultValue){

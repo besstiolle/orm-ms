@@ -4,7 +4,6 @@
  *
  * @since 0.2.0
  * @author Heriquet
- * @package Orm
  **/
 
 
@@ -17,34 +16,43 @@
  * @author Heriquet
  * @package Orm
 */
-class OrmOrderBy
-{
+class OrmOrderBy {
+
+	/**
+	* the inner list of orders
+	**/
 	private $orders = array();
 
+	/**
+	* the inner SQL word for ASC sorting
+	**/
 	public static $ASC = 'ASC';
+
+	/**
+	* the inner SQL word for DESC sorting
+	**/
 	public static $DESC = 'DESC';
 	
 	/**
     * public constructor
     * 	
-    * @param array $orders an hash with order by definitions
+    * @param mixed[] $orders an hash with order by definitions
 	*/
 	function __construct($orders=array()) {
-		foreach($orders as $field => $order) {
+		foreach($orders as $fieldname => $order) {
+
 			if($order == OrmOrderBy::$ASC) {
-				$this->addAsc($field);
-			}
-			else if($order == OrmOrderBy::$DESC) {
-				$this->addDesc($field);			
-			}
-			else {
+				$this->addAsc($fieldname);
+			} else if($order == OrmOrderBy::$DESC) {
+				$this->addDesc($fieldname);			
+			} else {
 				throw new OrmIllegalArgumentException("Invalid order for ORDER BY: {$order}.");
 			}
 		}
 	}
 	
    /**
-    * return ORDER BY clause
+    * return the SQL ORDER BY clause
     * 
     * @return ORDER BY clause
     */      
@@ -65,19 +73,21 @@ class OrmOrderBy
 	}
 	
    /**
-    * Add a new field in order by: DESC
+    * Add a new fieldname in order by: DESC
     * 
+    * @param string $fieldname the name of the field to adding
     */
-	function addAsc($field) {
-		$this->orders = array_merge($this->orders, array($field => '')); // ASC not mandatory
+	function addAsc($fieldname) {
+		$this->orders = array_merge($this->orders, array($fieldname => '')); // ASC not mandatory
 	}
 	
    /**
-    * Add a new field in order by: DESC
+    * Add a new fieldname in order by: DESC
     * 
+    * @param string $fieldname the name of the field to adding
     */
-	function addDesc($field) {
-		$this->orders = array_merge($this->orders, array($field => OrmOrderBy::$DESC));
+	function addDesc($fieldname) {
+		$this->orders = array_merge($this->orders, array($fieldname => OrmOrderBy::$DESC));
 	}
 }
 

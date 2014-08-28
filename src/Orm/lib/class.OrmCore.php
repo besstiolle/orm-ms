@@ -4,7 +4,6 @@
  * 
  * @since 0.0.1
  * @author Bess
- * @package Orm
  **/
  
  
@@ -25,10 +24,10 @@ class OrmCore {
     /**
     * transforms the entity's structure into adodb informations 
     *         
-    * @param OrmEntity the entity
-    * @return the adodb informations
+    * @param OrmEntity $entityParam the entity
+    * @return String the adodb informations
     */
-	private static final function _getFieldsToHql(OrmEntity &$entityParam) {    
+	public static final function _getFieldsToHql(OrmEntity $entityParam) {    
 		$hql = '';
 
 		$listeField = $entityParam->getFields();
@@ -48,10 +47,22 @@ class OrmCore {
 			if(!empty($hql)) {
 				$hql .= ' , ';
 			}
-
 			$hql .= ' '.$field->getName().' ';
-			$size = $field->getSize() != "" ? " (".$field->getSize().") " : "";
-			switch($field->getType()) {
+
+
+
+			$castType = $field->getType();
+			$size = $field->getSize();
+			/*if(OrmCAST::$INHERIT == $castType) {
+				//Must take the distant type
+				list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKeyName());
+				$castType = (new $entityAssocName())->getFieldByName($fieldAssociateName)->getType();
+				$size = (new $entityAssocName())->getFieldByName($fieldAssociateName)->getSize();
+			}*/
+
+			
+			$size = $size != "" ? " (".$size.") " : "";
+			switch($castType) {
 				case OrmCAST::$STRING : $hql .= 'C'.$size; break;
 
 				case OrmCAST::$INTEGER : $hql .= 'I'.$size; break;
@@ -71,6 +82,8 @@ class OrmCore {
 				case OrmCAST::$TS : $hql .= 'I (10) '; break; //workaround for the real timestamp missing in ADODBLITE
 
 				case OrmCAST::$DATETIME : $hql .= CMS_ADODB_DT; break;   
+
+				default : throw new OrmIllegalArgumentException('CAST TYPE '.$castType.' for the field '.$entityParam->getName().'->'.$field->getName().' is not a valid OrmCAST option');
 			}
 			
 			//Manage the default value
@@ -141,12 +154,12 @@ class OrmCore {
     * 
     *  The function will also try to populate the table with a call to the function initTable() if it's define into the entity class.
     * 
-	* @param Orm the module which extends the Orm module
-    * @param OrmEntity an instance of the entity
+    * @param OrmEntity $entityParam an instance of the entity
     */
-	public static final function createTable(OrmEntity &$entityParam) {
+	public static final function createTable(OrmEntity $entityParam) {
 	
 		$hql = OrmCore::_getFieldsToHql($entityParam);
+
 		$result = OrmDb::createTable($entityParam->getDbname(), $hql);
 				
 		//If necessary, it will create a sequence on the table.
@@ -170,9 +183,9 @@ class OrmCore {
     * Drop the table for the OrmEntity in parameters
     *  Will also drop the sequence if it's needed
     * 
-    * @param OrmEntity an instance of the entity
+    * @param OrmEntity $entityParam an instance of the entity
     */
-	public static final function dropTable(OrmEntity &$entityParam) {
+	public static final function dropTable(OrmEntity $entityParam) {
 
 		OrmDb::dropTable($entityParam->getDbname());
 
@@ -201,10 +214,10 @@ class OrmCore {
     * </code>
     *   
     * 
-    * @param OrmEntity an instance of the entity
-    * @param string the SQL query
+    * @param OrmEntity $entityParam an instance of the entity
+    * @param string $sql the SQL query
     */
-	public static final function alterTable(OrmEntity &$entityParam, $sql) {	
+	public static final function alterTable(OrmEntity $entityParam, $sql) {	
 		$queryAlter = "ALTER TABLE ".$entityParam->getDbname()." ".$sql;    
 		
 		//Execution
@@ -231,11 +244,11 @@ class OrmCore {
      * 
      * Important : you must not set the primaryKey value. It will be calculate by the system it-self
      *                                      
-     * @param OrmEntity an instance of the entity
+     * @param OrmEntity $entityParam an instance of the entity
 	 *
-     * @return the entity saved with its new new Id (customer_id in my example)
+     * @return OrmEntity the entity saved with its new new Id (customer_id in my example)
      */
-	public static final function insertEntity(OrmEntity &$entityParam) {
+	public static final function insertEntity(OrmEntity $entityParam) {
 
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
@@ -282,6 +295,8 @@ class OrmCore {
 				}
 			}
 			
+
+
 			//Empty Field that shouldn't be !
 			if(!$field->isNullable() && !isset($values[$field->getName()])) {
 				//Exception : if the field have a default value we set it manually
@@ -332,9 +347,9 @@ class OrmCore {
 				}
 				$msgError .= " {$elt} = {$values[$elt]} ";
 			}
-            foreach($entityParam->getPk() as $pk){
-                $query .= ' AND ' . $pk->getName() . ' != ? ';
-                $arrayFind[] = $values[$pk->getName()];
+            foreach($entityParam->getPk() as $pkname => $pk){
+                $query .= ' AND ' . $pkname . ' != ? ';
+                $arrayFind[] = $values[$pkname];
             }
 			$msgError .= '}';
 			
@@ -367,11 +382,11 @@ class OrmCore {
             $nbPkInteger = 0;
             $nameOfPk = '';
             foreach($entityParam->getPk() as $pk){
-                if($pk->getType == OrmCAST::$INTEGER){
+                if($pk->getType() == OrmCAST::$INTEGER){
                     $nbPkInteger++;
                     $nameOfPk = $pk->getName();
-                }
-            }
+		            }
+            	}
             if($nbPkInteger == 1 && $nameOfPk != '' && empty($values[$nameOfPk])){
                 $newId = OrmDb::getOne("SELECT LAST_INSERT_ID()");
                 $entityParam->set($nameOfPk, $newId);
@@ -403,11 +418,11 @@ class OrmCore {
      * 	 
      * You could also code for the last line : $customer->save();  it will automatically 
 	 *
-     * @param OrmEntity an instance of the entity
+     * @param OrmEntity $entityParam an instance of the entity
 	 *
-	 * @return the entity saved with its new Id (customer_id in my example)
+	 * @return OrmEntity the entity saved with its new Id (customer_id in my example)
      */	
-	public static final function updateEntity(OrmEntity &$entityParam) {
+	public static final function updateEntity(OrmEntity $entityParam) {
 
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
@@ -500,11 +515,11 @@ class OrmCore {
 				}
 				$msgError .= " {$elt} = {$values[$elt]} ";
 			}
-			foreach($entityParam->getPk() as $pk){
-				$query .= ' AND ' . $pk()->getName() . ' != ? ';
-				$arrayFind[] = $values[$pk()->getName()];	
+			foreach($entityParam->getPk() as $pkname => $pk){
+				$query .= ' AND ' . $pkname . ' != ? ';
+				$arrayFind[] = $values[$pkname];			
 			}
-					
+
 			$msgError .= '}';
 			
 			//Execution
@@ -562,10 +577,10 @@ class OrmCore {
     *       OrmCore::deleteByIds($customer, $myArray);
     * </code>
     *                                    
-    * @param OrmEntity an instance of the entity    
-    * @param array all the ids to delete ($customer_id in my example)
+    * @param OrmEntity $entityParam an instance of the entity    
+    * @param mixed[] $ids array all the ids to delete ($customer_id in my example)
     */
-	public static final function deleteByIds(OrmEntity &$entityParam, $ids) {
+	public static final function deleteByIds(OrmEntity $entityParam, $ids) {
 
 		$listeField = $entityParam->getFields();
 
@@ -601,22 +616,19 @@ class OrmCore {
 									
 		
 
-		if($entityParam->isIndexable())
-		{  
+		//if($entityParam->isIndexable())
+		//{  
 		  // $modops = cmsms()->GetModuleOperations();
 		  // if(method_exists($modops,"GetSearchModule"))
 		  // {
 			// OrmIndexing::setSearch($modops->GetSearchModule());
-		  // } else
-		  // {
-			// die("ko");
 		  // }
-		  foreach($ids as $sid)
-		  {
-			OrmIndexing::DeleteWords($entityParam->getModuleName(), $entityParam, $sid);
-		  }
+		  //foreach($ids as $sid)
+		  //{
+			//OrmIndexing::DeleteWords($entityParam->getModuleName(), $entityParam, $sid);
+		  //}
 		  
-		}
+		//}
 		
 		//empty cache
 		OrmCache::getInstance()->clearCache();
@@ -625,11 +637,11 @@ class OrmCore {
     /**
     * Returns the number of occurrences from the table of the entity in Parameters
     *                                     
-    * @param OrmEntity an instance of the entity    
+    * @param OrmEntity $entityParam an instance of the entity    
 	* 
     * @return int the number of occurrences from the table   
     */
-	public static final function countAll(OrmEntity &$entityParam) {
+	public static final function countAll(OrmEntity $entityParam) {
 
 		$querySelect = 'SELECT count(*) FROM '.$entityParam->getDbname();
 		
@@ -644,11 +656,13 @@ class OrmCore {
     /**
     * Returns all the occurrences from the table of the entity in Parameters
     * 
-    * @param OrmEntity an instance of the entity  
+    * @param OrmEntity $entityParam an instance of the entity  
+    * @param OrmOrderBy $orderBy the order if necessary
+    * @param OrmLimit $limit the limit if necessary
 	*
-    * @return array<OrmEntity> list of Entities found
+    * @return OrmEntity[] list of Entities found
     */
-	public static final function findAll(OrmEntity &$entityParam, OrmOrderBy &$orderBy=null, OrmLimit &$limit = null) {
+	public static final function findAll(OrmEntity $entityParam, OrmOrderBy $orderBy=null, OrmLimit $limit = null) {
 		return OrmCore::findByExample($entityParam, new OrmExample(), $orderBy, $limit);
 	}
 	
@@ -656,32 +670,173 @@ class OrmCore {
 	 * Inner function to factorize some code for each "find*" functions
 	 *  It will retrieve all the informations on the AK's Field
 	 *
-     * @param OrmEntity an instance of the entity  
-	 * @param resultQuery the returned value of sql execution
-	 * @param OrmOrderBy if you want order the external entity (via AK or FK)
+     * @param OrmEntity $entityParam an instance of the entity  
+	 * @param OrmEntity[] $entitys the list of object Entity to populate
 	 *
-     * @return array<OrmEntity> list of Entities populate with all the informations on AK's Field
+     * @return OrmEntity[] list of Entities populate with all the informations on AK's Field
 	 **/
-	private static final function _processArrayEntity(OrmEntity &$entityParam, $resultQuery, OrmOrderBy &$orderBy=null) {
+	public static final function populateFields(OrmEntity $entityParam, array $entitys) {
 		
-		
-		$entitys = array();
-		while ($row = $resultQuery->FetchRow()) {
-		  $entitys[] = OrmCore::rowToEntity($entityParam, $row);
+		if(empty($entitys)){
+			return $entitys;
 		}
-			
-		//Test the presence of $AK
+
 		$listeField = $entityParam->getFields();
 		foreach($listeField as $field) {
-		
-		  if($field->isAssociateKEY()) {
 
+			//Test the presence of $AK
+		  	if($field->isAssociateKEY()) {
+				$entitys = OrmCore::populateAKField($entityParam, $entitys, $field);
+		  	} 
+		  	
+		  	//Test the presence of $FK
+		  	if($field->isForeignKEY() && strpos($field->getKEYName(),".")) {
+		  		
+		  		list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
+				$entityAssoc = new $entityAssocName();
+		  		
+		  		//Avoid FK pointing on composite primary key
+		  		if(count($entityAssoc->getPk()) == 1){
+		  			$entitys = OrmCore::populateFKField($entityParam, $entitys, $field);
+		  		}
+		  	}
+		}
+
+		$alias = $entityParam->getAlias();
+		foreach ($alias as $anAlias => $aliasComponent) {
+			$entitys = OrmCore::populateAliasField($entityParam, $entitys, $anAlias);
+		}
+		
+		return $entitys;
+	}
+
+	/**
+	 * Will found all the entitys available for the Alias parameter $entityParam.
+	 *   Allow $myentity->get('my_alias');
+	 * 
+	 * 
+     * @param OrmEntity $entityParam an instance of the entity  
+	 * @param OrmEntity[] $entitys array list of Object OrmEntity
+	 * @param string $anAlias the alias to populate
+	 * 
+	 * @return OrmEntity[] list of Object with the values of the alias populated by the other OrmEntity founded
+	 * 
+	 * @since 0.3.0
+	 *
+	 */
+	public static final function populateAliasField(OrmEntity $entityParam, $entitys, $anAlias) {
+
+		$alias = $entityParam->getAlias();
+		if(!isset($alias[$anAlias])){
+			throw new OrmIllegalArgumentException("function populateAliasField(\$entityParam, \$entitys, \$anAlias) only accept alias name in third parameter");
+		}
+
+		$aliasComponent = $alias[$anAlias]; 
+		foreach ($aliasComponent as $component) {
+			$field = $entityParam->getFieldByName($component);
+			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
+			$entityAssoc = new $entityAssocName();
+
+			//Initiate the field associate with an empty array.
+			$entitysKeys = array();
+			foreach($entitys as $entity){
+				$entity->set($anAlias, null);
+			}
+
+			$sqlfieldvalue[] = $field->getName();
+			$assocFieldsName[] = $fieldAssociateName;
+			$sqlfieldname[] = " {$fieldAssociateName} = ? ";
+
+		}
+
+		// ( field1 = ? and field2 = ? ) 
+		$sqlfieldsname = ' ( ' . implode(" AND ", $sqlfieldname) . ' ) ' ;
+		$sqlfieldsnameOR = ' OR ' . $sqlfieldsname;
+
+		$sqlfields = " 1 ";
+		if(!empty($entitys)){
+			$sqlfields = $sqlfieldsname . str_repeat($sqlfieldsnameOR, count($entitys)-1);	
+		} 
+
+		$queryAdd = 'SELECT * FROM ' . $entityAssoc->getDbname() . ' WHERE ' . $sqlfields;
+		$queryParams = array();
+		foreach($entitys as $entity){
+		
+
+			foreach ($assocFieldsName as $fieldname) {
+
+				$queryParams[] = $entity->get($fieldname);
+			}
+			
+		}
+					
+		// Order By 
+		if($entityAssoc->getDefaultOrderBy() != null) {
+			$queryAdd .= $entityAssoc->getDefaultOrderBy()->getOrderBy();
+		}
+
+		//Execution
+		$result = OrmDb::execute($queryAdd,
+								$queryParams,
+								"Database error during request to get associative entity $entityAssocName");
+		
+		$countFields = count($sqlfieldvalue);
+
+
+		while ($rowAssociate = $result->FetchRow()) {
+			foreach($entitys as $entity){
+				$alreadyPresent = null;
+				$ismatch = true;
+				for ( $i = 0 ; $i < $countFields; $i++){
+
+					if($entity->get($sqlfieldvalue[$i]) !== $rowAssociate[$assocFieldsName[$i]]){
+						$ismatch = false;
+						break;
+					}
+				}
+				if($ismatch){
+					// At this point we found a result for the current entity.
+					// We must add this result into the $field 
+
+					$newObject = OrmCore::rowToEntity (new $entityAssocName(), $rowAssociate);
+					$entity->set($anAlias, $newObject);
+
+				}
+			}
+		}
+
+		return $entitys;
+	}
+
+	/**
+	 * Will found all the entitys available for the field AK of parameter $entityParam.
+	 * 
+     * @param OrmEntity $entityParam an instance of the entity  
+	 * @param OrmEntity[] $entitys array list of Object OrmEntity
+	 * @param OrmField $field the AK field to populate
+	 * 
+	 * @return OrmEntity[] list of Object OrmEntity with the values of the field AK populated by the other OrmEntity founded
+	 * 
+	 * @since 0.3.0
+	 *
+	 */
+	public static final function populateAKField(OrmEntity $entityParam, $entitys, OrmField $field){
+
+		if(!$field->isAssociateKEY()){
+			throw new OrmIllegalArgumentException("function populateAKField(\$entityParam, \$entitys, \$field) only accept fields of type AssociateKey");
+		}
+
+		$fieldAssociateName = null;
+		if(strpos($field->getKEYName(),".")){
 			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
 			$entityAssoc = new $entityAssocName();
 			
-			$fieldAssoc = $entityAssoc->getFieldByName($fieldAssociateName);
-			list($entityCurrentName, $fieldCurrentName) = explode(".", $fieldAssoc->getKEYName());
-						
+
+
+			$sqlfieldname = array();
+			$sqlfieldvalue = array();
+			list($entityCurrentName, $fieldCurrentName) = explode(".", $entityAssoc->getFieldByName($fieldAssociateName)->getKEYName());
+					
 			//The path must return to the current entity
 			if(strcasecmp($entityCurrentName,$entityParam->getName()) != 0){
 				throw new OrmIllegalConfigurationException("It seems you have a wrong path between {$entityParam->getName()}.{$field->getName()} and {$entityAssocName}.{$fieldAssociateName}");
@@ -691,60 +846,198 @@ class OrmCore {
 			$entitysKeys = array();
 			foreach($entitys as $entity){
 				$entity->set($field->getName(), array());
-				$entitysKeys[] = $entity->get($fieldCurrentName);
 			}
-		  
+
+			$sqlfieldvalue[] = $fieldCurrentName;
+			$assocFieldsName[] = $fieldAssociateName;
+			$sqlfieldname[] = " {$fieldAssociateName} = ? ";
+
+			
+
+		// We have an AK with 2/more FK (also we are an entity with composite primary key)	
+		} else {
+			$entityAssocName = $field->getKEYName();
+			$entityAssoc = new $entityAssocName();
+
+			//Initiate the field associate with an empty array.
+			$entitysKeys = array();
+			foreach($entitys as $entity){
+				$entity->set($field->getName(), array());
+			}
+
+			//TODO : remembering this part in memory to avoid triple reseach
+			$sqlfieldname = array();
+			$sqlfieldvalue = array();
+			foreach ($entityAssoc->getFields() as $assocField) {
+
+				// We don't want another weird FK on an entire entity
+				if($assocField->isForeignKey() && strpos($assocField->getKEYName(),".")){
+					
+					list($entityCurrentName, $fieldCurrentName) = explode(".", $assocField->getKEYName());
+
+					// If this FK point back on us
+					if(strcasecmp($entityCurrentName,$entityParam->getName()) === 0){
+						$sqlfieldvalue[] = $fieldCurrentName;
+						$assocFieldsName[] = $assocField->getName();
+						$sqlfieldname[] = " {$assocField->getName()} = ? ";
+					}
+				}
+			}
+
+		}
+
+		// ( field1 = ? and field2 = ? ) 
+		$sqlfieldsname = ' ( ' . implode(" AND ", $sqlfieldname) . ' ) ' ;
+		$sqlfieldsnameOR = ' OR ' . $sqlfieldsname;
+
+		$sqlfields = " 1 ";
+		if(!empty($entitys)){
+			$sqlfields = $sqlfieldsname . str_repeat($sqlfieldsnameOR, count($entitys)-1);	
+		} 
+
+		$queryAdd = 'SELECT * FROM ' . $entityAssoc->getDbname() . ' WHERE ' . $sqlfields;
+		$queryParams = array();
+		foreach($entitys as $entity){
+			foreach ($sqlfieldvalue as $fieldname) {
+				$queryParams[] = $entity->get($fieldname);
+			}
+			
+		}
+					
+		// Order By 
+		if($entityAssoc->getDefaultOrderBy() != null) {
+			$queryAdd .= $entityAssoc->getDefaultOrderBy()->getOrderBy();
+		}
+
+		//Execution
+		$result = OrmDb::execute($queryAdd,
+								$queryParams,
+								"Database error during request to get associative entity $entityAssocName");
+		
+		$countFields = count($sqlfieldvalue);
+
+		while ($rowAssociate = $result->FetchRow()) {
+			foreach($entitys as $entity){
+				$alreadyPresent = null;
+				$ismatch = true;
+				for ( $i = 0 ; $i < $countFields; $i++){
+
+					if($entity->get($sqlfieldvalue[$i]) !== $rowAssociate[$assocFieldsName[$i]]){
+						$ismatch = false;
+						break;
+					}
+				}
+				if($ismatch){
+					// At this point we found a result for the current entity.
+					// We must add this result into the $field 
+					$alreadyPresent = $entity->get($field->getName());
+					$alreadyPresent[] = OrmCore::rowToEntity (new $entityAssocName(), $rowAssociate);
+
+					$entity->set($field->getName(), $alreadyPresent);
+
+				}
+			}
+		}
+		return $entitys;
+	}
+
+
+	/**
+	 * Will found all the entitys available for the field FK of parameter $entityParam.
+	 * 
+     * @param OrmEntity $entityParam an instance of the entity  
+	 * @param OrmEntity[] $entitys array list of Object OrmEntity
+	 * @param OrmField $field the FK field to populate
+	 * 
+	 * @return OrmEntity[] list of Object OrmEntity with the values of the field FK populated by the other OrmEntity founded
+	 * 
+	 * @since 0.3.0
+	 *
+	 */
+	public static final function populateFKField(OrmEntity $entityParam, $entitys, OrmField $field){
+
+		if(!$field->isForeignKEY()){
+			throw new OrmIllegalArgumentException("function populateFKField(\$entityParam, \$entitys, \$field) only accept fields of type ForeignKey");
+		}
+
+		if(!strpos($field->getKEYName(),".")){
+			return $entitys;
+		}
+
+		if(strpos($field->getKEYName(),".")){
 			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
 			$entityAssoc = new $entityAssocName();
-			
-			$queryAdd = 'SELECT * FROM '.$entityAssoc->getDbname().' WHERE '.$fieldAssociateName.' IN ('.implode(',',$entitysKeys).')';
-		
-			// Order By 
-			if($orderBy != null) {
-				$queryAdd .= $orderBy->getOrderBy();
-			}
-			else if($entityParam->getDefaultOrderBy() != null) {
-				$queryAdd .= $entityParam->getDefaultOrderBy()->getOrderBy();
-			}
-			
-			//Execution
-			$result = OrmDb::execute($queryAdd,
-									null,
-									"Database error during request to get associative entity $entityAssocName");
-			
-			//FIXME
-			continue;
-			while ($rowAssociate = $result->FetchRow()) {
-				$arrayIdEntitiesDest = $entitys[$rowAssociate[$fieldAssociateName]]->get($field->getName());
-				
-				$entityAssocKeys = $entityAssoc->getPk();
-				if(count($entityAssocKeys) != 1){
-					//Put the combinaison of key in another array
-					$compound = array();
-					foreach ($entityAssocKeys as $pk){
-					   $compound[$pk->getName()] = $rowAssociate[get($pk->getName())];
-					}
-					$arrayIdEntitiesDest[] = $compound;
-				} else {
-					$arrayIdEntitiesDest[] = $rowAssociate[get($entityAssocKeys[0]->getName())];
-				}
+			$sqlfieldvalue = array();
 
-				$entitys[$rowAssociate[$fieldAssociateName]]->set($field->getName(),$arrayIdEntitiesDest);
-			}
-		  } 
+			$sqlfieldvalue[] = $field->getName();
+			$assocFieldsName[] = $fieldAssociateName;
+			$sqlfieldname[] = " {$fieldAssociateName} = ? ";
+
 		}
+
+		// ( field1 = ? and field2 = ? ) 
+		$sqlfieldsname = ' ( ' . implode(" AND ", $sqlfieldname) . ' ) ' ;
+		$sqlfieldsnameOR = ' OR ' . $sqlfieldsname;
+
+		$sqlfields = " 1 ";
+		if(!empty($entitys)){
+			$sqlfields = $sqlfieldsname . str_repeat($sqlfieldsnameOR, count($entitys)-1);	
+		} 
+
+		$queryAdd = 'SELECT * FROM ' . $entityAssoc->getDbname() . ' WHERE ' . $sqlfields;
+		$queryParams = array();
+		foreach($entitys as $entity){
+				$queryParams[] = $entity->get($field->getName());
+			
+		}
+					
+		// Order By 
+		if($entityAssoc->getDefaultOrderBy() != null) {
+			$queryAdd .= $entityAssoc->getDefaultOrderBy()->getOrderBy();
+		}
+
+
+		//Execution
+		$result = OrmDb::execute($queryAdd,
+								$queryParams,
+								"Database error during request to get associative entity $entityAssocName");
 		
+		$countFields = count($sqlfieldvalue);
+
+		while ($rowAssociate = $result->FetchRow()) {
+			foreach($entitys as $entity){
+				$alreadyPresent = null;
+				$ismatch = true;
+				for ( $i = 0 ; $i < $countFields; $i++){
+
+					if($entity->get($field->getName()) !== $rowAssociate[$assocFieldsName[$i]]){
+						$ismatch = false;
+						break;
+					}
+				}
+				if($ismatch){
+					// At this point we found a result for the current entity.
+					// We must add this result into the $field 
+					
+					$newObject = OrmCore::rowToEntity (new $entityAssocName(), $rowAssociate);
+					$entity->set($field->getName(), $newObject);
+
+				}
+			}
+		}
+
 		return $entitys;
 	}
   
 	/**
 	* Return a OrmEntity from its Id
 	* 
-	* @param OrmEntity an instance of the entity  
-	* @param mixed the Id to find
+	* @param OrmEntity $entityParam an instance of the entity  
+	* @param mixed $id the Id to find
+	*
 	* @return OrmEntity the OrmEntity found or NULL
 	*/
-	public static final function findById(OrmEntity &$entityParam, $id) {
+	public static final function findById(OrmEntity $entityParam, $id) {
 		$liste = OrmCore::findByIds($entityParam, array($id));
 		
 		if(!isset($liste[0])){
@@ -757,23 +1050,27 @@ class OrmCore {
 	/**
 	* Return Entities from their Ids
 	* 
-	* @param OrmEntity an instance of the entity  
-	* @param array list of the Ids to find
+	* @param OrmEntity $entityParam an instance of the entity  
+	* @param mixed[] $ids array list of the Ids to find
+	* @param OrmOrderBy $orderBy the orderby object if necessary
 	*
-	* @return array<OrmEntity> list of Entities found
+	* @return OrmEntity[] list of Entities found
 	*/
-	public static final function findByIds(OrmEntity &$entityParam, $ids, OrmOrderBy &$orderBy=null) {
+	public static final function findByIds(OrmEntity $entityParam, $ids, OrmOrderBy $orderBy=null) {
 		if(count($ids) == 0)
 			return array();
-		
-		if(count($entityParam->getPk()) != 1){
+
+		if($entityParam->hasCompositeKey()){
 			throw new OrmIllegalArgumentException('You cannot used function findById/findByIds on Entity with a compound key. You should try findByExample functions');
 		}
-		$pks = $entityParam->getPk();
-		$fieldname = $pks[0]->getName();
-		$example = new OrmExample();
-		$example->addCriteria($fieldname, OrmTypeCriteria::$EQ, $ids);
-		return OrmCore::findByExample($entityParam, $example, $orderBy);
+		
+		foreach ($entityParam->getPk() as $pkname => $pk) {
+			$example = new OrmExample();
+			$example->addCriteria($pkname, OrmTypeCriteria::$EQ, $ids);
+			return OrmCore::findByExample($entityParam, $example, $orderBy);
+		}
+
+
 	}
   
     /**
@@ -805,21 +1102,25 @@ class OrmCore {
      * 
      * NOTE 2 : you can add as many Criterias as you want in an Example Object
      * 
-     * @param OrmEntity an instance of the entity
-     * @param OrmExample the Object OrmExample with some Criterias inside
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param OrmOrderBy $orderBy the order if necessary
+     * @param OrmLimit $limit the limit if necessary
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
+     * @param boolean $lazymode set to TRUE to avoid loading child object. Default : FALSE
      * 
      * @see OrmExample
      * @see OrmTypeCriteria
      */
-	public static final function findByExample(OrmEntity $entityParam, OrmExample $example, OrmOrderBy $orderBy = null, OrmLimit $limit = null, $condition = 'AND') {
+	public static final function findByExample(OrmEntity $entityParam, OrmExample $example, OrmOrderBy $orderBy = null, OrmLimit $limit = null, $condition = 'AND', $lazymode = false) {
 
 		$listeField = $entityParam->getFields();
 
 		$criterias = $example->getCriterias();
 		$select = "SELECT * FROM ".$entityParam->getDbname().' WHERE ';
-		
+						
 		list($hql, $params) = OrmCore::_getHqlExample($listeField, $criterias, $condition);
-					
+				
 		// Order By
 		if($orderBy != null) {
 				$hql .= $orderBy->getOrderBy();
@@ -843,11 +1144,18 @@ class OrmCore {
 				//Execution
 				$result = OrmDb::execute($queryExample,
 										$params,
-										"Database error during OrmCore::findByExample(OrmEntity &{$entityParam->getName()}, , OrmExample \$example)");
+										"Database error during OrmCore::findByExample(OrmEntity &{$entityParam->getName()}, OrmExample \$example)");
 
 				OrmTrace::debug("findByExample : ".$result->RecordCount()." resultat(s)");
-				
-				$entities = OrmCore::_processArrayEntity($entityParam, $result);
+
+				$entities = array();
+				while ($row = $result->FetchRow()) {
+				  $entities[] = OrmCore::rowToEntity($entityParam, $row);
+				}
+
+				if(!$lazymode){
+					$entities = OrmCore::populateFields($entityParam, $entities);
+				}
 				
 				//We push the result into the cache before return it
 				OrmCache::getInstance()->setCache($queryExample, null, $entities);
@@ -886,16 +1194,17 @@ class OrmCore {
      * 
      * NOTE 2 : you can add as many Criterias as you want in an OrmExample Object
      * 
-     * @param OrmEntity an instance of the entity
-     * @param OrmExample the Object OrmExample with some Criterias inside
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param $condition let user define if the multiple conditions must of type AND or OR
      * 
      * @see OrmExample
      * @see OrmTypeCriteria
      */
-	public static final function deleteByExample(OrmEntity &$entityParam, OrmExample $OrmExample, $condition = 'AND') {
+	public static final function deleteByExample(OrmEntity $entityParam, OrmExample $example, $condition = 'AND') {
 		$listeField = $entityParam->getFields();
 
-		$criterias = $OrmExample->getCriterias();
+		$criterias = $example->getCriterias();
 		$delete = "delete from ".$entityParam->getDbname().' WHERE ';
 		
 		list($hql, $params) = OrmCore::_getHqlExample($listeField, $criterias, $condition);
@@ -906,14 +1215,15 @@ class OrmCore {
 		$result = OrmDb::execute($queryExample,
 									$params,
 									"Database error during OrmCore::deleteByExample(OrmEntity &{$entityParam->getName()}, , OrmExample \$example)");
-	}
-	
+		  }
+		  
 	/**
 	 * Inner function to factorize the custruction of the HQL for the *byExample functions
-	 * @param : $listeField the list of Fields
-	 * @param : $criterias the list of Criteria
+	 * @param OrmField[] $listeField the list of Fields
+	 * @param OrmTypeCriteria[] $criterias the list of Criteria
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
 	 *
-	 * @return : List[$hql, $params]
+	 * @return mixed[] an array under the format array($hql, mixed[] $params)
 	 **/
 	private static function _getHqlExample($listeField, $criterias, $condition){
 		
@@ -921,8 +1231,8 @@ class OrmCore {
 			$hql = " 1 ";
 		} else {
 			$hql = " 0 ";
-		}
-		
+		  }
+
 		$params = array();
 
 		foreach($criterias as $criteria) {
@@ -930,62 +1240,62 @@ class OrmCore {
 			if($listeField[$criteria->fieldname] == null) {
 				throw new Exception("Field '".$criteria->fieldname."' not defined in entity '".$entityParam->getName()."' while you're searching on it");
 			}
-			$filterType = $listeField[$criteria->fieldname]->getType();
-
+		  $filterType = $listeField[$criteria->fieldname]->getType();
+		  
 			//1 parameter
-			if($criteria->typeCriteria == OrmTypeCriteria::$EQ || $criteria->typeCriteria == OrmTypeCriteria::$NEQ
-				|| $criteria->typeCriteria == OrmTypeCriteria::$GT || $criteria->typeCriteria == OrmTypeCriteria::$GTE
-				|| $criteria->typeCriteria == OrmTypeCriteria::$LT || $criteria->typeCriteria == OrmTypeCriteria::$LTE
-				|| $criteria->typeCriteria == OrmTypeCriteria::$BEFORE || $criteria->typeCriteria == OrmTypeCriteria::$AFTER
+		  if($criteria->typeCriteria == OrmTypeCriteria::$EQ || $criteria->typeCriteria == OrmTypeCriteria::$NEQ 
+			|| $criteria->typeCriteria == OrmTypeCriteria::$GT || $criteria->typeCriteria == OrmTypeCriteria::$GTE 
+			|| $criteria->typeCriteria == OrmTypeCriteria::$LT || $criteria->typeCriteria == OrmTypeCriteria::$LTE 
+			|| $criteria->typeCriteria == OrmTypeCriteria::$BEFORE || $criteria->typeCriteria == OrmTypeCriteria::$AFTER
 				|| $criteria->typeCriteria == OrmTypeCriteria::$LIKE || $criteria->typeCriteria == OrmTypeCriteria::$NLIKE) {
 				$val = $criteria->paramsCriteria[0];
 				
 				$params[] = OrmCore::_fieldToDBValue($val, $filterType);
 				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria.' ? ';
-				continue;
-			}
-
+			continue;
+		  }
+		  
 			//0 parameter
 			if($criteria->typeCriteria == OrmTypeCriteria::$NULL || $criteria->typeCriteria == OrmTypeCriteria::$NNULL) {
 				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria;
-				continue;
-			}
-
+			continue;
+		  }
+		  
 			//2 parameters
 			if($criteria->typeCriteria == OrmTypeCriteria::$BETWEEN) {
-				$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[0], $filterType);
-				$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[1], $filterType);
+			$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[0], $filterType); 
+			$params[] = OrmCore::_fieldToDBValue($criteria->paramsCriteria[1], $filterType); 
 				$hql .= " {$condition} ".$criteria->fieldname.$criteria->typeCriteria.' ? AND ?';
-				continue;
-			}
-
+			continue;
+		  }
+				
 			// N parameters
 			if($criteria->typeCriteria == OrmTypeCriteria::$IN || $criteria->typeCriteria == OrmTypeCriteria::$NIN) {
 				if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) > 0) {
 						$hql .= " {$condition} ";
 						$hql .= $criteria->fieldname.' '.sprintf($criteria->typeCriteria, implode(',', array_fill(0, count($criteria->paramsCriteria), '?'))).' ';
 						foreach($criteria->paramsCriteria as $param) {
-							$params[] = OrmCore::_fieldToDBValue($param, $filterType);
+						$params[] = OrmCore::_fieldToDBValue($param, $filterType); 
 						}
 				} else if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) == 0) {
 					$hql .= 'AND false '; // no value passed, so no result to be returned
 				}
 				continue;
 			}
-
+						
 			//Other cases
 			if($criteria->typeCriteria == OrmTypeCriteria::$EMPTY) {
 				$hql .= " {$condition} ( ".$criteria->fieldname .' is null || ' . $criteria->fieldname . "= '')";
 				continue;
-			}
+					}
 			if($criteria->typeCriteria == OrmTypeCriteria::$NEMPTY) {
 				$hql .= " {$condition} ( ".$criteria->fieldname .' is not null && ' . $criteria->fieldname . "!= '')";
-				continue;
-			}
-										
+					continue;
+				}                        
+		  
 			throw new Exception("The OrmCriteria $criteria->typeCriteria is not manage");
 		}
-		
+										
 		return array($hql, $params);
 	}
       
@@ -1008,10 +1318,10 @@ class OrmCore {
      * 
      * </code>
      *         
-     * @param OrmEntity an instance of the entity
-     * @param array the list with the data
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param mixed[] $row the list with the data
     */
-	public static final function rowToEntity (OrmEntity &$entityParam, $row) {
+	public static final function rowToEntity (OrmEntity $entityParam, $row) {
 
 		OrmTrace::debug("rowToEntity : ".print_r($row,true));
 		$listeField = $entityParam->getFields();
@@ -1030,8 +1340,8 @@ class OrmCore {
     /**
      * Transform a PHP value into a SQL value
      * 
-     * @param mixed the PHP value
-     * @param mixed the CAST value
+     * @param mixed $data the PHP value
+     * @param mixed $type the CAST value
      * 
      * @see OrmCAST
      */
@@ -1058,8 +1368,8 @@ class OrmCore {
     /**
      * Transform a SQL value into a PHP value
      * 
-     * @param mixed the SQL value 
-     * @param mixed the CAST value
+     * @param mixed $data the SQL value 
+     * @param mixed $type the CAST value
      * 
      * @see OrmCAST
      */
@@ -1084,14 +1394,13 @@ class OrmCore {
      * Verify in all type of entities if anyone still has a link with the OrmEntity passed in parameters (ForeignKEy and AssociateKey)
      * 
      *  This function is used by the delete* functions to avoid orphans data in database
-     * 
-	 * @param Orm the module which extends the Orm module                                      
-     * @param OrmEntity an instance of the entity
-     * @param mixed the id of the OrmEntity to verify
+     *                                       
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param mixed $sid the id of the OrmEntity to verify
 	 *
 	 * @return a message if a link is still present. nothing if the integrity is ok
      */
-	public static final function verifIntegrity(OrmEntity &$entityParam, $sid) {
+	public static final function verifIntegrity(OrmEntity $entityParam, $sid) {
 		$listeEntitys = MyAutoload::getAllInstances($entityParam->getModuleName());
 
 		foreach($listeEntitys as $key=>$anEntity) {
@@ -1102,7 +1411,11 @@ class OrmCore {
 			if($field->isAssociateKEY()) {
 			  continue;
 			}
+
 			
+			if(is_array($field->getKEYName())){
+
+			}
 			if($field->getKEYName() != null) {
 			  $vals = explode('.',$field->getKEYName(),2);
 			  

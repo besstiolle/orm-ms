@@ -4,7 +4,6 @@
  * 
  * @since 0.0.1
  * @author Bess
- * @package Orm
  **/
 
 /**
@@ -18,11 +17,22 @@
  * @author Bess
  * @package Orm
 */
-class OrmKEY
-{
-	public static $PK = 0x9901; // Primary KEY
-	public static $FK = 0x9902; // Foreign KEY a link between 2 entities 0,1->n
-	public static $AK = 0x9903; // Associate KEY a link between 2 entities n->n that needing a third table
+class OrmKEY {
+
+	/**
+	* Primary KEY
+	**/
+	public static $PK = 0x9901; 
+
+	/**
+	* Foreign KEY a link between 2 entities 0,1->n
+	**/
+	public static $FK = 0x9902; 
+
+	/**
+	* Associate KEY a link between 2 entities n->n that needing a third table
+	**/
+	public static $AK = 0x9903; 
 }
 
 ?>

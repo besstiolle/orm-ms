@@ -4,7 +4,6 @@
  * 
  * @since 0.0.1
  * @author Bess
- * @package Orm
  **/
  
 
@@ -115,7 +114,7 @@ class OrmTypeCriteria {
     * 
     * @var string
     */
-	public static $IN = 'in (%s)';
+	public static $IN = 'in (%a)';
     
     /**
     * is not contained into the array
@@ -124,7 +123,7 @@ class OrmTypeCriteria {
     * 
     * @var string
     */
-	public static $NIN = 'not in (%s)';
+	public static $NIN = 'not in (%a)';
     
     /**
     * contains the string

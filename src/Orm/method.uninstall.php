@@ -2,9 +2,7 @@
 
 if (!function_exists("cmsms")) exit;
 
-$this->RemovePreference('loglevel');
-$this->RemovePreference('cacheType');
-
+$this->RemovePreference();
 $this->RemovePermission('Manage_Orm');
 
 // put mention into the admin log
