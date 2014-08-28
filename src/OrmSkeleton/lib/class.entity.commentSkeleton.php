@@ -41,7 +41,7 @@ class CommentSkeleton extends OrmEntity
 		
 		//Will provide a result for $comment->get('myurl') 
 		//			=> array(url => 'www.website.fr', 'lang_iso' => 'en_US', 'title' => 'my title', 'description' => 'xx')
-		$this->addAlias('myurl', ['url', 'lang_iso']);
+		$this->addAlias('myurl', array('url', 'lang_iso'));
 	}	
 
 		/**
