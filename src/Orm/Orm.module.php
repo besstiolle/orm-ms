@@ -25,6 +25,10 @@ class Orm extends CMSModule {
 		if($this->GetName() === self::GetName()){
 			$dir = parent::GetModulePath().'/lib/'; 
 			$libs = scandir ( $dir );
+
+			//FIXME : try to avoid conflict during loading class  xx extends yy
+			sort($libs);
+
 			foreach ($libs as $librairy) {
 				if($librairy !== '.' && $librairy !== '..' ){
 					require_once($dir.$librairy);
@@ -44,7 +48,7 @@ class Orm extends CMSModule {
 	}
 
 	function GetVersion() {
-		return '0.3.0';
+		return '0.3.1-SNAPSHOT';
 	}
   
 	function GetDependencies()
