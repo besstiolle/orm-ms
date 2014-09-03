@@ -32,13 +32,13 @@ class OrmExample {
     * Add a new Criteria on the existing list
     * 
     * @param string $fieldname Name of the field 
-    * @param OrmTypeCriteria $typeCriteria Type of Criteria
+    * @param string $typeCriteria Type of Criteria
     * @param mixed[] $paramsCriteria all the parameters used for the parameter $typeCriteria
     * @param boolean $ignoreCase [Optional] if we must ignore the case (aze equals AZE) or not. Default value is "false"
     * 
     * @see OrmTypeCriteria
     */
-	public function addCriteria($fieldname, OrmTypeCriteria $typeCriteria, $paramsCriteria, $ignoreCase = false) {
+	public function addCriteria($fieldname, $typeCriteria, $paramsCriteria, $ignoreCase = false) {
 		if(!is_array($paramsCriteria)) {
 			throw new Exception("the parameter \$paramsCriteria for the Criteria of the Field [".$fieldname."] must be an array");
 		}
