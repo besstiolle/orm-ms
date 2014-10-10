@@ -11,6 +11,8 @@ switch($oldversion){
 	case '0.2.2':
 		$this->SetPreference('useCache', true);
 	case '0.3.0':
+	case '0.3.1':
+	case '0.3.2':
 }
 
 
