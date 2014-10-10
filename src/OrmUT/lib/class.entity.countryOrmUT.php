@@ -9,7 +9,7 @@ class CountryOrmUT extends OrmEntity
 			, OrmCAST::$INTEGER
 			, null	
 			, null 		// is not nullable
-			, OrmKEY::$PK	// is a primary key (auto-incremented)
+			, OrmKEY::$PK	// is a primary key (no auto-incremented)
 		));
 		
 		$this->add(new OrmField('label'		
