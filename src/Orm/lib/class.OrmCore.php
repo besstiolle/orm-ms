@@ -256,14 +256,14 @@ class OrmCore {
 
 		$queryInsert = 'INSERT INTO '.$entityParam->getDbname().' (%s) values (%s)';
 
-		$str1 = "";
-		$str2 = "";
+		$str_params1 = array();
+		$str_params2 = array();
 
 		$params = array();
 			   
 		//All the required values must be present
-		foreach($listeField as $field)
-		{
+		foreach($listeField as $field) {
+			
 			if($field->isAssociateKEY()) {
 				continue;
 			}
@@ -273,12 +273,8 @@ class OrmCore {
 				continue;
 			}
 			
-			if(!empty($str1)) {
-				$str1 .= ',';
-				$str2 .= ',';
-			}
-			$str1 .= ' '.$field->getName().' ';
-			$str2 .= '?';
+			$str_params1[] = ' '.$field->getName().' ';
+			$str_params2[] = '?';
 			
 			if($field->isPrimaryKEY()) {
 				if(!empty($values[$field->getName()])) {
@@ -364,7 +360,7 @@ class OrmCore {
 		}
 		
 		//Execution
-		$result = OrmDb::execute(sprintf($queryInsert, $str1, $str2),
+		$result = OrmDb::execute(sprintf($queryInsert, implode(',' , $str_params1), implode(',' , $str_params2)),
 									$params,
 									"Database error during OrmCore::insertEntity(OrmEntity &{$entityParam->getName()})");
 		
@@ -428,19 +424,69 @@ class OrmCore {
 		$values = $entityParam->getValues();
 		$indexes = $entityParam->getIndexes();
 
-		$str = "";
+		$str_params1 = array();
 		$where = '';
 		$params = array();
 		$hasKey = false;
 		  
 		//All the required values must be present
 		foreach($listeField as $field) {
-		
-			//We don't update the transient Fields 
+			
+			if($field->isAssociateKEY()) {
+				continue;
+			}
+						
+			//We don't insert the transient Fields 
 			if($field->getType() == OrmCAST::$NONE) {
 				continue;
 			}
 
+			if($field->isPrimaryKEY()) {
+				if(!empty($values[$field->getName()])) {
+					// Normal case in an update mode
+
+
+					$where = ' WHERE '.$field->getName().' = ?';
+					$hasKey = true;
+					$keyValue = $values[$field->getName()];
+
+				} else if(!$entityParam->isAutoincrement()){
+					$newId = OrmDb::genID($entityParam->getSeqname());
+					$values[$field->getName()] = $newId;
+					$entityParam->set($field->getName(), $newId);
+
+					//TODO : error or "insert"-like process ?
+					//throw new OrmIllegalArgumentException('the primaryKey '.$field->getName().' is missing for the entity : '.$entityParam->getName());
+
+				} else{
+					$values[$field->getName()] = 0;
+					$entityParam->set($field->getName(), 0);
+				}
+			}
+
+			//Empty Field that shouldn't be !
+			if(!$field->isNullable() && !isset($values[$field->getName()])) {
+				//Exception : if the field have a default value we set it manually
+				if(!is_null($field->getDefaultValue())){
+					$values[$field->getName()] = $field->getDefaultValue();
+				} else {
+					throw new OrmIllegalArgumentException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' can\'t be null');
+				}
+			}
+
+
+			// Control UUID type
+			if($field->getType() == OrmCAST::$UUID && !empty($values[$field->getName()])){
+				$pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i";
+				if(!preg_match($pattern, $values[$field->getName()])){
+					throw new OrmIllegalArgumentException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' doesn\'t match the UUID pattern : '.$pattern);
+				}
+			}
+
+
+
+
+/*
 			//if the field is empty and we have a default value we set it manually
 			if(empty($values[$field->getName()]) && $field->getDefaultValue() != null){
 				$values[$field->getName()] = $field->getDefaultValue();
@@ -482,12 +528,14 @@ class OrmCore {
 				$hasKey = true;
 				$keyValue = $values[$field->getName()];
 			}
+			
 
 			if(!empty($str)) {
 			  $str .= ',';
 			}
+			*/
 
-			$str .= ' '.$field->getName().' = ? ';
+			$str_params1[] = ' '.$field->getName().' = ? ';
 
 			$params[] = OrmCore::_fieldToDBValue($values[$field->getName()], $field->getType());
 
@@ -536,7 +584,7 @@ class OrmCore {
 			$params[] = $keyValue;
 		}
 
-		$queryUpdate = 'UPDATE '.$entityParam->getDbname().' SET '.$str.$where;
+		$queryUpdate = 'UPDATE '.$entityParam->getDbname().' SET '.implode(',', $str_params1).$where;
 	
 		//Execution
 		$result = OrmDb::execute($queryUpdate,

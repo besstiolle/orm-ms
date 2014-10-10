@@ -4,7 +4,7 @@
 <?php
 	$entities = $mod->getAllInstances();
 	
-	$expected = 7;
+	$expected = 8;
 	$result = count($entities);
 	$class = '';
 	if($result == $expected){
