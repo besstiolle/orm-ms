@@ -35,7 +35,7 @@ foreach($countries as $country){
 }
 $selectedvalue = '-1';
 if($city->get('country') != '') {
-	$selectedvalue = $city->get('country');
+	$selectedvalue = $city->get('country')->get('country_id');
 }
 $selectCountries = $this->CreateInputDropdown($id, 'country', $items, -1, $selectedvalue); 
 
