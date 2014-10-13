@@ -31,6 +31,24 @@ class UtilsTest{
 		}
 		echo "<p class='$class'>we expected value being not null</p>";
 	}
+
+	public static function assertIsTrue($result){
+		if ($result === TRUE){
+			$class = UtilsTest::$cssSuccess;
+		} else {
+			$class = UtilsTest::$cssError;
+		}
+		echo "<p class='$class'>we expected value being TRUE</p>";
+	}
+
+	public static function assertIsFALSE($result){
+		if ($result === FALSE){
+			$class = UtilsTest::$cssSuccess;
+		} else {
+			$class = UtilsTest::$cssError;
+		}
+		echo "<p class='$class'>we expected value being FALSE</p>";
+	}
 	
 
 }

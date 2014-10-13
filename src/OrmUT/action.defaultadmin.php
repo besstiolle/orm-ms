@@ -74,4 +74,5 @@ function reinitAllTables($mod){
 <h2>Loading the classes</h2><?php load($this, "000_*.php"); ?>
 <h2>Table & Sequence Creation/Deletion</h2><?php load($this, "001_*.php"); ?>
 <h2>Basic Crud Operations</h2><?php load($this, "002_*.php"); ?>
-<h2>CAST test</h2><?php load($this, "003_*.php"); ?>
+<h2>Util test</h2><?php load($this, "003_*.php"); ?>
+<h2>CAST test</h2><?php load($this, "004_*.php"); ?>

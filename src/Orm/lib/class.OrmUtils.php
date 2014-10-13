@@ -47,6 +47,54 @@ class OrmUtils {
 
 		return $puid;
 	}
+
+
+	public static function isAnEmptyField(OrmField $field, $value){
+		if($value === NULL){
+			return true;
+		}
+		if(trim($value) === "") {
+			$type = $field->getType();
+
+			if($type === OrmCAST::$STRING || $type === OrmCAST::$BUFFER) {
+				return false;	
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public static function isAValidFormat(OrmField $field, $value) {
+		$type = $field->getType();
+		
+		if($type === OrmCAST::$INTEGER) {
+
+			//Pattern
+			$pattern = '#^\-?\d+$#';
+			if ( !preg_match($pattern, $value)){
+				return false;
+			}
+
+			//Size min / max
+			if ( $value < -9223372036854775807 ||  $value > 9223372036854775807){
+				return false;
+			}
+		}
+
+		if($type === OrmCAST::$UUID) {
+
+			//Pattern
+			$pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i";
+			if ( !preg_match($pattern, $value)){
+				return false;
+			}
+			
+		}
+
+		return true;
+	}
 }
 
 ?>

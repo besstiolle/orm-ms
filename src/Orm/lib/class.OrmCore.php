@@ -292,9 +292,10 @@ class OrmCore {
 			}
 			
 
+			$isEmpty = OrmUtils::isAnEmptyField($field, $values[$field->getName()]);
 
 			//Empty Field that shouldn't be !
-			if(!$field->isNullable() && !isset($values[$field->getName()])) {
+			if(!$field->isPrimaryKEY() && !$field->isNullable() && $isEmpty) {
 				//Exception : if the field have a default value we set it manually
 				if(!is_null($field->getDefaultValue())){
 					$values[$field->getName()] = $field->getDefaultValue();
@@ -302,13 +303,11 @@ class OrmCore {
 					throw new OrmIllegalArgumentException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' can\'t be null');
 				}
 			}
-			
-			// Control UUID type
-			if($field->getType() == OrmCAST::$UUID && !empty($values[$field->getName()])){
-				$pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i";
-				if(!preg_match($pattern, $values[$field->getName()])){
-					throw new OrmIllegalArgumentException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' doesn\'t match the UUID pattern : '.$pattern);
-				}
+
+
+			// Control the Format if not empty
+			if(!$isEmpty && !OrmUtils::isAValidFormat($field, $values[$field->getName()])){
+				throw new OrmCastFormatException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' doesn\'t respect the format required');
 			}
 			
 			
@@ -444,8 +443,6 @@ class OrmCore {
 			if($field->isPrimaryKEY()) {
 				if(!empty($values[$field->getName()])) {
 					// Normal case in an update mode
-
-
 					$where = ' WHERE '.$field->getName().' = ?';
 					$hasKey = true;
 					$keyValue = $values[$field->getName()];
@@ -464,8 +461,10 @@ class OrmCore {
 				}
 			}
 
+			$isEmpty = OrmUtils::isAnEmptyField($field, $values[$field->getName()]);
+
 			//Empty Field that shouldn't be !
-			if(!$field->isNullable() && !isset($values[$field->getName()])) {
+			if(!$field->isPrimaryKEY() && !$field->isNullable() && $isEmpty) {
 				//Exception : if the field have a default value we set it manually
 				if(!is_null($field->getDefaultValue())){
 					$values[$field->getName()] = $field->getDefaultValue();
@@ -474,66 +473,10 @@ class OrmCore {
 				}
 			}
 
-
-			// Control UUID type
-			if($field->getType() == OrmCAST::$UUID && !empty($values[$field->getName()])){
-				$pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i";
-				if(!preg_match($pattern, $values[$field->getName()])){
-					throw new OrmIllegalArgumentException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' doesn\'t match the UUID pattern : '.$pattern);
-				}
+			// Control the Format if not empty
+			if(!$isEmpty && !OrmUtils::isAValidFormat($field, $values[$field->getName()])){
+				throw new OrmCastFormatException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' doesn\'t respect the format required');
 			}
-
-
-
-
-/*
-			//if the field is empty and we have a default value we set it manually
-			if(empty($values[$field->getName()]) && $field->getDefaultValue() != null){
-				$values[$field->getName()] = $field->getDefaultValue();
-			} 
-		
-			//If it's not set
-			if(is_null(($values[$field->getName()]))) {
-			
-				//If it's a primaryKey we throw a exception
-				if($field->isPrimaryKEY()) {
-					throw new OrmIllegalArgumentException('the primaryKey '.$field->getName().' is missing for the entity : '.$entityParam->getName());
-				}
-				
-				//an empty associative field : no problem, we can pass
-				if($field->isAssociateKEY()) {
-					continue;
-				}
-				
-				//If it's a no nullable field we throw a exception
-				if(!$field->isNullable()) {
-					throw new OrmIllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' can\'t be null');
-				}
-			} else {
-				// Control UUID type
-				if($field->getType() == OrmCAST::$UUID){
-					$pattern = '/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
-					
-					if(!preg_match($pattern, $values[$field->getName()])){
-						throw new OrmIllegalArgumentException('the field '.$field->getName().' of Entity  '.$entityParam->getName().' doesn\'t match the UUID pattern : '.$pattern);
-					}
-				}
-			}
-			
-			
-			
-			//If it's a primaryKey
-			if($field->isPrimaryKEY()) {
-				$where = ' WHERE '.$field->getName().' = ?';
-				$hasKey = true;
-				$keyValue = $values[$field->getName()];
-			}
-			
-
-			if(!empty($str)) {
-			  $str .= ',';
-			}
-			*/
 
 			$str_params1[] = ' '.$field->getName().' = ? ';
 
