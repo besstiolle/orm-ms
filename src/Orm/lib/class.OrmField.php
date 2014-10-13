@@ -94,6 +94,13 @@ class OrmField
 		if(($cast == OrmCAST::$STRING) && empty($size)) {
 			$errors[] = 'The field '.$fieldname.' must have size value because of its own OrmCAST';
 		}
+
+		if(($cast == OrmCAST::$STRING) && $size > 255) {
+			$errors[] = 'The size of field '.$fieldname.' is capped to 255. Please consider using CAST::$BUFFER instead';
+		}
+		if(($cast == OrmCAST::$INTEGER) && $size > 19) {
+			$errors[] = 'The size of field '.$fieldname.' is capped to 19. Please consider using CAST::$STRING or CAST::$BUFFER instead';
+		}
 		
 		if(!empty($errors)){
 			throw new OrmIllegalConfigurationException($errors);

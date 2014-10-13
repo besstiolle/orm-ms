@@ -60,12 +60,24 @@ class OrmCore {
 				$size = (new $entityAssocName())->getFieldByName($fieldAssociateName)->getSize();
 			}*/
 
-			
+			$sizeInteger = !empty($size) ? $size : "";
 			$size = $size != "" ? " (".$size.") " : "";
 			switch($castType) {
 				case OrmCAST::$STRING : $hql .= 'C'.$size; break;
 
-				case OrmCAST::$INTEGER : $hql .= 'I'.$size; break;
+				case OrmCAST::$INTEGER : 
+						if($sizeInteger === '') {
+							$hql .= 'I4'.$size; 						  
+						} else if( $sizeInteger < 3 ){
+							$hql .= 'I1'.$size; 
+						} else if( $sizeInteger < 5 ){
+							$hql .= 'I2'.$size; 
+						} else if( $sizeInteger < 10){
+							$hql .= 'I4'.$size; 
+						} else {
+							$hql .= 'I8'.$size; 
+						}
+						break;
 
 				case OrmCAST::$NUMERIC : $hql .= 'N'.$size; break;
 
@@ -291,8 +303,11 @@ class OrmCore {
 				}
 			}
 			
-
-			$isEmpty = OrmUtils::isAnEmptyField($field, $values[$field->getName()]);
+			$isEmpty = true;
+			if(isset($values[$field->getName()])){
+				$isEmpty = OrmUtils::isAnEmptyField($field, $values[$field->getName()]);
+			}
+			
 
 			//Empty Field that shouldn't be !
 			if(!$field->isPrimaryKEY() && !$field->isNullable() && $isEmpty) {

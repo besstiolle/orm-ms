@@ -42,6 +42,39 @@ class CastOrmUTNumbers extends OrmEntity
 			, TRUE
 		));
 		
+		$this->add(new OrmField('aTinyInteger'		
+			, OrmCAST::$INTEGER
+			, 2
+		));
+		
+		$this->add(new OrmField('aTinyIntegerNull'		
+			, OrmCAST::$INTEGER
+			, 2
+			, TRUE
+		));
+		
+		$this->add(new OrmField('aSmallInteger'		
+			, OrmCAST::$INTEGER
+			, 3
+		));
+		
+		$this->add(new OrmField('aSmallIntegerNull'		
+			, OrmCAST::$INTEGER
+			, 3
+			, TRUE
+		));
+		
+		$this->add(new OrmField('aBigInteger'		
+			, OrmCAST::$INTEGER
+			, 10
+		));
+		
+		$this->add(new OrmField('aBigIntegerNull'		
+			, OrmCAST::$INTEGER
+			, 10
+			, TRUE
+		));
+		
 		$this->garnishAutoincrement();
 		
 	}	

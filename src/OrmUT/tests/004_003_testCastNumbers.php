@@ -7,9 +7,12 @@
 	OrmCore::createTable(new CastOrmUTNumbers());
 	
 	
-	$integer = -2147483647; // MIN/MAX SQL = -2147483647	2147483647
+	$integer = -999999999; // MIN/MAX SQL = -2147483647	2147483647
 	$numeric = "-1225";
 	$double = "-129999.25";
+	$tiny = -99;
+	$small = -9999;
+	$big = -2147483647;
 	
 	//Test insert
 	try{
@@ -20,6 +23,12 @@
 		$cast->set("aNumericNull",null);
 		$cast->set("aDouble",$double);
 		$cast->set("aDoubleNull",null);
+		$cast->set("aTinyInteger",$integer);
+		$cast->set("aTinyIntegerNull",null);
+		$cast->set("aSmallInteger",$integer);
+		$cast->set("aSmallIntegerNull",null);
+		$cast->set("aBigInteger",$integer);
+		$cast->set("aBigIntegerNull",null);
 		$cast->save();
 		echo "<p class='$cssSuccess'>saving entity with success</p>";
 	} catch (Exception $o){
@@ -51,6 +60,9 @@
 		$cast->set("aInteger",null);
 		$cast->set("aNumeric",$numeric);
 		$cast->set("aDouble",$double);
+		$cast->set("aTinyInteger",$integer);
+		$cast->set("aSmallInteger",$integer);
+		$cast->set("aBigInteger",$integer);
 		$cast->save();
 		echo "<p class='$cssError'>we expected OrmIllegalArgumentException, that's not okay</p>";
 	} catch (OrmIllegalArgumentException $o){
@@ -75,6 +87,9 @@
 		$cast->set("aInteger","");
 		$cast->set("aNumeric",$numeric);
 		$cast->set("aDouble",$double);
+		$cast->set("aTinyInteger",$integer);
+		$cast->set("aSmallInteger",$integer);
+		$cast->set("aBigInteger",$integer);
 		$cast->save();
 		echo "<p class='$cssError'>we expected OrmIllegalArgumentException, that's not okay</p>";
 	} catch (OrmIllegalArgumentException $o){
@@ -99,6 +114,9 @@
 		$cast->set("aInteger","  ");
 		$cast->set("aNumeric",$numeric);
 		$cast->set("aDouble",$double);
+		$cast->set("aTinyInteger",$integer);
+		$cast->set("aSmallInteger",$integer);
+		$cast->set("aBigInteger",$integer);
 		$cast->save();
 		echo "<p class='$cssError'>we expected OrmIllegalArgumentException, that's not okay</p>";
 	} catch (OrmIllegalArgumentException $o){
@@ -123,6 +141,9 @@
 		$cast->set("aInteger","z99");
 		$cast->set("aNumeric",$numeric);
 		$cast->set("aDouble",$double);
+		$cast->set("aTinyInteger",$integer);
+		$cast->set("aSmallInteger",$integer);
+		$cast->set("aBigInteger",$integer);
 		$cast->save();
 		echo "<p class='$cssError'>we expected OrmCastFormatException, that's not okay</p>";
 	} catch (OrmCastFormatException $o){
@@ -148,6 +169,9 @@
 		$cast->set("aInteger","-99");
 		$cast->set("aNumeric",$numeric);
 		$cast->set("aDouble",$double);
+		$cast->set("aTinyInteger",$integer);
+		$cast->set("aSmallInteger",$integer);
+		$cast->set("aBigInteger",$integer);
 		$cast->save();
 		echo "<p class='$cssSuccess'>saving entity with success</p>";
 	} catch (OrmIllegalArgumentException $o){
@@ -180,6 +204,9 @@
 		$cast->set("aInteger","99.9");
 		$cast->set("aNumeric",$numeric);
 		$cast->set("aDouble",$double);
+		$cast->set("aTinyInteger",$integer);
+		$cast->set("aSmallInteger",$integer);
+		$cast->set("aBigInteger",$integer);
 		$cast->save();
 		echo "<p class='$cssError'>we expected OrmCastFormatException, that's not okay</p>";
 	} catch (OrmCastFormatException $o){
@@ -204,6 +231,9 @@
 		$cast->set("aInteger","0");
 		$cast->set("aNumeric",$numeric);
 		$cast->set("aDouble",$double);
+		$cast->set("aTinyInteger",$integer);
+		$cast->set("aSmallInteger",$integer);
+		$cast->set("aBigInteger",$integer);
 		$cast->save();
 		echo "<p class='$cssSuccess'>saving entity with success</p>";
 	} catch (Exception $o){
