@@ -33,7 +33,8 @@ foreach ($instanceOrm as $moduleName => $module) {
 
 		$result = OrmDb::execute($findDBQuery, null, $errorMsg = "Find Table Query error");
 		$listEmptyTable[$entite['classname']] = '';
-		if(empty($result->GetArray())){
+		$arrayResult = $result->GetArray();
+		if(empty($arrayResult)){
 			$listEmptyTable[$entite['classname']] = $obj->getDbname();
 			continue;
 		} 
