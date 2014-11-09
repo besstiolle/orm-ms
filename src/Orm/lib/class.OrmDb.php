@@ -36,6 +36,16 @@ class OrmDb {
 	 */
 	private static $idxoptarrayUnique = array('UNIQUE');
 
+	/**
+	 * Contains the last SQL queries
+	 **/
+	private static $bufferQueries = array();
+
+	/**
+	 * The size of the buffer.
+	 **/
+	private static $bufferLength = 5;
+
     /**
     * Protected constructor    
     */
@@ -70,6 +80,9 @@ class OrmDb {
 			OrmTrace::sql(" > Parameters : ".print_r($parameters, true));
 		}
 		$result = OrmDb::$db->Execute($query, $parameters);
+		//Push Query in buffer
+		OrmDb::pushQueries();
+
 		if ($result === false){
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
@@ -101,6 +114,9 @@ class OrmDb {
 			OrmTrace::sql(" > Parameters : ".print_r($parameters, true));
 		}
 		$result = OrmDb::$db->GetOne($query, $parameters);
+		//Push Query in buffer
+		OrmDb::pushQueries();
+
 		if ($result === false){
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
@@ -130,6 +146,9 @@ class OrmDb {
 		
 		OrmTrace::sql("gen Id({$seqname})");
 		$result = OrmDb::$db->GenID($seqname);
+		//Push Query in buffer
+		OrmDb::pushQueries();
+
 		if ($result === false){
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
@@ -157,11 +176,16 @@ class OrmDb {
 		
 		OrmTrace::sql("createTable({$tableName}, {$hql})");
 		
+		//Push Query in buffer
+		OrmDb::pushQueries();
 		$sqlarray = OrmDb::$dict->CreateTableSQL($tableName, 
 												$hql,
 												OrmDb::$taboptarray);
 												
 		$result = OrmDb::$dict->ExecuteSQLArray($sqlarray);
+		//Push Query in buffer
+		OrmDb::pushQueries();
+
 		if ($result === false){
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
@@ -189,7 +213,12 @@ class OrmDb {
 		OrmTrace::sql("dropTable({$tableName})");
 		
 		$sqlarray = OrmDb::$dict->DropTableSQL($tableName);
+		//Push Query in buffer
+		OrmDb::pushQueries();
+
 		$result = OrmDb::$dict->executeSQLArray($sqlarray);
+		//Push Query in buffer
+		OrmDb::pushQueries();
 		
 		if ($result === false){
 			OrmTrace::error($errorMsg);
@@ -214,6 +243,8 @@ class OrmDb {
 		OrmTrace::sql("createSequence({$seqName})");
 		
 		OrmDb::$db->CreateSequence($seqName);
+		//Push Query in buffer
+		OrmDb::pushQueries();
 	}
 	
 	/**
@@ -228,6 +259,8 @@ class OrmDb {
 		OrmTrace::sql("dropSequence({$seqName})");
 		
 		OrmDb::$db->DropSequence($seqName);
+		//Push Query in buffer
+		OrmDb::pushQueries();
 		
 	}
 	
@@ -258,11 +291,17 @@ class OrmDb {
 		}
 		if($isUnique){
 			$sqlarray = OrmDb::$dict->CreateIndexSQL($md5, $tableName, $idxflds, OrmDb::$idxoptarrayUnique);
+			//Push Query in buffer
+			OrmDb::pushQueries();
 		} else {
+			//Push Query in buffer
+			OrmDb::pushQueries();
 			$sqlarray = OrmDb::$dict->CreateIndexSQL($md5, $tableName, $idxflds);
 		}
 		
 		$result = OrmDb::$dict->executeSQLArray($sqlarray);
+		//Push Query in buffer
+		OrmDb::pushQueries();
 		
 		if ($result === false){
 			OrmTrace::error($errorMsg);
@@ -274,10 +313,49 @@ class OrmDb {
 		
 		return $result;
 	}
-	
-	
-	
-	
+
+	/**
+    * Will return the last SQL Queries executed
+    *
+    * @return string[] the last SQL Queries executed
+    */
+	public static final function getBufferQueries(){
+		return OrmDb::$bufferQueries;
+	}
+
+	/**
+    * will resize the buffer for the SQL Queries
+    *         
+    * @param int $newLength the new size
+    */
+	public static final function setBufferLength($newLength){
+		OrmDb::$bufferLength = $newLength;
+		OrmDb::resizeBuffer();
+	}
+
+	/**
+    * will push the last query in the buffer
+    */	
+	private static final function pushQueries(){
+		if(OrmDb::$bufferLength == 0){
+			return;
+		}
+		OrmDb::$bufferQueries[] = OrmDb::$db->sql;
+		OrmDb::resizeBuffer();
+	}
+
+	/**
+    * inner function to resize the buffer
+    */	
+	private static final function resizeBuffer(){
+		if(OrmDb::$bufferLength == 0){
+			OrmDb::$bufferQueries = array();
+		}
+		$currentCount = count(OrmDb::$bufferQueries);
+		if($currentCount > OrmDb::$bufferLength) {
+			OrmDb::$bufferQueries = array_slice (OrmDb::$bufferQueries, - OrmDb::$bufferLength);
+		}
+	}
 }
 
 ?>
