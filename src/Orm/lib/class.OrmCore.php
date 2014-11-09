@@ -1126,7 +1126,7 @@ class OrmCore {
 		$select = "SELECT * FROM ".$entityParam->getDbname().' WHERE ';
 						
 		list($hql, $params) = OrmCore::_getHqlExample($listeField, $criterias, $condition);
-				
+
 		// Order By
 		if($orderBy != null) {
 				$hql .= $orderBy->getOrderBy();
@@ -1278,13 +1278,18 @@ class OrmCore {
 			// N parameters
 			if($criteria->typeCriteria == OrmTypeCriteria::$IN || $criteria->typeCriteria == OrmTypeCriteria::$NIN) {
 				if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) > 0) {
+
 						$hql .= " {$condition} ";
 						$hql .= $criteria->fieldname.' '.sprintf($criteria->typeCriteria, implode(',', array_fill(0, count($criteria->paramsCriteria), '?'))).' ';
 						foreach($criteria->paramsCriteria as $param) {
-						$params[] = OrmCore::_fieldToDBValue($param, $filterType); 
+							$params[] = OrmCore::_fieldToDBValue($param, $filterType); 
 						}
 				} else if(is_array($criteria->paramsCriteria) && count($criteria->paramsCriteria) == 0) {
-					$hql .= 'AND false '; // no value passed, so no result to be returned
+					if($criteria->typeCriteria == OrmTypeCriteria::$IN){
+						$hql .= "{$condition} false "; // no value passed, so no result to be returned
+					} else if($criteria->typeCriteria == OrmTypeCriteria::$NIN){
+						$hql .= "{$condition} true "; // no value passed, so no result to be returned
+					}
 				}
 				continue;
 			}

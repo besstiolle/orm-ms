@@ -114,7 +114,7 @@ class OrmTypeCriteria {
     * 
     * @var string
     */
-	public static $IN = 'in (%a)';
+	public static $IN = 'in (%s)';
     
     /**
     * is not contained into the array
@@ -123,7 +123,7 @@ class OrmTypeCriteria {
     * 
     * @var string
     */
-	public static $NIN = 'not in (%a)';
+	public static $NIN = 'not in (%s)';
     
     /**
     * contains the string
