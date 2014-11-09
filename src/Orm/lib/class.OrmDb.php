@@ -65,9 +65,9 @@ class OrmDb {
 	public static final function execute($query, $parameters = null, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
-		OrmTrace::debug($query);
+		OrmTrace::sql($query);
 		if($parameters != null){
-			OrmTrace::debug(" > Parameters : ".print_r($parameters, true));
+			OrmTrace::sql(" > Parameters : ".print_r($parameters, true));
 		}
 		$result = OrmDb::$db->Execute($query, $parameters);
 		if ($result === false){
@@ -96,9 +96,9 @@ class OrmDb {
 	public static final function getOne($query, $parameters = null, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
-		OrmTrace::debug($query);
+		OrmTrace::sql($query);
 		if($parameters != null){
-			OrmTrace::debug(" > Parameters : ".print_r($parameters, true));
+			OrmTrace::sql(" > Parameters : ".print_r($parameters, true));
 		}
 		$result = OrmDb::$db->GetOne($query, $parameters);
 		if ($result === false){
@@ -128,7 +128,7 @@ class OrmDb {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
 		
-		OrmTrace::debug("gen Id({$seqname})");
+		OrmTrace::sql("gen Id({$seqname})");
 		$result = OrmDb::$db->GenID($seqname);
 		if ($result === false){
 			OrmTrace::error($errorMsg);
@@ -155,7 +155,7 @@ class OrmDb {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
 		
-		OrmTrace::debug("createTable({$tableName}, {$hql})");
+		OrmTrace::sql("createTable({$tableName}, {$hql})");
 		
 		$sqlarray = OrmDb::$dict->CreateTableSQL($tableName, 
 												$hql,
@@ -186,7 +186,7 @@ class OrmDb {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
 		
-		OrmTrace::debug("dropTable({$tableName})");
+		OrmTrace::sql("dropTable({$tableName})");
 		
 		$sqlarray = OrmDb::$dict->DropTableSQL($tableName);
 		$result = OrmDb::$dict->executeSQLArray($sqlarray);
@@ -211,7 +211,7 @@ class OrmDb {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
 		
-		OrmTrace::debug("createSequence({$seqName})");
+		OrmTrace::sql("createSequence({$seqName})");
 		
 		OrmDb::$db->CreateSequence($seqName);
 	}
@@ -225,7 +225,7 @@ class OrmDb {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
 		
-		OrmTrace::debug("dropSequence({$seqName})");
+		OrmTrace::sql("dropSequence({$seqName})");
 		
 		OrmDb::$db->DropSequence($seqName);
 		
@@ -246,7 +246,7 @@ class OrmDb {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
 		
-		OrmTrace::debug("createIndex({$tableName}, {".implode(',',$listFields)."}, {$isUnique})");
+		OrmTrace::sql("createIndex({$tableName}, {".implode(',',$listFields)."}, {$isUnique})");
 				
 		//Case : unique index on many fields
 		if(is_array($listFields)) {

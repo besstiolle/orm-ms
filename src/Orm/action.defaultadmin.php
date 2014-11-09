@@ -3,7 +3,7 @@
 if (!function_exists("cmsms")) exit;
 
 //CONSTANTES
-$itemsLog = array("DEBUG"=>OrmTrace::$DEBUG, "INFO"=>OrmTrace::$INFO,"WARN"=>OrmTrace::$WARN,"ERROR"=>OrmTrace::$ERROR);
+$itemsLog = array("DEBUG"=>OrmTrace::$DEBUG, "INFO & SQL"=>OrmTrace::$SQL, "INFO"=>OrmTrace::$INFO,"WARN"=>OrmTrace::$WARN,"ERROR"=>OrmTrace::$ERROR);
 $itemsCache = array("NONE"=>OrmCache::$NONE, "SCRIPT"=>OrmCache::$SCRIPT);
 
 $currentLevelLog = $this->GetPreference('loglevel', OrmTrace::$INFO);

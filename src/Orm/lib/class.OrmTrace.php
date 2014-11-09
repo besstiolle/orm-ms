@@ -29,24 +29,29 @@
 final class OrmTrace {
 
 	/**
-	* DEBUG & INFO & WARN & ERROR level
+	* DEBUG & SQL & INFO & WARN & ERROR level
 	**/
 	public static $DEBUG = 0;
 
 	/**
+	* SQL & INFO & WARN & ERROR level
+	**/
+	public static $SQL = 1;
+
+	/**
 	* INFO & WARN & ERROR level
 	**/
-	public static $INFO = 1;
+	public static $INFO = 2;
 
 	/**
 	* WARN & ERROR level
 	**/
-	public static $WARN = 2;
+	public static $WARN = 3;
 
 	/**
 	* ERROR level
 	**/
-	public static $ERROR = 3;
+	public static $ERROR = 4;
 
 	/**
 	* inner path to the log file
@@ -71,6 +76,15 @@ final class OrmTrace {
     */
 	public static final	function debug($msg) {	
 		self::innerWriter(OrmTrace::$DEBUG, 'debug', $msg);
+	}
+
+	/**
+    * Display a message with SQL level
+    * 
+    * @param string $msg the message to display
+    */
+	public static final	function sql($msg) {	
+		self::innerWriter(OrmTrace::$SQL, 'sql', $msg);
 	}
 
     /**
