@@ -984,18 +984,21 @@ class OrmCore {
 		// ( field1 = ? and field2 = ? ) 
 		$sqlfieldsname = ' ( ' . implode(" AND ", $sqlfieldname) . ' ) ' ;
 		$sqlfieldsnameOR = ' OR ' . $sqlfieldsname;
+		
+		$queryParams = array();
+		foreach($entitys as $entity){
+				//We evict same values to avoid bug #88
+				$queryParams[$entity->get($field->getName())] = $entity->get($field->getName());
+			
+		}
 
+		//We repeat SQL for each DIFFERENT value for the FK to avoid bug #88
 		$sqlfields = " 1 ";
 		if(!empty($entitys)){
-			$sqlfields = $sqlfieldsname . str_repeat($sqlfieldsnameOR, count($entitys)-1);	
+			$sqlfields = $sqlfieldsname . str_repeat($sqlfieldsnameOR, count($queryParams)-1);	
 		} 
 
 		$queryAdd = 'SELECT * FROM ' . $entityAssoc->getDbname() . ' WHERE ' . $sqlfields;
-		$queryParams = array();
-		foreach($entitys as $entity){
-				$queryParams[] = $entity->get($field->getName());
-			
-		}
 					
 		// Order By 
 		if($entityAssoc->getDefaultOrderBy() != null) {
@@ -1005,7 +1008,7 @@ class OrmCore {
 
 		//Execution
 		$result = OrmDb::execute($queryAdd,
-								$queryParams,
+								array_keys($queryParams),
 								"Database error during request to get associative entity $entityAssocName");
 		
 		$countFields = count($sqlfieldvalue);
@@ -1124,7 +1127,7 @@ class OrmCore {
 
 		$criterias = $example->getCriterias();
 		$select = "SELECT * FROM ".$entityParam->getDbname().' WHERE ';
-						
+		
 		list($hql, $params) = OrmCore::_getHqlExample($listeField, $criterias, $condition);
 
 		// Order By
@@ -1166,7 +1169,6 @@ class OrmCore {
 				//We push the result into the cache before return it
 				OrmCache::getInstance()->setCache($queryExample, null, $entities);
 		}
-
 		return array_values($entities);
 
 	}
