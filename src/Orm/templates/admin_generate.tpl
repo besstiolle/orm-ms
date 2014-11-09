@@ -24,7 +24,9 @@
 
 {$formStart}
 	{$dropdown}
-	<input type='submit' value='Generate PHP code' />
+	<input type='text' name='{$actionid}entityName' value='{$entityName}' placeholder='Name your entity [alpha only] (Optional)' size='40' />
+	<input type='text' name='{$actionid}moduleName' value='{$moduleName}' placeholder='Name your module [alpha only] (Optional)' size='40'  />
+	<input type='submit' name='generate' value='Generate PHP code' />
 	<a class='ormbutton ui-state-default ui-corner-all' href='{$cancel}'>
 		<span class="ui-icon  ui-icon-arrowreturnthick-1-w"></span>
 		Back
@@ -32,30 +34,25 @@
 
 	{if isset($output)}<br/>
 		<textarea>
-<?php
-	/**
-	 * Here you will provide some informations about this new Entity
-	 *
-	 * Don't forget to find a good name for this new Entity !
-	 **/ 
-	class RenameThisEntity extends OrmEntity {
-		public function __construct() {
-			parent::__construct('yourmodulename','renamethisentity');
-
-{foreach $output as $key => $values}
-			$this->add(new OrmField('{$key}'	
-				, OrmCAST::$INTEGER 
-				, null	
-				, null 		
-				, OrmKEY::$PK	
-			));
-
-{/foreach}
-
-		}	
-	}
-?>
-
+{$output}
 		</textarea>
 	{/if}
+
+{if $moduleName !== '' && $entityName !== ''}
+	<hr/>
+	Would you like to save the file into ./modules/{$moduleName}/lib/class.{$entityName}.php
+	<input type='submit' name='{$actionid}persist' value='Save the result' />
+{/if}
+
+{if persist != null}
+	<p>
+	{if persist}
+		File saved with success !
+	{else}
+		Oops, we didn't succeed to save the file... :(;
+	{/if}
+	</p>
+{/if}
+
 </form>
+
