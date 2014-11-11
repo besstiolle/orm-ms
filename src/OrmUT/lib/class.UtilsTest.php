@@ -49,7 +49,7 @@ class UtilsTest{
 		}
 		echo "<p class='$class'>we expected value being FALSE</p>";
 	}
-	
+
 
 }
 
