@@ -19,10 +19,10 @@
 	UtilsTest::assertIsEquals($rennes->get('city_id'),1);
 	UtilsTest::assertIsNull($rennes->get('zipcodes'));
 
-	$assoc = new CityZipCodeOrmUT();
-	$assoc->set('city_id', 1);
-	$assoc->set('zipcode_id', 1);
-	$assoc = $assoc->save();
+//	$assoc = new CityZipCodeOrmUT();
+//	$assoc->set('city_id', 1);
+//	$assoc->set('zipcode_id', 1);
+//	$assoc = $assoc->save();
 
 /*
 	//Test bug 86 with insert
