@@ -50,6 +50,17 @@ class UtilsTest{
 		echo "<p class='$class'>we expected value being FALSE</p>";
 	}
 
+	public static function fail($message){
+		$class = UtilsTest::$cssError; 
+		if( $message == ''){
+			echo "<p class='$class'>the test failed without given reason</p>";	
+		} else {
+			echo "<p class='$class'>the test failed. Reason : $message</p>";
+		}
+
+		
+	}
+
 
 }
 

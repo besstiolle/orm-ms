@@ -14,13 +14,32 @@ pre{
 p.title{
     font-size: 1.2em;
     font-weight: bold;
+	cursor: pointer;
+}
+p.title:before{
+	content: "[+]";
+	position: relative;
+	display: inline-block;
+	margin: 0 5px;
+}
+p.title.less:before{
+	content: "[-]";
 }
 div.test{
-    background-color: #D9E6C3;
-    border-left: 1px solid #77AB13;
+	display: none;
     border-radius: 5px;
     margin: 5px;
     padding: 5px;
+}
+div.testsucced{
+	display: block;
+    background-color: #D9E6C3;
+    border-left: 1px solid #77AB13;
+}
+div.testfailed{
+	display: block;
+    background-color: #F2D4CE;
+    border-left: 1px solid #AE432E;
 }
 
 </style>
@@ -31,7 +50,19 @@ $(document).ready(function(){
 	$( "label.labelExample" ).click(function() {
 			$( this ).next().toggle();
 	});
-	$( "p.nok" ).parent().css( "background-color", "#F2D4CE" ).css( "border-color" , "#AE432E");
+
+	$( "p.ok" ).parent().addClass("testsucced");
+	$( "p.nok" ).parent().removeClass("testsucced");
+	$( "p.nok" ).parent().addClass("testfailed");
+	$( "p.nok" ).parent().children('.title').addClass("less");
+
+	$( "div.testsucced p.ok" ).toggle();
+	$( "div.testsucced br" ).toggle();
+
+	$( "p.title" ).click(function() {
+		$( this ).nextUntil('label').toggle();
+		$( this ).toggleClass('less');
+	});
 });
 
 // ]]>
@@ -44,6 +75,8 @@ $(document).ready(function(){
 <?php
 
 if (!function_exists("cmsms")) exit;
+
+$config = cmsms()->GetConfig();
 
 function load(&$mod, $pattern){
 	
@@ -68,6 +101,10 @@ function reinitAllTables($mod){
 		OrmCore::createTable($anEntity);
 	}
 }
+//$link = $this->CreateLink($id, 'defaultadmin', '', '', array('section' => '%s'), '', true);
+
+//echo "<img src='".$config['root_url']."/modules/OrmUT/img/processing.png' alt='executing the tests'";
+
 
 echo "<h2>Loading the classes</h2>";
 load($this, "000_*.php");
