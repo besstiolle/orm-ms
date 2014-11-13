@@ -36,14 +36,12 @@ if(!empty($params['error'])) {
 	$error = "<h2 style='color:#FF0000;'>".$params['error']."</h2>";
 }
 
-?>
-<h2><?php echo $action; ?> of a UrlSkeleton</h2>
+$smarty->assign('formStart',$formStart);
+$smarty->assign('action',$action);
+$smarty->assign('submit',$submit);
+$smarty->assign('return',$return);
+$smarty->assign('error',$error);
+$smarty->assign('url',$url);
+$smarty->assign('tool',new SmartyTool());
 
-<?php echo $error ?>
-<?php echo $formStart; ?>
-	<label for='title'>Url : </label><input type='text' name='<?php echo $id; ?>url' value='<?php echo $this->securize($url->get('url')); ?>' /><br/>
-	<label for='title'>Lang_iso : </label><input type='text' name='<?php echo $id; ?>lang_iso' value='<?php echo $this->securize($url->get('lang_iso')); ?>' /><br/>
-	<label for='title'>Title : </label><input type='text' name='<?php echo $id; ?>title' value='<?php echo $this->securize($url->get('title')); ?>' /><br/>
-	<label for='description'>Description : </label><textarea name='<?php echo $id; ?>description' ><?php echo $this->securize($url->get('description')); ?></textarea><br/>
-	<?php echo $submit; echo $return; ?>
-</form>
+echo $this->ProcessTemplate('url_edit.tpl');

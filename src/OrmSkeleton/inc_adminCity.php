@@ -8,40 +8,31 @@ $city = new CitySkeleton();
 // In the same way i can interrogate the table of CitySkeleton : 
 $count = OrmCore::countAll(new CitySkeleton());
 
-$link = $this->CreateLink($id, 'editCity', $returnid, 'add');
+$add = $this->CreateLink($id, 'editCity', $returnid, 'add');
 
-echo "<table class='pagetable' cellspacing='0'><tr>
-		<th>&nbsp;</th>
-		<th>label</th>
-		<th>country</th>
-		<th>&nbsp;</th>
-	   </tr>";
-if($count == 0){
-	echo "<tr><td colspan='4'><center>no record in database</center></td></tr>";
-} else {
+$all = array();
+$edit = array();
+$delete = array();
+
+if($count !== 0){
+
 	//I can also retrieve all the CitySkeleton
 	$all = OrmCore::findAll(new CitySkeleton());
 	
 	//And iterate over each one
 	foreach($all as $city){
-	
-		//We'll only have the id of the country, so we need to retrieve the Entity Country selected
-		//$country = $city->get('country');
-		//$country = OrmCore::findById(new CountrySkeleton(), $country_id);
-		
-		// We can easily get all the values with the $object->get('fieldname') syntax
-		echo "<tr>
-				<td>".$this->securize($city->get('city_id'))."</td>
-				<td>".$this->securize($city->get('labelCity'))."</td>
-				<td>".$this->securize($city->get('country')->get('labelCountry'))."</td>
-				<td>".$this->CreateLink($id, 'editCityDelete', $returnid, $img_delete,array('city_id'=>$city->get('city_id'))).
-					"&nbsp;-&nbsp;".
-					$this->CreateLink($id, 'editCity', $returnid, $img_edit,array('city_id'=>$city->get('city_id'))).
-				"</td>
-			</tr>";
+		$delete[$city->get('city_id')] = $this->CreateLink($id, 'editCityDelete', $returnid, $img_delete,array('city_id'=>$city->get('city_id')));
+		$edit[$city->get('city_id')] = $this->CreateLink($id, 'editCity', $returnid, $img_edit,array('city_id'=>$city->get('city_id')));
 	}
 }
-echo "</table>";
-echo "<p>There are " . $count . " CitySkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
+
+$smarty->assign('all',$all);
+$smarty->assign('count',$count);
+$smarty->assign('edit',$edit);
+$smarty->assign('delete',$delete);
+$smarty->assign('add',$add);
+$smarty->assign('tool',new SmartyTool());
+
+echo $this->ProcessTemplate('city_view.tpl');
 
 ?>

@@ -288,6 +288,15 @@ class OrmCore {
 
 			$fieldname = $field->getName();
 
+			//Fix bug 86 PHP Catchable fatal error: Object of class converted to string - foreign key assigned object on update
+			if(isset($values[$field->getName()])  && 
+				is_object($values[$field->getName()])){
+				$fobject = $values[$field->getName()];
+				list($fentityname, $ffieldname) = explode('.', $field->getKeyName());
+				if($fobject instanceOf $fentityname) {
+					$values[$field->getName()] = $fobject->get($ffieldname);
+				}
+			}
 			
 			$str_params1[] = ' '.$fieldname.' ';
 			$str_params2[] = '?';
@@ -462,6 +471,15 @@ class OrmCore {
 
 			$fieldname = $field->getName();
 
+			//Fix bug 86 PHP Catchable fatal error: Object of class converted to string - foreign key assigned object on update
+			if(isset($values[$field->getName()])  && 
+				is_object($values[$field->getName()])){
+				$fobject = $values[$field->getName()];
+				list($fentityname, $ffieldname) = explode('.', $field->getKeyName());
+				if($fobject instanceOf $fentityname) {
+					$values[$field->getName()] = $fobject->get($ffieldname);
+				}
+			}
 			if($field->isPrimaryKEY()) {
 				if(!empty($values[$fieldname])) {
 					// Normal case in an update mode

@@ -25,13 +25,13 @@ $error = '';
 if(!empty($params['error'])) {
 	$error = "<h2 style='color:#FF0000;'>".$params['error']."</h2>";
 }
+$smarty->assign('formStart',$formStart);
+$smarty->assign('action',$action);
+$smarty->assign('submit',$submit);
+$smarty->assign('return',$return);
+$smarty->assign('error',$error);
+$smarty->assign('country',$country);
+$smarty->assign('tool',new SmartyTool());
 
+echo $this->ProcessTemplate('country_edit.tpl');
 ?>
-<h2><?php echo $action; ?> of a CountrySkeleton</h2>
-
-<?php echo $error ?>
-<?php echo $formStart; ?>
-	<input type='hidden' name='<?php echo $id; ?>country_id' value='<?php echo $this->securize($country->get('country_id')); ?>' />
-	<label for='labelCountry'>Label of the Country : </label><input type='text' name='<?php echo $id; ?>labelCountry' value='<?php echo $this->securize($country->get('labelCountry')); ?>' /><br/>
-	<?php echo $submit; echo $return; ?>
-</form>

@@ -8,38 +8,32 @@ $country = new CountrySkeleton();
 // In the same way i can interrogate the table of CountrySkeleton : 
 $count = OrmCore::countAll(new CountrySkeleton());
 
-$link = $this->CreateLink($id, 'editCountry', $returnid, 'add');
+$add = $this->CreateLink($id, 'editCountry', $returnid, 'add');
 
-echo "<table class='pagetable' cellspacing='0'><tr>
-		<th>&nbsp;</th>
-		<th>label</th>
-		<th>cities</th>
-		<th>&nbsp;</th>
-	   </tr>";
-if($count == 0){
-	echo "<tr><td colspan='4'><center>no record in database</center></td></tr>";
-} else {
+
+$all = array();
+$edit = array();
+$delete = array();
+$citiesLabel = array();
+
+if($count !== 0){
 	//I can also retrieve all the CountrySkeleton
 	$all = OrmCore::findAll(new CountrySkeleton());
-	
+
 	//And iterate over each one
 	foreach($all as $country){
 	
 		//We'll automatticly get the cities linked to our Country in an Array form
 		$cities = $country->get('cities');
 		
-		if(count($cities) == 0){
-			$citiesLabel = "= No city =";
-		} else {
-			$citiesLabel = "";
+		$citiesLabel[$country->get('country_id')] = "= No city =";
+		if(count($cities) > 0){
+			$citiesLabelArray = array();
 			foreach($cities as $city) {
-				if($citiesLabel != ""){
-					$citiesLabel.= " , ";
-				}
-
-				$citiesLabel.= $city->get('labelCity');
+				$citiesLabelArray[] = $city->get('labelCity');
 			}
-		}
+			$citiesLabel[$country->get('country_id')] = implode(',', $citiesLabelArray);
+		}		
 		
 		if(OrmCore::verifIntegrity($country, $country->get('country_id')) == ""){
 			$linkDelete = $this->CreateLink($id, 'editCountryDelete', $returnid, $img_delete,array('country_id'=>$country->get('country_id')));
@@ -47,20 +41,18 @@ if($count == 0){
 			$linkDelete = '<span style="color:#CCC">still used</span>';
 		}
 		
-	
-		// We can easily get all the values with the $object->get('fieldname') syntax
-		echo "<tr>
-				<td>".$this->securize($country->get('country_id'))."</td>
-				<td>".$this->securize($country->get('labelCountry'))."</td>
-				<td>".$this->securize($citiesLabel)."</td>
-				<td>".$linkDelete.
-					"&nbsp;-&nbsp;".
-					$this->CreateLink($id, 'editCountry', $returnid, $img_edit,array('country_id'=>$country->get('country_id'))).
-				"</td>
-			</tr>";
+		$edit[$country->get('country_id')] = $this->CreateLink($id, 'editCountry', $returnid, $img_edit,array('country_id'=>$country->get('country_id')));
+		$delete[$country->get('country_id')] = $linkDelete;
 	}
 }
-echo "</table>";
-echo "<p>There are " . $count . " CountrySkeleton(s) into the database. Would you like to <b>$link</b> another one ?</p>";
 
+$smarty->assign('all',$all);
+$smarty->assign('count',$count);
+$smarty->assign('edit',$edit);
+$smarty->assign('delete',$delete);
+$smarty->assign('add',$add);
+$smarty->assign('citiesLabel',$citiesLabel);
+$smarty->assign('tool',new SmartyTool());
+
+echo $this->ProcessTemplate('country_view.tpl');
 ?>

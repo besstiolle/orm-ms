@@ -26,14 +26,15 @@ if(!empty($params['error'])) {
 	$error = "<h2 style='color:#FF0000;'>".$params['error']."</h2>";
 }
 
-?>
-<h2><?php echo $action; ?> of a BookSkeleton</h2>
+$smarty->assign('formStart',$formStart);
+$smarty->assign('action',$action);
+$smarty->assign('submit',$submit);
+$smarty->assign('return',$return);
+$smarty->assign('error',$error);
+$smarty->assign('uuid',OrmCore::generateUUID());
+$smarty->assign('book',$book);
+$smarty->assign('tool',new SmartyTool());
 
-<?php echo $error ?>
-<?php echo $formStart; ?>
-	<input type='hidden' name='<?php echo $id; ?>book_id' value='<?php echo $this->securize($book->get('book_id')); ?>' />
-	<label for='title'>Title : </label><input type='text' name='<?php echo $id; ?>title' value='<?php echo $this->securize($book->get('title')); ?>' /><br/>
-	<label for='description'>Description : </label><textarea name='<?php echo $id; ?>description' ><?php echo $this->securize($book->get('description')); ?></textarea><br/>
-	<label for='uuid'>UUID : </label><input type='text' name='<?php echo $id; ?>uuid' value='<?php echo $this->securize($book->get('uuid')); ?>' /> example : <?php echo OrmCore::generateUUID(); ?><br/>
-	<?php echo $submit; echo $return; ?>
-</form>
+echo $this->ProcessTemplate('book_edit.tpl');
+
+?>

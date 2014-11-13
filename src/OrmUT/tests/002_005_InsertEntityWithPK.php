@@ -39,5 +39,6 @@
 	}
 	$result = OrmCore::findById(new CountryOrmUT(),4);
 	UtilsTest::assertIsNotNull($result);
+	
 
 ?>

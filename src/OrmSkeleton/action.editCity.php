@@ -39,14 +39,13 @@ if($city->get('country') != '') {
 }
 $selectCountries = $this->CreateInputDropdown($id, 'country', $items, -1, $selectedvalue); 
 
-?>
-<h2><?php echo $action; ?> of a CitySkeleton</h2>
+$smarty->assign('formStart',$formStart);
+$smarty->assign('action',$action);
+$smarty->assign('submit',$submit);
+$smarty->assign('return',$return);
+$smarty->assign('error',$error);
+$smarty->assign('city',$city);
+$smarty->assign('selectCountries',$selectCountries);
+$smarty->assign('tool',new SmartyTool());
 
-<?php echo $error ?>
-<?php echo $formStart; ?>
-	<input type='hidden' name='<?php echo $id; ?>city_id' value='<?php echo $this->securize($city->get('city_id')); ?>' />
-
-	<label for='labelCity'>label of the city : </label><input type='text' name='<?php echo $id; ?>labelCity' value='<?php echo $this->securize($city->get('labelCity')); ?>' /><br/>
-	<label for='country'>country : </label><?php echo $selectCountries; ?><br/>
-	<?php echo $submit; echo $return; ?>
-</form>
+echo $this->ProcessTemplate('city_edit.tpl');

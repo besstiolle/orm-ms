@@ -8,7 +8,7 @@
         throw new Exception("Database error durant la requête!".$db->ErrorMsg());
     }
 	
-	$expected = 11; // don't forget the Sequence
+	$expected = 13; // don't forget the Sequence
 	$result = $result->RecordCount();
 	$class = '';
 	if($result == $expected){
