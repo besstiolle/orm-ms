@@ -265,6 +265,7 @@ class OrmCore {
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
 		$indexes = $entityParam->getIndexes();
+		$entityname = $entityParam->getName();
 
 		$queryInsert = 'INSERT INTO '.$entityParam->getDbname().' (%s) values (%s)';
 
@@ -284,28 +285,31 @@ class OrmCore {
 			if($field->getType() == OrmCAST::$NONE) {
 				continue;
 			}
+
+			$fieldname = $field->getName();
+
 			
-			$str_params1[] = ' '.$field->getName().' ';
+			$str_params1[] = ' '.$fieldname.' ';
 			$str_params2[] = '?';
 			
 			if($field->isPrimaryKEY()) {
-				if(!empty($values[$field->getName()])) {
+				if(!empty($values[$fieldname])) {
 					if($entityParam->isAutoincrement()){
-						throw new OrmIllegalArgumentException('Primary Key '.$field->getName().' can\'t be setted during insert operation for OrmEntity'.$entityParam->getName());
+						throw new OrmIllegalArgumentException('Primary Key '.$fieldname.' can\'t be setted during insert operation for OrmEntity'.$entityname);
 					}
 				} else if(!$entityParam->isAutoincrement()){
 					$newId = OrmDb::genID($entityParam->getSeqname());
-					$values[$field->getName()] = $newId;
-					$entityParam->set($field->getName(), $newId);
+					$values[$fieldname] = $newId;
+					$entityParam->set($fieldname, $newId);
 				} else{
-					$values[$field->getName()] = 0;
-					$entityParam->set($field->getName(), 0);
+					$values[$fieldname] = 0;
+					$entityParam->set($fieldname, 0);
 				}
 			}
 			
 			$isEmpty = true;
-			if(isset($values[$field->getName()])){
-				$isEmpty = OrmUtils::isAnEmptyField($field, $values[$field->getName()]);
+			if(isset($values[$fieldname])){
+				$isEmpty = OrmUtils::isAnEmptyField($field, $values[$fieldname]);
 			}
 			
 
@@ -313,23 +317,23 @@ class OrmCore {
 			if(!$field->isPrimaryKEY() && !$field->isNullable() && $isEmpty) {
 				//Exception : if the field have a default value we set it manually
 				if(!is_null($field->getDefaultValue())){
-					$values[$field->getName()] = $field->getDefaultValue();
+					$values[$fieldname] = $field->getDefaultValue();
 				} else {
-					throw new OrmIllegalArgumentException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' can\'t be null');
+					throw new OrmIllegalArgumentException('the field '.$fieldname.' of OrmEntity  '.$entityname.' can\'t be null');
 				}
 			}
 
 
 			// Control the Format if not empty
-			if(!$isEmpty && !OrmUtils::isAValidFormat($field, $values[$field->getName()])){
-				throw new OrmCastFormatException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' doesn\'t respect the format required');
+			if(!$isEmpty && !OrmUtils::isAValidFormat($field, $values[$fieldname])){
+				throw new OrmCastFormatException('the field '.$fieldname.' of OrmEntity  '.$entityname.' doesn\'t respect the format required');
 			}
 			
 			
 			$val = null;
-			if(isset($values[$field->getName()]))
+			if(isset($values[$fieldname]))
 			{
-				$params[] = OrmCore::_fieldToDBValue($values[$field->getName()], $field->getType());
+				$params[] = OrmCore::_fieldToDBValue($values[$fieldname], $field->getType());
 			} else {
 				$params[] = null;
 			}
@@ -366,17 +370,17 @@ class OrmCore {
 			//Execution
 			$result = OrmDb::getOne($query,
 									$arrayFind,
-									"Database error during unicity control in OrmCore::insertEntity(OrmEntity &{$entityParam->getName()})");
+									"Database error during unicity control in OrmCore::insertEntity(OrmEntity &{$entityname})");
 		
 			if($result != 0){
-				throw new OrmIllegalArgumentException("an Entity {$entityParam->getName()} with the same fields ({$msgError}) already exists in database");
+				throw new OrmIllegalArgumentException("an Entity {$entityname} with the same fields ({$msgError}) already exists in database");
 			}
 		}
 		
 		//Execution
 		$result = OrmDb::execute(sprintf($queryInsert, implode(',' , $str_params1), implode(',' , $str_params2)),
 									$params,
-									"Database error during OrmCore::insertEntity(OrmEntity &{$entityParam->getName()})");
+									"Database error during OrmCore::insertEntity(OrmEntity &{$entityname})");
 		
 
 	/*	if($entityParam->isIndexable()) {  
@@ -437,6 +441,7 @@ class OrmCore {
 		$listeField = $entityParam->getFields();
 		$values = $entityParam->getValues();
 		$indexes = $entityParam->getIndexes();
+		$entityname = $entityParam->getName();
 
 		$str_params1 = array();
 		$where = '';
@@ -455,47 +460,49 @@ class OrmCore {
 				continue;
 			}
 
+			$fieldname = $field->getName();
+
 			if($field->isPrimaryKEY()) {
-				if(!empty($values[$field->getName()])) {
+				if(!empty($values[$fieldname])) {
 					// Normal case in an update mode
-					$where = ' WHERE '.$field->getName().' = ?';
+					$where = ' WHERE '.$fieldname.' = ?';
 					$hasKey = true;
-					$keyValue = $values[$field->getName()];
+					$keyValue = $values[$fieldname];
 
 				} else if(!$entityParam->isAutoincrement()){
 					$newId = OrmDb::genID($entityParam->getSeqname());
-					$values[$field->getName()] = $newId;
-					$entityParam->set($field->getName(), $newId);
+					$values[$fieldname] = $newId;
+					$entityParam->set($fieldname, $newId);
 
 					//TODO : error or "insert"-like process ?
-					//throw new OrmIllegalArgumentException('the primaryKey '.$field->getName().' is missing for the entity : '.$entityParam->getName());
+					//throw new OrmIllegalArgumentException('the primaryKey '.$fieldname.' is missing for the entity : '.$entityname);
 
 				} else{
-					$values[$field->getName()] = 0;
-					$entityParam->set($field->getName(), 0);
+					$values[$fieldname] = 0;
+					$entityParam->set($fieldname, 0);
 				}
 			}
 
-			$isEmpty = OrmUtils::isAnEmptyField($field, $values[$field->getName()]);
+			$isEmpty = OrmUtils::isAnEmptyField($field, $values[$fieldname]);
 
 			//Empty Field that shouldn't be !
 			if(!$field->isPrimaryKEY() && !$field->isNullable() && $isEmpty) {
 				//Exception : if the field have a default value we set it manually
 				if(!is_null($field->getDefaultValue())){
-					$values[$field->getName()] = $field->getDefaultValue();
+					$values[$fieldname] = $field->getDefaultValue();
 				} else {
-					throw new OrmIllegalArgumentException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' can\'t be null');
+					throw new OrmIllegalArgumentException('the field '.$fieldname.' of OrmEntity  '.$entityname.' can\'t be null');
 				}
 			}
 
 			// Control the Format if not empty
-			if(!$isEmpty && !OrmUtils::isAValidFormat($field, $values[$field->getName()])){
-				throw new OrmCastFormatException('the field '.$field->getName().' of OrmEntity  '.$entityParam->getName().' doesn\'t respect the format required');
+			if(!$isEmpty && !OrmUtils::isAValidFormat($field, $values[$fieldname])){
+				throw new OrmCastFormatException('the field '.$fieldname.' of OrmEntity  '.$entityname.' doesn\'t respect the format required');
 			}
 
-			$str_params1[] = ' '.$field->getName().' = ? ';
+			$str_params1[] = ' '.$fieldname.' = ? ';
 
-			$params[] = OrmCore::_fieldToDBValue($values[$field->getName()], $field->getType());
+			$params[] = OrmCore::_fieldToDBValue($values[$fieldname], $field->getType());
 
 		}
 		
@@ -531,10 +538,10 @@ class OrmCore {
 			//Execution
 			$result = OrmDb::getOne($query,
 									$arrayFind,
-									"Database error during unicity control in OrmCore::updateEntity(OrmEntity &{$entityParam->getName()})");
+									"Database error during unicity control in OrmCore::updateEntity(OrmEntity &{$entityname})");
 		
 			if($result != 0){
-				throw new OrmIllegalArgumentException("an Entity {$entityParam->getName()} with the same fields ({$msgError}) already exists in database");
+				throw new OrmIllegalArgumentException("an Entity {$entityname} with the same fields ({$msgError}) already exists in database");
 			}
 		}
 
@@ -547,7 +554,7 @@ class OrmCore {
 		//Execution
 		$result = OrmDb::execute($queryUpdate,
 									$params,
-									"Database error during OrmCore::updateEntity(OrmEntity &{$entityParam->getName()})");
+									"Database error during OrmCore::updateEntity(OrmEntity &{$entityname})");
 		
 		/*if($entityParam->isIndexable()) {  
 			OrmIndexing::UpdateWords($entityParam->getModuleName(), $entityParam);
@@ -590,14 +597,13 @@ class OrmCore {
 
 		$listeField = $entityParam->getFields();
 
-		foreach($listeField as $field)
-		{
-		  if(!$field->isPrimaryKEY())
-		  { 
+		//FIX ME : it may not work with composite PK
+		foreach($listeField as $field) {
+		  if(!$field->isPrimaryKEY()) { 
 			continue;
 		  }
-		  $type = $field->getType();
-		  $name = $field->getName();
+		  $fieldtype = $field->getType();
+		  $fieldname = $field->getName();
 		}  
 
 		$where = '';
@@ -608,8 +614,8 @@ class OrmCore {
 			$where .= ' OR ';
 		  }
 		  
-		  $where .= $name.' = ?';
-		  $params[] = OrmCore::_fieldToDBValue($sid, $type);  
+		  $where .= $fieldname.' = ?';
+		  $params[] = OrmCore::_fieldToDBValue($sid, $fieldtype);  
 		}
 
 
@@ -831,7 +837,7 @@ class OrmCore {
 		if(!$field->isAssociateKEY()){
 			throw new OrmIllegalArgumentException("function populateAKField(\$entityParam, \$entitys, \$field) only accept fields of type AssociateKey");
 		}
-
+		$entityname = $entityParam->getName();
 		$fieldAssociateName = null;
 		if(strpos($field->getKEYName(),".")){
 			list($entityAssocName, $fieldAssociateName) = explode(".", $field->getKEYName());
@@ -844,8 +850,8 @@ class OrmCore {
 			list($entityCurrentName, $fieldCurrentName) = explode(".", $entityAssoc->getFieldByName($fieldAssociateName)->getKEYName());
 					
 			//The path must return to the current entity
-			if(strcasecmp($entityCurrentName,$entityParam->getName()) != 0){
-				throw new OrmIllegalConfigurationException("It seems you have a wrong path between {$entityParam->getName()}.{$field->getName()} and {$entityAssocName}.{$fieldAssociateName}");
+			if(strcasecmp($entityCurrentName,$entityname) != 0){
+				throw new OrmIllegalConfigurationException("It seems you have a wrong path between {$entityname}.{$field->getName()} and {$entityAssocName}.{$fieldAssociateName}");
 			}
 
 			//Initiate the field associate with an empty array.
@@ -882,7 +888,7 @@ class OrmCore {
 					list($entityCurrentName, $fieldCurrentName) = explode(".", $assocField->getKEYName());
 
 					// If this FK point back on us
-					if(strcasecmp($entityCurrentName,$entityParam->getName()) === 0){
+					if(strcasecmp($entityCurrentName,$entityname) === 0){
 						$sqlfieldvalue[] = $fieldCurrentName;
 						$assocFieldsName[] = $assocField->getName();
 						$sqlfieldname[] = " {$assocField->getName()} = ? ";
