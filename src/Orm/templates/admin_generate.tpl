@@ -40,18 +40,19 @@
 
 {if $moduleName !== '' && $entityName !== ''}
 	<hr/>
-	Would you like to save the file into ./modules/{$moduleName}/lib/class.{$entityName}.php
+	Would you like to save the file into <input type='text' name='{$actionid}pathFile' value="{$pathFile}" size='40' />
 	<input type='submit' name='{$actionid}persist' value='Save the result' />
+	<p>Note : if the directories don't exist, they will be created</p>
 {/if}
 
-{if persist != null}
-	<p>
-	{if persist}
+{if $resultPersist != null}
+	<p><b>
+	{if $resultPersist}
 		File saved with success !
 	{else}
 		Oops, we didn't succeed to save the file... :(;
 	{/if}
-	</p>
+	</b></p>
 {/if}
 
 </form>

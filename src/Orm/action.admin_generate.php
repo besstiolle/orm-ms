@@ -52,7 +52,7 @@ $descQuery = "desc ".$paramTableName;
 $resultQuery = OrmDb::execute($descQuery, null, $errorMsg = "Description on table '".$paramTableName."' produce an error");
 $arrayQuery = $resultQuery->GetAssoc();
 
-echo var_dump($arrayQuery);
+//echo var_dump($arrayQuery);
 
 
 $fields = array();
@@ -147,18 +147,26 @@ $smarty->assign('output', $fields);
 $output = $this->ProcessTemplate('admin_generate_output.tpl');
 $smarty->assign('output', $output);
 
+$dir = $config['root_path'].'/modules/'.$moduleName.'/lib';
+$file = 'class.'.$entityName.'.php';
+
+$smarty->assign('pathFile', $dir.'/'.$file);
 
 $persist = null;
-if(isset($params['persist'])){
+$pathFile = null;
+if(isset($params['persist']) && isset($params['pathFile'])){
 	$persist = false;
+	
+	$path = $params['pathFile'];
+	$pos = strrpos($path, '/');
+	$dir = substr($path, 0, $pos);
+	$file = substr($path, $pos);
 
-	$dir = $config['root_path'].'/modules/'.$moduleName.'/lib';
-	$file = 'class.'.$entityName.'.php';
 	if(!is_dir($dir)){
 		mkdir($dir, 0755, true);
 	}
 
-	if(file_put_contents($dir.'/'.$file, $output) !== FALSE){
+	if(file_put_contents($dir.$file, $output) !== FALSE){
 		$persist = true;
 	}
 }
