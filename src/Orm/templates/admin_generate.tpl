@@ -24,8 +24,8 @@
 
 {$formStart}
 	{$dropdown}
-	<input type='text' name='{$actionid}entityName' value='{$entityName}' placeholder='Name your entity [alpha only] (Optional)' size='40' />
 	<input type='text' name='{$actionid}moduleName' value='{$moduleName}' placeholder='Name your module [alpha only] (Optional)' size='40'  />
+	<input type='text' name='{$actionid}entityName' value='{$entityName}' placeholder='Name your entity [alpha only] (Optional)' size='40' />
 	<input type='submit' name='generate' value='Generate PHP code' />
 	<a class='ormbutton ui-state-default ui-corner-all' href='{$cancel}'>
 		<span class="ui-icon  ui-icon-arrowreturnthick-1-w"></span>
@@ -45,7 +45,7 @@
 	<p>Note : if the directories don't exist, they will be created</p>
 {/if}
 
-{if $resultPersist != null}
+{if isset($resultPersist)}
 	<p><b>
 	{if $resultPersist}
 		File saved with success !
