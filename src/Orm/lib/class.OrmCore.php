@@ -332,6 +332,11 @@ class OrmCore {
 				}
 			}
 
+			//Empty Field with default Value
+			if(!$field->isPrimaryKEY() && $field->isNullable() && $isEmpty && !is_null($field->getDefaultValue())) {
+				$values[$fieldname] = $field->getDefaultValue();
+			}
+
 
 			// Control the Format if not empty
 			if(!$isEmpty && !OrmUtils::isAValidFormat($field, $values[$fieldname])){

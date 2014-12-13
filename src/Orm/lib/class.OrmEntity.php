@@ -560,11 +560,6 @@ abstract class OrmEntity
 			throw new OrmIllegalArgumentException("garnishDefault() only accept valid Field but ".$fieldName." is not a existing Field in the Entity ".$this->getName());
 		}
 		
-		//forbid a default value on a nullable field Because it's make no sense
-		if($this->getFieldByName($fieldName)->isNullable()){
-			throw new OrmIllegalArgumentException("the Field ".$fieldName." in the Entity ".$this->getName()." can't accept a default value because it's setted Nullable");
-		}
-		
 		$this->getFieldByName($fieldName)->setDefaultValue($defaultValue);
 
 		return $this;
