@@ -86,6 +86,8 @@ foreach ($arrayQuery as $queryKey => $values) {
 		$ormType = '$INTEGER';
 		$ormSize = $size;
 	} else if($type === 'int'){
+	} else if($type === 'double'){
+		$ormType = '$DOUBLE';
 	}
 	/***********  Type & Size ***********/
 
