@@ -155,7 +155,9 @@ final class OrmTrace {
 		$content = date('Y-m-d H:i:s', time())." - [$cssClass] - $msg \n";
 				
 		//in file log
-		file_put_contents(self::getLogFile() ,$content, FILE_APPEND );
+		if(FALSE === file_put_contents(self::getLogFile() ,$content, FILE_APPEND )){
+			echo "<h3>Orm can't write into the log file : ".self::getLogFile()."</h3>";
+		}
 
 		//In php log
 		error_log($msg);
