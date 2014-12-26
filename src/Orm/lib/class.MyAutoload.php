@@ -111,8 +111,8 @@ final class MyAutoload
 	{
 		$namespace = strtolower($namespace);
 		if(!MyAutoload::isValideNamespace($namespace)){
-			OrmTrace::error("The namespace '$namespace' doesn't existe into the Orm System");
-			throw new OrmIllegalArgumentException("The namespace '$namespace' doesn't existe into the Orm System");
+			OrmTrace::warn("The namespace '$namespace' doesn't exist into the Orm System, you may have forgot to write some entities ?");
+			return null;
 		}
 		
 		return self::$instances[$namespace];
