@@ -8,9 +8,9 @@ $allmods  = $modops->FindAllModules();
 $instanceOrm = array();
 foreach ($allmods as $mod) {
 	$instance = $modops->get_module_instance($mod);
-	if(class_exists($mod) &&  in_array($this->GetName(),class_parents($mod))){		
+	if(class_exists($mod) &&  in_array('Orm',class_parents($mod))){		
 		$instanceOrm[$mod] = $instance;
-	}
+	} 
 }
 
 $tempname = 'XXXXXXXXXXX';
@@ -19,6 +19,7 @@ $descXXQuery = "desc ".$tempname;
 
 $listInstance = array();
 foreach ($instanceOrm as $moduleName => $module) {
+
 	$listResultXX = array();
 	$listResultDB = array();
 	$listEmptyTable = array();
@@ -26,7 +27,9 @@ foreach ($instanceOrm as $moduleName => $module) {
 	$instance = new $moduleName;
 	$liste = $instance->scan();
 	$entites = $liste['entities'];
+
 	foreach ($entites as $entite) {
+
 		$obj = new $entite['classname']();
 		$descDBQuery = "desc ".$obj->getDbname();
 		$findDBQuery = "SHOW TABLES LIKE '".$obj->getDbname()."'";
