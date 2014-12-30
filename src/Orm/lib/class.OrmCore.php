@@ -97,6 +97,11 @@ class OrmCore {
 
 				default : throw new OrmIllegalArgumentException('CAST TYPE '.$castType.' for the field '.$entityParam->getName().'->'.$field->getName().' is not a valid OrmCAST option');
 			}
+
+			//Manage de nullable value
+			if( !$field->isNullable() ){
+				$hql .= ' NOTNULL ';
+			}
 			
 			//Manage the default value
 			if($field->getDefaultValue() != null){
