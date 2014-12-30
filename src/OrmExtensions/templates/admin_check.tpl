@@ -98,7 +98,7 @@
 
 		{else}
 
-			<p style='color:#FAA00F;'>The table for entity <b>{$moduleName}</b> have some differents.</p>
+			<p style='color:#FAA00F;'>The table for entity <b>{$entityname}</b> have some differents.</p>
 			<textarea id='baseText_{$entityname}' class='hidden'>
 				{$module['listResultXX'][$entityname]}
 			</textarea>
