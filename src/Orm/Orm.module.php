@@ -30,7 +30,7 @@ class Orm extends CMSModule {
 			sort($libs);
 
 			foreach ($libs as $librairy) {
-				if($librairy !== '.' && $librairy !== '..' ){
+				if($librairy !== '.' && $librairy !== '..' && strpos($librairy, '.php', strlen($librairy) - strlen('.php')) !== FALSE ){
 					require_once($dir.$librairy);
 				}
 			}
