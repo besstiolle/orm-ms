@@ -83,7 +83,7 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 
-		if ($result === false){
+		if ($result === false || !empty(OrmDb::$db->ErrorMsg())) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The Query was : ".$query);
@@ -117,7 +117,7 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 
-		if ($result === false){
+		if ($result === false || !empty(OrmDb::$db->ErrorMsg())) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The Query was : ".$query);
@@ -149,7 +149,7 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 
-		if ($result === false){
+		if ($result === false || !empty(OrmDb::$db->ErrorMsg())) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The GenId was made on : ".$seqname);
@@ -170,11 +170,11 @@ class OrmDb {
 	*
 	* @exception OrmSqlException if the query failed
     */
-	public static final function createTable($tableName, $hql) {
+	public static final function createTable($tableName, $hql, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
 		
-		OrmTrace::sql("createTable({$tableName}, {$hql})");
+		OrmTrace::sql("createTable({$tableName}, \"{$hql}\")");
 		
 		//Push Query in buffer
 		OrmDb::pushQueries();
@@ -186,7 +186,7 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 
-		if ($result === false){
+		if ($result === false || !empty(OrmDb::$db->ErrorMsg())) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The CreateTable was made on : {$tableName} with {$hql} parameters");
@@ -206,7 +206,7 @@ class OrmDb {
 	*
 	* @exception OrmSqlException if the query failed
     */
-	public static final function dropTable($tableName) {
+	public static final function dropTable($tableName, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
 		
@@ -220,7 +220,7 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 		
-		if ($result === false){
+		if ($result === false || !empty(OrmDb::$db->ErrorMsg())) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The DropTable was made on : {$tableName}");
@@ -275,7 +275,7 @@ class OrmDb {
 	*
 	* @exception OrmSqlException if the query failed
     */
-	public static final function createIndex($tableName, $listFields, $isUnique = false){
+	public static final function createIndex($tableName, $listFields, $isUnique = false, $errorMsg = "Database error"){
 		//Be sure we initiate the db connector;
 		OrmDb::init();
 		
@@ -303,7 +303,7 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 		
-		if ($result === false){
+		if ($result === false || !empty(OrmDb::$db->ErrorMsg())) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The createIndex was made on : {$tableName} with the fields : {$listFields}");
@@ -342,6 +342,8 @@ class OrmDb {
 		}
 		OrmDb::$bufferQueries[] = OrmDb::$db->sql;
 		OrmDb::resizeBuffer();
+
+		OrmTrace::sql("[MYSQL] ".OrmDb::$db->sql);
 	}
 
 	/**
