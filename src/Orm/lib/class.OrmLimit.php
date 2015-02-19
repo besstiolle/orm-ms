@@ -55,13 +55,7 @@ class OrmLimit {
 			return '';
 		}
 		
-		$limit = ' LIMIT ';
-		
-		if($this->offset = 0) {
-			$limit.= $this->offset;
-		}
-		
-		$limit.= ' '.$this->row_count;
+		$limit = ' LIMIT '.$this->offset.' , '.$this->row_count;
 		
 		return $limit;
 	}
