@@ -16,7 +16,8 @@ if(!file_exists(OrmTrace::getLogFile())){
 
 $smarty = cmsms()->GetSmarty();
 $smarty->assign("id",$id);
-$smarty->assign("formstart",$this->CreateFormStart($id, 'admin_save'));
+$smarty->assign("formstartcache",$this->CreateFormStart($id, 'admin_save'));
+$smarty->assign("formstarttrace",$this->CreateFormStart($id, 'admin_save'));
 $smarty->assign("submit",$this->CreateInputSubmit ($id, 'submit', 'Save Prefs'));
 $smarty->assign("deleteLog",$this->CreateInputSubmit ($id, 'deleteLog', 'Clean Logs'));
 $smarty->assign("deleteCache",$this->CreateInputSubmit ($id, 'deleteCache', 'Clean Cache'));
