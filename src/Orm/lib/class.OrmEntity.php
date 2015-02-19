@@ -142,9 +142,16 @@ abstract class OrmEntity
 		if($newField->isPrimaryKEY()) {
 				
 			$this->pk[] = $newField->getName();
-			if(!$this->isAutoincrement()) { // no sequence if autoincrement used
+			if(!$this->isAutoincrement() // no sequence if autoincrement used
+				&& $newField->getType() == OrmCAST::$INTEGER // no sequence for other type than INTEGER
+				) {
                 $this->seqname = $this->dbname.OrmEntity::$_CONST_SEQ;
             }
+		}
+
+		//If there is more than one PK, we won't use the Sequence
+		if(count($this->pk) > 1){
+			$this->seqname = null;
 		}
 
 
