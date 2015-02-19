@@ -150,7 +150,7 @@ $output = $this->ProcessTemplate('admin_generate_output.tpl');
 $smarty->assign('output', $output);
 
 $dir = $config['root_path'].'/modules/'.$moduleName.'/lib';
-$file = 'class.'.$entityName.'.php';
+$file = 'class.entity'.$entityName.'.php';
 
 $smarty->assign('pathFile', $dir.'/'.$file);
 
