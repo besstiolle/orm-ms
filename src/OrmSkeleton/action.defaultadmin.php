@@ -9,10 +9,10 @@ if(!empty($params['error'])) {
 }
 echo $error;
 
-$img_delete = cmsms()->variables['admintheme']->DisplayImage('icons/system/delete.gif','delete','','','systemicon');
-$img_edit = cmsms()->variables['admintheme']->DisplayImage('icons/system/edit.gif','edit','','','systemicon');
-$img_view = cmsms()->variables['admintheme']->DisplayImage('icons/system/view.gif','view','','','systemicon');
-
+$admintheme = cms_utils::get_theme_object();
+$img_delete = $admintheme->DisplayImage('icons/system/delete.gif','delete','','','systemicon'); 
+$img_edit = $admintheme->DisplayImage('icons/system/edit.gif','edit','','','systemicon'); 
+$img_view = $admintheme->DisplayImage('icons/system/view.gif','view','','','systemicon');
 
 echo '<h1>Basic Example : A single Entity without connection</h1>';
 echo '<img src="http://yuml.me/diagram/classic/class/[User%7Cuser_id%20(PK);login;name;description;date_creation;hour_last_modification]"/>';
