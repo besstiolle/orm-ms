@@ -22,10 +22,24 @@ class Orm extends CMSModule {
 		parent::__construct();
 
 		//Load all the librairies for ORM exclusivly
-		if($this->GetName() === self::GetName()){
-			$dir = parent::GetModulePath().'/lib/'; 
-			$libs = scandir ( $dir );
+		if(!class_exists('OrmTrace')){
+				$config = cmsms()->GetConfig();
+				$dir = $config['root_path'].'/modules/Orm/lib/'; 
+			
 
+			//if($this->GetName() === self::GetName()) {
+				//TODO : make it nicer
+				//$dir = self::GetModulePath().'/lib/'; 
+
+			/*} else {
+				$dir = parent::GetModulePath().'/lib/';
+				echo $this->GetName();
+				echo $this->GetModulePath();
+				echo parent::GetModulePath();
+
+				die($dir);
+			}*/
+			$libs = scandir ( $dir );
 			//FIXME : try to avoid conflict during loading class  xx extends yy
 			sort($libs);
 
@@ -34,7 +48,9 @@ class Orm extends CMSModule {
 					require_once($dir.$librairy);
 				}
 			}
-		} else {
+		} 
+
+		if($this->GetName() !== self::GetName()) {
 			$this->scan();
 		}
 	}
@@ -48,7 +64,7 @@ class Orm extends CMSModule {
 	}
 
 	function GetVersion() {
-		return '0.3.2';
+		return '0.3.3-SNAPSHOT';
 	}
   
 	function GetDependencies()
@@ -166,7 +182,8 @@ class Orm extends CMSModule {
 			$className = $element['classname'];
 			$filename = $element['filename'];
 			if(!class_exists($className)){
-				OrmTrace::debug("importing Entity ".$className." into the module ".$this->getName());
+				//OrmTrace::debug("importing Entity ".$className." into the module ".$this->getName());
+
 				require_once($filename);	
 				try{
 					$entity = new $className();
@@ -181,7 +198,7 @@ class Orm extends CMSModule {
 			$className = $element['classname'];
 			$filename = $element['filename'];
 			if(!class_exists($className)){
-				OrmTrace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
+				//OrmTrace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
 				require_once($filename);
 				$entity = new $className();
 			}

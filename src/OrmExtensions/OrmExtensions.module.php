@@ -20,12 +20,12 @@ class OrmExtensions extends Orm {
 	}
 
 	function GetVersion() {
-		return '0.3.2';
+		return '0.3.3-SNAPSHOT';
 	}
   
 	function GetDependencies()
  	{
-		return array('Orm'=>'0.3.2');
+		return array('Orm'=>'0.3.3-SNAPSHOT');
 	}
 
 	function GetHelp() {
