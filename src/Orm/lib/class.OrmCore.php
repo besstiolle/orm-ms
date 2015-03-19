@@ -1206,6 +1206,327 @@ class OrmCore {
 		return array_values($entities);
 
 	}
+
+	/**
+     * Allow counting a list of OrmEntity from a list of OrmCriteria
+     * 
+     * Example : counting the customers with lastName 'Roger' (no casse sensitive)
+     * 
+     *  <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('lastName', OrmTypeCriteria::$EQ, array('roger'), true);
+     * 
+     *       OrmCore::selectCountByExample($customer, $example);
+     * </code>
+     * 
+     *  Example : counting the customers with Id >= 90
+     * 
+     * <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('customer_id', OrmTypeCriteria::$GTE, array(90));
+     * 
+     *       OrmCore::selectCountByExample($customer, $example);
+     * </code>
+     * 
+     * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
+     * 
+     * NOTE 2 : you can add as many Criterias as you want in an Example Object
+     * 
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
+     * 
+     * @see OrmExample
+     * @see OrmTypeCriteria
+     */
+	public static final function selectCountByExample(OrmEntity $entityParam, OrmExample $example, $condition = 'AND') {
+
+		$listeField = $entityParam->getFields();
+
+		$criterias = $example->getCriterias();
+		$select = "SELECT count(*) as val FROM ".$entityParam->getDbname().' WHERE ';
+		
+		list($hql, $params) = OrmCore::_getHqlExample($listeField, $criterias, $condition);
+
+		$queryExample = $select.$hql;
+		
+		//If it's already in the cache, we return the result
+		if(OrmCache::getInstance()->isCache($queryExample, $params)) {
+
+				$counter = OrmCache::getInstance()->getCache($queryExample,$params);
+
+		} else {
+				//Execution
+				$result = OrmDb::execute($queryExample,
+										$params,
+										"Database error during OrmCore::countByExample(OrmEntity &{$entityParam->getName()}, OrmExample \$example)");
+
+				OrmTrace::debug("countByExample : ".$result->RecordCount()." resultat(s)");
+
+				$counter = array();
+				while ($row = $result->FetchRow()) {
+				  $counter = $row['val'];
+				}
+
+				//We push the result into the cache before return it
+				OrmCache::getInstance()->setCache($queryExample, null, $counter);
+		}
+		return $counter;
+
+	}
+
+	/**
+     * Return max value of a field from a list of OrmCriteria
+     * 
+     * Example : max age of the customers with lastName 'Roger' (no casse sensitive)
+     * 
+     *  <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('lastName', OrmTypeCriteria::$EQ, array('roger'), true);
+     * 
+     *       OrmCore::selectMaxByExample($customer, $example, 'age');
+     * </code>
+     * 
+     *  Example : max age of the customers with Id >= 90
+     * 
+     * <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('customer_id', OrmTypeCriteria::$GTE, array(90));
+     * 
+     *       OrmCore::selectMaxByExample($customer, $example, 'age');
+     * </code>
+     * 
+     * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
+     * 
+     * NOTE 2 : you can add as many Criterias as you want in an Example Object
+     * 
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param string $fieldname the field to apply the "Max" selector
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
+     * 
+     * @see OrmExample
+     * @see OrmTypeCriteria
+     */
+	public static final function selectMaxByExample(OrmEntity $entityParam, OrmExample $example, $fieldName, $condition = 'AND') {
+		
+		$listeField = $entityParam->getFields();
+
+		if(!array_KEY_exists($fieldName,$listeField)) {
+			throw new IllegalArgumentException("the fieldname {$fieldName} doesn't exist for entity {$entityParam->getName()}");
+		}
+
+		$something = "MAX({$fieldName})";
+
+		return OrmCore::_selectSomethingByExample($entityParam, $example, $something, $condition);
+	}
+
+	/**
+     * Return min value of a field from a list of OrmCriteria
+     * 
+     * Example : min age of the customers with lastName 'Roger' (no casse sensitive)
+     * 
+     *  <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('lastName', OrmTypeCriteria::$EQ, array('roger'), true);
+     * 
+     *       OrmCore::selectMaxByExample($customer, $example, 'age');
+     * </code>
+     * 
+     *  Example : min age of the customers with Id >= 90
+     * 
+     * <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('customer_id', OrmTypeCriteria::$GTE, array(90));
+     * 
+     *       OrmCore::selectMaxByExample($customer, $example, 'age');
+     * </code>
+     * 
+     * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
+     * 
+     * NOTE 2 : you can add as many Criterias as you want in an Example Object
+     * 
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param string $fieldname the field to apply the "Max" selector
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
+     * 
+     * @see OrmExample
+     * @see OrmTypeCriteria
+     */
+	public static final function selectMinByExample(OrmEntity $entityParam, OrmExample $example, $fieldName, $condition = 'AND') {
+		
+		$listeField = $entityParam->getFields();
+
+		if(!array_KEY_exists($fieldName,$listeField)) {
+			throw new IllegalArgumentException("the fieldname {$fieldName} doesn't exist for entity {$entityParam->getName()}");
+		}
+
+		$something = "MIN({$fieldName})";
+
+		return OrmCore::_selectSomethingByExample($entityParam, $example, $something, $condition);
+	}
+
+	/**
+     * Return avg value of a field from a list of OrmCriteria
+     * 
+     * Example : avg age of the customers with lastName 'Roger' (no casse sensitive)
+     * 
+     *  <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('lastName', OrmTypeCriteria::$EQ, array('roger'), true);
+     * 
+     *       OrmCore::selectMaxByExample($customer, $example, 'age');
+     * </code>
+     * 
+     *  Example : avg age of the customers with Id >= 90
+     * 
+     * <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('customer_id', OrmTypeCriteria::$GTE, array(90));
+     * 
+     *       OrmCore::selectMaxByExample($customer, $example, 'age');
+     * </code>
+     * 
+     * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
+     * 
+     * NOTE 2 : you can add as many Criterias as you want in an Example Object
+     * 
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param string $fieldname the field to apply the "Max" selector
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
+     * 
+     * @see OrmExample
+     * @see OrmTypeCriteria
+     */
+	public static final function selectAvgByExample(OrmEntity $entityParam, OrmExample $example, $fieldName, $condition = 'AND') {
+		
+		$listeField = $entityParam->getFields();
+
+		if(!array_KEY_exists($fieldName,$listeField)) {
+			throw new IllegalArgumentException("the fieldname {$fieldName} doesn't exist for entity {$entityParam->getName()}");
+		}
+
+		$something = "AVG({$fieldName})";
+
+		return OrmCore::_selectSomethingByExample($entityParam, $example, $something, $condition);
+	}
+
+	/**
+     * Return sum value of a field from a list of OrmCriteria
+     * 
+     * Example : sum age of the customers with lastName 'Roger' (no casse sensitive)
+     * 
+     *  <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('lastName', OrmTypeCriteria::$EQ, array('roger'), true);
+     * 
+     *       OrmCore::selectMaxByExample($customer, $example, 'age');
+     * </code>
+     * 
+     *  Example : sum age of the customers with Id >= 90
+     * 
+     * <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('customer_id', OrmTypeCriteria::$GTE, array(90));
+     * 
+     *       OrmCore::selectMaxByExample($customer, $example, 'age');
+     * </code>
+     * 
+     * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
+     * 
+     * NOTE 2 : you can add as many Criterias as you want in an Example Object
+     * 
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param string $fieldname the field to apply the "Max" selector
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
+     * 
+     * @see OrmExample
+     * @see OrmTypeCriteria
+     */
+	public static final function selectSumByExample(OrmEntity $entityParam, OrmExample $example, $fieldName, $condition = 'AND') {
+		
+		$listeField = $entityParam->getFields();
+
+		if(!array_KEY_exists($fieldName,$listeField)) {
+			throw new IllegalArgumentException("the fieldname {$fieldName} doesn't exist for entity {$entityParam->getName()}");
+		}
+
+		$something = "SUM({$fieldName})";
+
+		return OrmCore::_selectSomethingByExample($entityParam, $example, $something, $condition);
+	}
+
+
+
+	/**
+	 * Inner function to factorize some SelectXXByExample : Max/Min/AVG/...
+	 *
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param string $something the SQL part of the query : max(xxx) min(xxx) ...
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
+	 *
+	 *
+	 *
+	 **/
+	private static final function _selectSomethingByExample(OrmEntity $entityParam, OrmExample $example, $something, $condition = 'AND') {
+
+		$listeField = $entityParam->getFields();
+
+		$criterias = $example->getCriterias();
+		$select = "SELECT {$something} as val FROM ".$entityParam->getDbname().' WHERE ';
+		
+		list($hql, $params) = OrmCore::_getHqlExample($listeField, $criterias, $condition);
+
+		$queryExample = $select.$hql;
+		
+		//If it's already in the cache, we return the result
+		if(OrmCache::getInstance()->isCache($queryExample, $params)) {
+
+				$counter = OrmCache::getInstance()->getCache($queryExample,$params);
+
+		} else {
+				//Execution
+				$result = OrmDb::execute($queryExample,
+										$params,
+										"Database error during OrmCore::selectCountByExample(OrmEntity &{$entityParam->getName()}, OrmExample \$example)");
+
+				OrmTrace::debug("selectCountByExample : ".$result->RecordCount()." resultat(s)");
+
+				$counter = array();
+				while ($row = $result->FetchRow()) {
+				  $counter = $row['val'];
+				}
+
+				//We push the result into the cache before return it
+				OrmCache::getInstance()->setCache($queryExample, null, $counter);
+		}
+		return $counter;
+
+	}
    
 	/**
      * Allow delete a list of OrmEntity from a list of OrmCriteria
