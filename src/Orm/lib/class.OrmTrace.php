@@ -150,7 +150,8 @@ final class OrmTrace {
 	private static final function innerWriter($level, $cssClass, $msg){
 		$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
 
-		if($orm->GetPreference('loglevel', OrmTrace::$INFO) > $level) {return;}
+		if($orm != null && $orm->GetPreference('loglevel', OrmTrace::$INFO) > $level) {return;}
+		
 		
 		$content = date('Y-m-d H:i:s', time())." - [$cssClass] - $msg \n";
 				
