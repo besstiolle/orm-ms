@@ -16,44 +16,156 @@
 	*/
 class Orm extends CMSModule {
 
+	private static $isInitiated = false;
+
 	function __construct(){
+
+        spl_autoload_register(array($this,'autoload'));
 
 		//Required to preserve the {Module} on Front-Office
 		parent::__construct();
 
-		//Load all the librairies for ORM exclusivly
-		if(!class_exists('OrmTrace')){
-				$config = cmsms()->GetConfig();
-				$dir = $config['root_path'].'/modules/Orm/lib/'; 
-			
-
-			//if($this->GetName() === self::GetName()) {
-				//TODO : make it nicer
-				//$dir = self::GetModulePath().'/lib/'; 
-
-			/*} else {
-				$dir = parent::GetModulePath().'/lib/';
-				echo $this->GetName();
-				echo $this->GetModulePath();
-				echo parent::GetModulePath();
-
-				die($dir);
-			}*/
-			$libs = scandir ( $dir );
-			//FIXME : try to avoid conflict during loading class  xx extends yy
-			sort($libs);
-
-			foreach ($libs as $librairy) {
-				if($librairy !== '.' && $librairy !== '..' && strpos($librairy, '.php', strlen($librairy) - strlen('.php')) !== FALSE ){
-					require_once($dir.$librairy);
-				}
-			}
-		} 
-
-		if($this->GetName() !== self::GetName()) {
-			$this->scan();
+		//Load Entity in memory
+		if(!self::$isInitiated && $this->GetName() !== self::GetName()) {
+			self::scan();
+			$isInitiated = true;
 		}
+
 	}
+
+	/**
+	 * Will found every Entity for the current module and return the liste of their name
+	 *
+	 * @return Array<String> a list of name of entities founded
+	 *
+	 **/
+	protected function scan(){
+
+		//We're listing the class declared into the directory of the child module
+		$dir = cms_join_path(parent::GetModulePath(),'lib');
+		$liste = array('entities' => array(), 'associate' => array());
+
+		$files = $this->getFilesInDir($dir, "#^class\.entity\.(.)*$#");
+		foreach ($files as $path => $filename) {
+		    $classname = substr($filename , 13 ,strlen($filename) - 4 - 13);
+		    $liste['entities'][] = array('filename'=>$filename, 'basename'=>$path, 'classname'=>$classname);
+		}
+		$files = $this->getFilesInDir($dir, "#^class\.assoc\.(.)*$#");
+		foreach ($files as $path => $filename) {
+		    $classname = substr($filename , 12 ,strlen($filename) - 4 - 12);
+		    $liste['associate'][] = array('filename'=>$filename, 'basename'=>$path, 'classname'=>$classname);
+		}
+
+		$errors = array();
+		
+		foreach($liste['entities'] as $element) {
+			$className = $element['classname'];
+			$filename = $element['filename'];
+			$basename = $element['basename'];
+			if(!class_exists($className)){
+				OrmTrace::debug("importing Entity ".$className." into the module ".$this->getName());
+				require_once($basename);	
+			}
+
+			try{
+				$entity = new $className();
+			} catch(OrmIllegalConfigurationException $oce){
+				$errors[$className] = $oce;
+				continue;
+			}
+		}
+
+		foreach($liste['associate'] as $element) {
+			$className = $element['classname'];
+			$filename = $element['filename'];
+			$basename = $element['basename'];
+			if(!class_exists($className)){
+				OrmTrace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
+				require_once($basename);	
+			}
+
+			try{
+				$entity = new $className();
+			} catch(OrmIllegalConfigurationException $oce){
+				$errors[$className] = $oce;
+				continue;
+			}
+		}
+
+		//Process all the errors
+		if(!empty($errors)){
+			echo '<h3 style="color:#F00">Some OrmIllegalConfigurationException have been thrown</h3>';
+			
+			foreach ($errors as $className => $error) {
+				echo '<h4>Entity '.$className.' </h4><ol>';
+				foreach ($error->getMessages() as $message) {
+					echo '<li>'.$message.'</li>';
+				}
+				echo '</ol>';
+			}
+			
+			exit;
+		}
+
+		return $liste;
+	}
+
+	/**
+     * An extended autoload method.
+     * Search for classes a <module>/lib/class.classname.php file.
+     * or for interfaces in a <module>/lib/interface.classname.php file.
+     * or as a last ditch effort, for simple classes in the <module>/lib/extraclasses.php file.
+     * This method also supports namespaces,  including <module> and <module>/sub1/sub2 which should exist in files as described above.
+     * in subdirectories below the <module>/lib directory.
+     *
+     * @internal
+     * @param string $classname
+     */
+    public function autoload($classname)
+    {
+        if( !is_object($this) ) return FALSE;
+
+        // check for classes.
+        $path = $this->GetModulePath().'/lib';
+        if( strpos($classname,'\\') !== FALSE ) {
+            $t_path = str_replace('\\','/',$classname);
+            if( startswith( $t_path, $this->GetName().'/' ) ) {
+                $classname = basename($t_path);
+                $t_path = dirname($t_path);
+                $t_path = substr($t_path,strlen($this->GetName())+1);
+                $path = $this->GetModulePath().'/lib/'.$t_path;
+            }
+        }
+
+        $fn = $path."/class.{$classname}.php";
+        if( file_exists($fn) ) {
+            require_once($fn);
+            return TRUE;
+        }
+
+        // check for interfaces
+        $fn = $path."/interface.{$classname}.php";
+        if( file_exists($fn) ) {
+            require_once($fn);
+            return TRUE;
+        }
+
+        // check for a master file
+        $fn = $this->GetModulePath()."/lib/extraclasses.php";
+        if( file_exists($fn) ) {
+            require_once($fn);
+            return TRUE;
+        }
+
+        // check for interfaces
+        $fn = $path."/class.entity.{$classname}.php";
+        if( file_exists($fn) ) {
+            require_once($fn);
+            return TRUE;
+        }
+
+        return FALSE;
+    }
 
 	function GetName() {
 		return 'Orm';
@@ -149,92 +261,6 @@ class Orm extends CMSModule {
 	private function GetMyModulePath() {
 		return parent::GetModulePath();		
 	}
-
-	/**
-	 * Will found every Entity for the current module and return the liste of their name
-	 *
-	 * @return Array<String> a list of name of entities founded
-	 *
-	 **/
-	protected function scan(){
-
-		//We're listing the class declared into the directory of the child module
-		$dir = cms_join_path(parent::GetModulePath(),'lib');
-
-		$liste['entities'] = array();
-		$liste['associate'] = array();
-		
-		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-		foreach($objects as $name => $object){
-			if(stripos($name, 'class.entity.') !== FALSE){			
-				$classname = substr($object->getFileName() , 13 ,strlen($object->getFileName()) - 4 - 13);
-				$liste['entities'][] = array('filename'=>$name, 'basename'=>$object->getFileName(), 'classname'=>$classname);
-			} elseif(stripos($name, 'class.assoc.') !== FALSE) {
-				$classname = substr($object->getFileName() , 12 ,strlen($object->getFileName()) - 4 - 12);
-				$liste['associate'][] = array('filename'=>$name, 'basename'=>$object->getFileName(), 'classname'=>$classname);
-			} else {
-			}
-		}
-
-		$errors = array();
-		
-		foreach($liste['entities'] as $element) {
-			$className = $element['classname'];
-			$filename = $element['filename'];
-			if(!class_exists($className)){
-				//OrmTrace::debug("importing Entity ".$className." into the module ".$this->getName());
-
-				require_once($filename);	
-				try{
-					$entity = new $className();
-				} catch(OrmIllegalConfigurationException $oce){
-					$errors[$className] = $oce;
-					continue;
-				}
-			}
-		}
-
-		foreach($liste['associate'] as $element) {
-			$className = $element['classname'];
-			$filename = $element['filename'];
-			if(!class_exists($className)){
-				//OrmTrace::debug("importing Associate Entity ".$className." into the module ".$this->getName());
-				require_once($filename);
-				$entity = new $className();
-			}
-		}
-
-		//Process all the errors
-		if(!empty($errors)){
-			echo '<h3 style="color:#F00">Some OrmIllegalConfigurationException have been thrown</h3>';
-			
-			foreach ($errors as $className => $error) {
-				echo '<h4>Entity '.$className.' </h4><ol>';
-				foreach ($error->getMessages() as $message) {
-					echo '<li>'.$message.'</li>';
-				}
-				echo '</ol>';
-			}
-			
-			exit;
-		}
-
-		return $liste;
-	}
-	/*
-	public function autoload_framework($classname){
-		echo "autoload_framework($classname)";
-				
-		//$Orm = new Orm();
-		//$path = $Orm->GetMyModulePath();
-		$path = parent::GetModulePath();
-		$fn = cms_join_path($path,"lib","class.".$classname.".php");
-		
-		if(file_exists($fn)){
-			require_once($fn);
-			return;
-		} 
-	}*/
 	
 	/**
 	 * Shortcut to call all the instances for a single module
@@ -244,36 +270,40 @@ class Orm extends CMSModule {
 	public function getAllInstances(){
 		return MyAutoload::getAllInstances(parent::GetName());
 	}
-	/*
-	public function autoload_classes_addon($classname){
-		OrmTrace::debug("&nbsp;&nbsp;&nbsp;$classname");
-		
-		$path = $this->GetMyModulePath();
-		
-		$fn = null;
-	   if(stripos($classname, "HTML_FIELD") !== FALSE)
-	   {
-			$fn = cms_join_path($path,"class","class.add.fieldhtml.php");
-	   } else if(stripos($classname, "SEARCH_FIELD") !== FALSE)
-	   {
-			$fn = cms_join_path($path,"class","class.add.searchfield.php");
-	   } else if(stripos($classname, "FIELD_") !== FALSE)
-	   {
-			$fn = cms_join_path($path,"class","class.add.fieldssystem.php");
-	   } else if(stripos($classname, "FILTRE_") !== FALSE)
-	   {
-			$fn = cms_join_path($path,"class","class.add.filtre.php");
-	   }
-	   
-	   if($fn != null)
-	   {
-			OrmTrace::debug( "import d'un addon du projet ".$this->getName().": $fn");
-	   
-			if(file_exists($fn)){
-				require_once($fn);
-			}
-		}
-	}*/
+
+	/**
+     * Will return the list of file in the directory wich match the pattern.
+     *
+     * @param directory the directory
+     * @param pattern the pattern
+     *
+     * @return Mixed[] list of files
+     **/
+    public static function getFilesInDir($directory, $pattern, $recursive = TRUE){
+        $files = array();
+        if(!is_dir($directory)){
+            return null;
+        }
+        if ($handle = opendir($directory)) {
+            while (false !== ($entry = readdir($handle))) {
+            	if($entry == "." || $entry == ".."){
+            		continue;
+            	}
+                if (!is_dir($directory.'/'.$entry) && preg_match( $pattern , $entry)) {
+                   $files[$directory.'/'.$entry] = $entry;
+                   continue;
+                }
+
+                if($recursive && is_dir($directory.'/'.$entry) ) {
+                	$files = array_merge($files, 
+                	 		self::getFilesInDir($directory.'/'.$entry, $pattern, $recursive));
+                }
+            }
+            closedir($handle);
+        }
+        return $files;
+    }
+	
 	/*
 	function SearchReindex(&$module = null) {
 		//On évite de s'auto-indexer.
