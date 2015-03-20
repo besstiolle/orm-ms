@@ -6,7 +6,8 @@ if(empty($params['url']) || empty($params['lang_iso'])){
 	$this->Redirect($id, 'defaultadmin', $returnid, $params);
 }
 
-$img_delete = cmsms()->variables['admintheme']->DisplayImage('icons/system/delete.gif','delete','','','systemicon');
+$admintheme = cms_utils::get_theme_object();
+$img_delete = $admintheme->DisplayImage('icons/system/delete.gif','delete','','','systemicon');
 
 //Let's retrieve the comments !
 $example = new OrmExample();
