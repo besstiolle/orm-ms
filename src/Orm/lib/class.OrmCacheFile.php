@@ -1,14 +1,14 @@
 <?php
 /**
- * Contains the class wich provide a mini caching system of Orm to avoid multiples sql requests
+ * Contains the class wich provide a persisted caching system of Orm to avoid multiples sql requests
  *
- * @since 0.2.0
+ * @since 0.4.0
  * @author Bess
  **/
 
 /**
  *
- *  Static classe used to provide a very simple caching system. You can push the result of a request into it and asking later
+ *  Static classe used to provide a very simple persisted caching system. You can push the result of a request into it and asking later
  *	to collect the result.
  *
  *  Example : 
@@ -42,18 +42,18 @@
  *  	return $entitys;
  *	</code>
  *
- *  The cache is only available for the current call of the php script 
- *  And will be unavailable for the next call.
+ *  The cache is available for an amount of time 
+ *  And will be clean the time after.
  *
  *
- * @since 0.2.0
+ * @since 0.4.0
  * @author Bess
  * @package Orm
  **/
-class OrmCacheScript extends OrmCache {	
+class OrmCacheFile extends OrmCache {	
 	
 	/**
-	 * @var OrmCacheScript $instance The current instance
+	 * @var OrmCacheFile $instance The current instance
 	 **/
 	private static $instance;
 
@@ -61,22 +61,40 @@ class OrmCacheScript extends OrmCache {
 	 * @var mixed[] $cache an array containing all the data cached 
 	 **/
 	private static $cache;
+
+
+	/**
+	 * @var string $filename the file in tmp directory wich will contains cache data 
+	 **/
+	private static $filename;
 		
 	/**
 	 * Private constructor
+	 *
+	 * @param mixed[] $parameters the parameter to the constructor
 	 */
-	protected function __construct() {
+	protected function __construct($parameters) {
 		self::$cache = array();
+		$config = cmsms()->GetConfig();
+		self::$filename = $config['root_path'].'/tmp/cache/cache_orm';
+		if(file_exists(self::$filename) && is_readable(self::$filename)){
+			$content = file_get_contents(self::$filename);
+			self::$cache = unserialize($content);
+		} else {
+			self::saveCache();
+		}
 	}
 	
 	/**
 	 * Will return an instance of the cache class
 	 *
-	 * @return OrmCacheScript the cache class
+	 * @param mixed[] $parameters the parameter to the constructor
+	 *
+	 * @return OrmCacheFile the cache class
 	 */
-	public static function getMyOwnInstance(){
+	public static function getMyOwnInstance($parameters){
 		if(self::$instance == null){
-			self::$instance = new OrmCacheScript();
+			self::$instance = new OrmCacheFile($parameters);
 		}
 		return self::$instance;
 	}
@@ -89,7 +107,11 @@ class OrmCacheScript extends OrmCache {
 	 * @param mixed $value the result
 	 */
 	public function setCache($sql, $params = null, $value) {		
+		/*echo '# '.$sql.'<br/>';
+		echo '# '.var_dump($params).'<br/>';
+		echo '# '.self::hash($sql,$params).'<br/>';*/
 		self::$cache[self::hash($sql,$params)] = $value;
+		self::saveCache();
 		
 	}
 	
@@ -118,6 +140,9 @@ class OrmCacheScript extends OrmCache {
 	 * @return boolean true if the cache exists
 	 */	
 	public function isCache($sql, $params = null) {
+		/*echo '| '.$sql.'<br/>';
+		echo '| '.var_dump($params).'<br/>';
+		echo '| '.self::hash($sql,$params).'<br/>';*/
 		return array_KEY_exists(self::hash($sql,$params),self::$cache);
 	}
 
@@ -127,6 +152,13 @@ class OrmCacheScript extends OrmCache {
 	 */	
 	public function clearCache() {
 		self::$cache = array();
+		self::saveCache();
+	}
+
+	private function saveCache(){
+		if(FALSE === file_put_contents(self::$filename ,serialize(self::$cache) )){
+			echo "<h3>Orm can't write into the cache file : ".$filename."</h3>";
+		}
 	}
 
 }

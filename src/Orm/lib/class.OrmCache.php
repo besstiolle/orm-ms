@@ -39,7 +39,7 @@
  *  	
  *  	//Don't forget to push the result into the caching system for the next call
  *  	$cacheInstance->setCache($querySelect, null, $entitys);
- 
+ *
  *  	return $entitys;
  *	</code>
  *
@@ -58,6 +58,11 @@ abstract class OrmCache {
 	 * Will use a cache during the time of the execution of the script
 	 **/
 	public static $SCRIPT = 1;
+
+	/**
+	 * Will use a cache during the time of the execution of the script
+	 **/
+	public static $FILE = 2;
 		
 	/**
 	 * Private constructor
@@ -68,10 +73,11 @@ abstract class OrmCache {
 	 * Will return a implementation of the cache.
 	 *
 	 * @param mixed $typeCache not required : the type of cache. By default it will take the type of cache defined as default into CmsMadeSimple
-	 *
+	 * @param mixed[] $parameters : optional parameters for cache classes
+	 * 
 	 * @return an instance of Cache.
 	 **/
-	public static function getInstance($typeCache = null){
+	public static function getInstance($typeCache = null, $parameters = null){
 		
 		if($typeCache == null){
 			$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
@@ -84,6 +90,9 @@ abstract class OrmCache {
 				break;
 			case OrmCache::$SCRIPT:
 				return OrmCacheScript::getMyOwnInstance();
+				break;
+			case OrmCache::$FILE:
+				return OrmCacheFile::getMyOwnInstance($parameters);
 				break;
 			default:
 				OrmTrace::error("Type of Cache #{$typeCache} is not a valid Type of Cache");

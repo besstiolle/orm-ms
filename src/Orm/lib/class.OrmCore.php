@@ -1201,7 +1201,7 @@ class OrmCore {
 				}
 				
 				//We push the result into the cache before return it
-				OrmCache::getInstance()->setCache($queryExample, null, $entities);
+				OrmCache::getInstance()->setCache($queryExample, $params, $entities);
 		}
 		return array_values($entities);
 
@@ -1273,7 +1273,7 @@ class OrmCore {
 				}
 
 				//We push the result into the cache before return it
-				OrmCache::getInstance()->setCache($queryExample, null, $counter);
+				OrmCache::getInstance()->setCache($queryExample, $params, $counter);
 		}
 		return $counter;
 
@@ -1522,7 +1522,7 @@ class OrmCore {
 				}
 
 				//We push the result into the cache before return it
-				OrmCache::getInstance()->setCache($queryExample, null, $counter);
+				OrmCache::getInstance()->setCache($queryExample, $params, $counter);
 		}
 		return $counter;
 
