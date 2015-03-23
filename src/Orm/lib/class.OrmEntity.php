@@ -541,7 +541,7 @@ abstract class OrmEntity
 		//Test the existence of each member
 		foreach($fieldNames as $fieldName){
 			if(!$this->isFieldByNameExists($fieldName)){
-				throw new OrmIllegalArgumentException("addIndexes(\$fieldNames, \$isUnique=false) : {$fieldNames} is not a existing Field of the Entity {$this->getName()}");
+				throw new OrmIllegalArgumentException("addIndexes(\$fieldNames, \$isUnique=false) : {$fieldName} is not a existing Field of the Entity {$this->getName()}");
 			}
 		}
 	
