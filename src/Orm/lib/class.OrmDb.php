@@ -284,10 +284,10 @@ class OrmDb {
 		//Case : unique index on many fields
 		if(is_array($listFields)) {
 			$idxflds = implode(',', $listFields);
-			$md5 = md5(serialize($listFields));
+			$md5 = 'a'.md5(serialize($listFields));
 		} else {
 			$idxflds = $listFields;
-			$md5 = md5($listFields);
+			$md5 = 'a'.md5($listFields);
 		}
 		if($isUnique){
 			$sqlarray = OrmDb::$dict->CreateIndexSQL($md5, $tableName, $idxflds, OrmDb::$idxoptarrayUnique);
