@@ -48,7 +48,7 @@ class OrmUtils {
 			throw new IllegalArgumentException(" function OrmUtils::entitiesToAbsoluteArray($entities) wait a Array of OrmEntity as parameter", 1);
 		}
 		$result = array();
-		foreach ($listEntities as $entity) {
+		foreach ($entities as $entity) {
 			$result[] = OrmUtils::entitiyToAbsoluteArray($entity);
 		}
 		return $result;
