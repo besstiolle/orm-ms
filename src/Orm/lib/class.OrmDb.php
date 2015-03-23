@@ -306,7 +306,7 @@ class OrmDb {
 		if ($result === false || OrmDb::$db->ErrorMsg()) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
-			OrmTrace::error(" > The createIndex was made on : {$tableName} with the fields : {$listFields}");
+			OrmTrace::error(" > The createIndex was made on : {$tableName} with the fields : {".implode(',',$listFields)."}");
 
 			throw new OrmSqlException($errorMsg);
 		}
