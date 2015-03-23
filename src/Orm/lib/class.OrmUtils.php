@@ -45,7 +45,7 @@ class OrmUtils {
 		if(is_object($entities) && is_subclass_of($entities, 'OrmEntity')){
 			return OrmUtils::entitiyToAbsoluteArray($entities);
 		} else if (!is_array($entities)) {
-			throw new IllegalArgumentException(" function OrmUtils::entitiesToAbsoluteArray($entities) wait a Array of OrmEntity as parameter", 1);
+			throw new IllegalArgumentException("function OrmUtils::entitiesToAbsoluteArray($entities) wait a Array of OrmEntity as parameter", 1);
 		}
 		$result = array();
 		foreach ($entities as $entity) {
