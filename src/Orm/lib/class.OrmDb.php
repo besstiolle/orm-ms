@@ -165,6 +165,7 @@ class OrmDb {
     *         
     * @param string $tableName the table used for sequence 
     * @param string $hql the hql information about the fields
+	* @param string $errorMsg (optional) your custom error message 
     *
     * @return mixed the adodb result
 	*
@@ -201,6 +202,7 @@ class OrmDb {
     * will execute the Adodb "DropTableSQL" function and add logs of everything
     *         
     * @param string $tableName the table used for sequence 
+	* @param string $errorMsg (optional) your custom error message
 	* 
     * @return mixed the adodb result
 	*
@@ -270,6 +272,7 @@ class OrmDb {
     * @param string $tableName the table used for sequence 
     * @param mixed $listFields the list of the FieldName (array) or a single fieldName (String)
     * @param boolean $isUnique true if the index must be UNIQUE
+	* @param string $errorMsg (optional) your custom error message
     *
     * @return mixed the adodb result
 	*

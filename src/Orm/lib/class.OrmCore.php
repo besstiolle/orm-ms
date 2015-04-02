@@ -1310,7 +1310,7 @@ class OrmCore {
      * 
      * @param OrmEntity $entityParam an instance of the entity
      * @param OrmExample $example the Object OrmExample with some Criterias inside
-     * @param string $fieldname the field to apply the "Max" selector
+     * @param string $fieldName the field to apply the "Max" selector
      * @param string $condition let user define if the multiple conditions must of type AND or OR
      * 
      * @see OrmExample
@@ -1360,7 +1360,7 @@ class OrmCore {
      * 
      * @param OrmEntity $entityParam an instance of the entity
      * @param OrmExample $example the Object OrmExample with some Criterias inside
-     * @param string $fieldname the field to apply the "Max" selector
+     * @param string $fieldName the field to apply the "Max" selector
      * @param string $condition let user define if the multiple conditions must of type AND or OR
      * 
      * @see OrmExample
@@ -1410,7 +1410,7 @@ class OrmCore {
      * 
      * @param OrmEntity $entityParam an instance of the entity
      * @param OrmExample $example the Object OrmExample with some Criterias inside
-     * @param string $fieldname the field to apply the "Max" selector
+     * @param string $fieldName the field to apply the "Max" selector
      * @param string $condition let user define if the multiple conditions must of type AND or OR
      * 
      * @see OrmExample
@@ -1460,7 +1460,7 @@ class OrmCore {
      * 
      * @param OrmEntity $entityParam an instance of the entity
      * @param OrmExample $example the Object OrmExample with some Criterias inside
-     * @param string $fieldname the field to apply the "Max" selector
+     * @param string $fieldName the field to apply the "Max" selector
      * @param string $condition let user define if the multiple conditions must of type AND or OR
      * 
      * @see OrmExample

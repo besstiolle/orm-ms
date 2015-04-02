@@ -37,7 +37,7 @@ class OrmUtils {
 	 * Will return a array with values from a list of OrmEntity
 	 * checking also each child node performing the processing recursivly
 	 *
-	 * @param OrmEntity[] entities a list of OrmEntity
+	 * @param OrmEntity[] $entities a list of OrmEntity
 	 * @return mixed[] $result the array with basic values
 	 *
 	 **/
@@ -58,7 +58,7 @@ class OrmUtils {
 	 * Will return a array with values from an OrmEntity
 	 * checking also each child node performing the processing recursivly
 	 *
-	 * @param OrmEntity entity an OrmEntity
+	 * @param OrmEntity $entity an OrmEntity
 	 * @return mixed[] $result the array with basic values
 	 *
 	 **/
@@ -98,7 +98,14 @@ class OrmUtils {
 		return $puid;
 	}
 
-
+	/**
+	 * Return true if the Field is empty ( if integer & equals to 0, it won't be empty )
+	 *
+	 * @param OrmField $field the field
+	 * @param mixed $value the value 
+	 *
+	 * @return boolean true if the field is empty
+	 **/
 	public static function isAnEmptyField(OrmField $field, $value){
 		if($value === NULL){
 			return true;
@@ -115,7 +122,15 @@ class OrmUtils {
 
 		return false;
 	}
-
+	/**
+	 * Will return true if the Field respect the format 
+	 * and the min/max value of the Field
+	 *
+	 * @param OrmField $field the field
+	 * @param mixed $value the value 
+	 *
+	 * @return boolean true if the field is valide
+	 **/
 	public static function isAValidFormat(OrmField $field, $value) {
 		$type = $field->getType();
 		
