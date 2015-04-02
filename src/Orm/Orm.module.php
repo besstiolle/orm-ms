@@ -33,6 +33,112 @@ class Orm extends CMSModule {
 
 	}
 
+
+	function GetName() {
+		return 'Orm';
+	}
+
+	function GetFriendlyName() {
+		return $this->Lang('friendlyname');
+	}
+
+	function GetVersion() {
+		return '0.3.3';
+	}
+  
+	function GetDependencies()
+ 	{
+    	return array();
+	}
+
+	function GetHelp() {
+		return $this->Lang('help');
+	}
+
+	function GetAuthor() {
+		return 'Kevin Danezis (aka Bess)';
+	}
+
+	function GetAuthorEmail() {
+		return 'contact at furie point be';
+	}
+
+	function GetChangeLog() {
+		return $this->Lang('changelog');
+	}
+
+	function GetAdminDescription() {
+		return $this->Lang('moddescription');
+	}
+
+	function MinimumCMSVersion() {
+		return "1.11.12";
+	}
+
+	function IsPluginModule() {
+		return false;
+	}
+
+	function HasAdmin() {
+		return true;
+	}
+
+	function GetAdminSection() {
+		return 'extensions';
+	}
+
+	function VisibleToAdminUser() {
+		return $this->CheckPermission('Manage_Orm');
+	}
+
+	function InitializeFrontend() {
+	}
+
+	function InitializeAdmin() {
+	}
+
+	function AllowSmartyCaching() {
+		return false;
+	}
+
+	function LazyLoadFrontend() {
+		return false;
+	}
+
+	function LazyLoadAdmin() {
+	  return false;
+	}
+	
+	function InstallPostMessage() {
+		return $this->Lang('postinstall');
+	}
+
+	function UninstallPostMessage() {
+		return $this->Lang('postuninstall');
+	}
+
+	function UninstallPreMessage() {
+		return $this->Lang('really_uninstall');
+	}  
+	
+	function DisplayErrorPage($msg) {
+		echo "<h3>".$msg."</h3>";
+	} 
+		 
+	private function GetMyModulePath() {
+		return parent::GetModulePath();		
+	}
+	
+	/**
+	 * Shortcut to call all the instances for a single module
+	 *
+	 * @return List<OrmEntity> the entities for the current parent's namespace
+	 **/
+	public function getAllInstances(){
+		return MyAutoload::getAllInstances(parent::GetName());
+	}
+	
+	
 	/**
 	 * Will found every Entity for the current module and return the liste of their name
 	 *
@@ -166,110 +272,6 @@ class Orm extends CMSModule {
 
         return FALSE;
     }
-
-	function GetName() {
-		return 'Orm';
-	}
-
-	function GetFriendlyName() {
-		return $this->Lang('friendlyname');
-	}
-
-	function GetVersion() {
-		return '0.3.3-SNAPSHOT';
-	}
-  
-	function GetDependencies()
- 	{
-    	return array();
-	}
-
-	function GetHelp() {
-		return $this->Lang('help');
-	}
-
-	function GetAuthor() {
-		return 'Kevin Danezis (aka Bess)';
-	}
-
-	function GetAuthorEmail() {
-		return 'contact at furie point be';
-	}
-
-	function GetChangeLog() {
-		return $this->Lang('changelog');
-	}
-
-	function GetAdminDescription() {
-		return $this->Lang('moddescription');
-	}
-
-	function MinimumCMSVersion() {
-		return "1.11.0";
-	}
-
-	function IsPluginModule() {
-		return false;
-	}
-
-	function HasAdmin() {
-		return true;
-	}
-
-	function GetAdminSection() {
-		return 'extensions';
-	}
-
-	function VisibleToAdminUser() {
-		return $this->CheckPermission('Manage_Orm');
-	}
-
-	function InitializeFrontend() {
-	}
-
-	function InitializeAdmin() {
-	}
-
-	function AllowSmartyCaching() {
-		return false;
-	}
-
-	function LazyLoadFrontend() {
-		return false;
-	}
-
-	function LazyLoadAdmin() {
-	  return false;
-	}
-	
-	function InstallPostMessage() {
-		return $this->Lang('postinstall');
-	}
-
-	function UninstallPostMessage() {
-		return $this->Lang('postuninstall');
-	}
-
-	function UninstallPreMessage() {
-		return $this->Lang('really_uninstall');
-	}  
-	
-	function DisplayErrorPage($msg) {
-		echo "<h3>".$msg."</h3>";
-	} 
-		 
-	private function GetMyModulePath() {
-		return parent::GetModulePath();		
-	}
-	
-	/**
-	 * Shortcut to call all the instances for a single module
-	 *
-	 * @return List<OrmEntity> the entities for the current parent's namespace
-	 **/
-	public function getAllInstances(){
-		return MyAutoload::getAllInstances(parent::GetName());
-	}
 
 	/**
      * Will return the list of file in the directory wich match the pattern.
