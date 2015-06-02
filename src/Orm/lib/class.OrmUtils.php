@@ -43,13 +43,13 @@ class OrmUtils {
 	 **/
 	public static function entitiesToAbsoluteArray($entities){
 		if(is_object($entities) && is_subclass_of($entities, 'OrmEntity')){
-			return OrmUtils::entitiyToAbsoluteArray($entities);
+			return OrmUtils::entityToAbsoluteArray($entities);
 		} else if (!is_array($entities)) {
 			throw new IllegalArgumentException("function OrmUtils::entitiesToAbsoluteArray($entities) wait a Array of OrmEntity as parameter", 1);
 		}
 		$result = array();
 		foreach ($entities as $entity) {
-			$result[] = OrmUtils::entitiyToAbsoluteArray($entity);
+			$result[] = OrmUtils::entityToAbsoluteArray($entity);
 		}
 		return $result;
 	}
@@ -62,17 +62,17 @@ class OrmUtils {
 	 * @return mixed[] $result the array with basic values
 	 *
 	 **/
-	public static function entitiyToAbsoluteArray($entity){
+	public static function entityToAbsoluteArray($entity){
 		if(is_array($entity)){
 			return OrmUtils::entitiesToAbsoluteArray($entity);
 		} else if (!is_object($entity) || !is_subclass_of($entity, 'OrmEntity') ) {
-			throw new IllegalArgumentException(" function OrmUtils::entitiyToAbsoluteArray($entity) wait a OrmEntity as parameter", 1);
+			throw new IllegalArgumentException(" function OrmUtils::entityToAbsoluteArray($entity) wait a OrmEntity as parameter", 1);
 		}
 
 		$result = $entity->getValues();
 		foreach($result as $key => $value) {
 			if(is_object($value) && is_subclass_of($value, 'OrmEntity')){
-				$result[$key] = OrmUtils::entitiyToAbsoluteArray($value);
+				$result[$key] = OrmUtils::entityToAbsoluteArray($value);
 			} else if (is_array($value)){
 				$result[$key] = OrmUtils::entitiesToAbsoluteArray($value);
 			} else {
