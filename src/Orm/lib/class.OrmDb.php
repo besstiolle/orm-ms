@@ -47,6 +47,11 @@ class OrmDb {
 	private static $bufferLength = 5;
 
     /**
+	 * Show microtime of execution ?
+	 **/
+	private static $showMicro = false;
+
+    /**
     * Protected constructor    
     */
 	protected function __construct() {}
@@ -60,6 +65,11 @@ class OrmDb {
 		}
 		OrmDb::$db = cmsms()->GetDb();
 		OrmDb::$dict = NewDataDictionary( OrmDb::$db );
+
+		$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
+		if($orm != null && OrmTrace::$SQL >= $orm->GetPreference('loglevel', OrmTrace::$INFO)){
+			OrmDb::$showMicro = true;
+		}
 	}
       
     /**
@@ -75,6 +85,10 @@ class OrmDb {
 	public static final function execute($query, $parameters = null, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
+		if(OrmDb::$showMicro){
+			$time_start = microtime(true);
+		}
+
 		OrmTrace::sql($query);
 		if($parameters != null){
 			OrmTrace::sql(" > Parameters : ".print_r($parameters, true));
@@ -93,6 +107,10 @@ class OrmDb {
 			throw new OrmSqlException($errorMsg);
 		}
 		
+		if(OrmDb::$showMicro){
+			OrmDb::traceTimeOfExecution($time_start);
+		}
+		
 		return $result;
 	}	
 	
@@ -109,6 +127,10 @@ class OrmDb {
 	public static final function getOne($query, $parameters = null, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
+		if(OrmDb::$showMicro){
+			$time_start = microtime(true);
+		}
+
 		OrmTrace::sql($query);
 		if($parameters != null){
 			OrmTrace::sql(" > Parameters : ".print_r($parameters, true));
@@ -127,6 +149,10 @@ class OrmDb {
 			throw new OrmSqlException($errorMsg);
 		}
 		
+		if(OrmDb::$showMicro){
+			OrmDb::traceTimeOfExecution($time_start);
+		}
+		
 		return $result;
 	}	
 	
@@ -143,7 +169,10 @@ class OrmDb {
 	public static final function genID($seqname, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
-		
+		if(OrmDb::$showMicro){
+			$time_start = microtime(true);
+		}
+				
 		OrmTrace::sql("gen Id({$seqname})");
 		$result = OrmDb::$db->GenID($seqname);
 		//Push Query in buffer
@@ -155,6 +184,10 @@ class OrmDb {
 			OrmTrace::error(" > The GenId was made on : ".$seqname);
 
 			throw new OrmSqlException($errorMsg);
+		}
+		
+		if(OrmDb::$showMicro){
+			OrmDb::traceTimeOfExecution($time_start);
 		}
 		
 		return $result;
@@ -174,6 +207,10 @@ class OrmDb {
 	public static final function createTable($tableName, $hql, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
+		if(OrmDb::$showMicro){
+			$time_start = microtime(true);
+		}
+		
 		
 		OrmTrace::sql("createTable({$tableName}, \"{$hql}\")");
 		
@@ -195,6 +232,10 @@ class OrmDb {
 			throw new OrmSqlException($errorMsg);
 		}
 		
+		if(OrmDb::$showMicro){
+			OrmDb::traceTimeOfExecution($time_start);
+		}
+		
 		return $result;
 	}
 
@@ -211,6 +252,10 @@ class OrmDb {
 	public static final function dropTable($tableName, $errorMsg = "Database error") {
 		//Be sure we initiate the db connector;
 		OrmDb::init();
+		if(OrmDb::$showMicro){
+			$time_start = microtime(true);
+		}
+		
 		
 		OrmTrace::sql("dropTable({$tableName})");
 		
@@ -230,6 +275,10 @@ class OrmDb {
 			throw new OrmSqlException($errorMsg);
 		}
 		
+		if(OrmDb::$showMicro){
+			OrmDb::traceTimeOfExecution($time_start);
+		}
+		
 		return $result;
 	}
 	
@@ -241,12 +290,20 @@ class OrmDb {
 	public static final function createSequence($seqName){
 		//Be sure we initiate the db connector;
 		OrmDb::init();
+		if(OrmDb::$showMicro){
+			$time_start = microtime(true);
+		}
+		
 		
 		OrmTrace::sql("createSequence({$seqName})");
 		
 		OrmDb::$db->CreateSequence($seqName);
 		//Push Query in buffer
 		OrmDb::pushQueries();
+
+		if(OrmDb::$showMicro){
+			OrmDb::traceTimeOfExecution($time_start);
+		}
 	}
 	
 	/**
@@ -257,6 +314,10 @@ class OrmDb {
 	public static final function dropSequence($seqName){
 		//Be sure we initiate the db connector;
 		OrmDb::init();
+		if(OrmDb::$showMicro){
+			$time_start = microtime(true);
+		}
+		
 		
 		OrmTrace::sql("dropSequence({$seqName})");
 		
@@ -264,6 +325,9 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 		
+		if(OrmDb::$showMicro){
+			OrmDb::traceTimeOfExecution($time_start);
+		}
 	}
 	
 	/**
@@ -281,7 +345,10 @@ class OrmDb {
 	public static final function createIndex($tableName, $listFields, $isUnique = false, $errorMsg = "Database error"){
 		//Be sure we initiate the db connector;
 		OrmDb::init();
-		
+		if(OrmDb::$showMicro){
+			$time_start = microtime(true);
+		}
+				
 		OrmTrace::sql("createIndex({$tableName}, {".implode(',',$listFields)."}, {$isUnique})");
 				
 		//Case : unique index on many fields
@@ -312,6 +379,10 @@ class OrmDb {
 			OrmTrace::error(" > The createIndex was made on : {$tableName} with the fields : {".implode(',',$listFields)."}");
 
 			throw new OrmSqlException($errorMsg);
+		}
+		
+		if(OrmDb::$showMicro){
+			OrmDb::traceTimeOfExecution($time_start);
 		}
 		
 		return $result;
@@ -360,6 +431,13 @@ class OrmDb {
 		if($currentCount > OrmDb::$bufferLength) {
 			OrmDb::$bufferQueries = array_slice (OrmDb::$bufferQueries, - OrmDb::$bufferLength);
 		}
+	}
+
+	/**
+    * inner function to write the time of execution
+    */	
+	private static function traceTimeOfExecution($time_start){
+		OrmTrace::sql(" Exec : " . ((microtime(true) - $time_start) * 1000)."ms");
 	}
 }
 
