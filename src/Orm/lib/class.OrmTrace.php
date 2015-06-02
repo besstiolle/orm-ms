@@ -64,6 +64,11 @@ final class OrmTrace {
 	protected static $logUrl;
 	
 	/**
+	* inner level of the module ORM
+	**/
+	protected static $level;
+	
+	/**
 	* protected constructor
 	**/
 	protected function __construct() {
@@ -148,10 +153,16 @@ final class OrmTrace {
 	 * @param string $msg the message to display
 	 */
 	private static final function innerWriter($level, $cssClass, $msg){
-		$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
+		if(self::$level == null){
+			$orm = cmsms()->GetModuleOperations()->get_module_instance('Orm');
+			if($orm != null){
+				self::$level = $orm->GetPreference('loglevel', OrmTrace::$INFO);
+			} else {
+				return;
+			}
+		}		
 
-		if($orm != null && $orm->GetPreference('loglevel', OrmTrace::$INFO) > $level) {return;}
-		
+		if(self::$level > $level) {return;}		
 		
 		$content = date('Y-m-d H:i:s', time())." - [$cssClass] - $msg \n";
 				
