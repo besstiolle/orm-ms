@@ -98,15 +98,15 @@ class Orm extends CMSModule {
 	}
 
 	function AllowSmartyCaching() {
-		return false;
+		return true;
 	}
 
 	function LazyLoadFrontend() {
-		return false;
+		return true;
 	}
 
 	function LazyLoadAdmin() {
-	  return false;
+	  return true;
 	}
 	
 	function InstallPostMessage() {
